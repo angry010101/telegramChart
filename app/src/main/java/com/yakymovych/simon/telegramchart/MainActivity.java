@@ -2,26 +2,26 @@ package com.yakymovych.simon.telegramchart;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yakymovych.simon.telegramchart.Model.ChartData;
+import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.custom.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     TextView tv;
     LineChart lc;
-    GraphProgressBar sbstart,sbend;
+    GraphProgressBar progressbar,sbend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +29,22 @@ public class MainActivity extends AppCompatActivity {
 
         ChartData chartData = loadJson();
         lc = this.findViewById(R.id.chart);
-        sbstart = this.findViewById(R.id.graphProgressBar);
-        sbstart.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
+        Plot p = new Plot();
+        p.x = lc.x;
+        p.y = lc.y;
+        p.prx = lc.prx;
+        p.pry = lc.pry;
+
+        p.start = lc.start;
+        p.end = lc.end;
+
+        ArrayList<Plot> pl = new ArrayList<>();
+        pl.add(p);
+
+        progressbar = this.findViewById(R.id.graphProgressBar);
+        this.progressbar.setPlots(pl);
+
+        progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
             @Override
             public void onStartProgressChanged(View v, int p1, int p2, int offset) {
                 lc.setStart((int)(((double)(p1)/100) * (lc.x.size()-1)));
@@ -47,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 lc.setEnd((int)(((double)(p2)/100) * lc.x.size()));
             }
         });
-//        sbstart.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//        progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //            @Override
 //            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //                Log.d("MAINACTIVITY:","CHANGED: " + progress);

@@ -4,14 +4,29 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+
+import com.yakymovych.simon.telegramchart.Model.local.Plot;
+import com.yakymovych.simon.telegramchart.Utils.MathPlot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GraphProgressBar extends View {
+    private MathPlot mp ;
+    private List<Plot> plots = new ArrayList<>();
+
+    Paint grayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint bluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
     boolean isChangingStart = false;
     boolean isChangingEnd = false;
     int progress=40,progressEnd=80;
@@ -23,9 +38,9 @@ public class GraphProgressBar extends View {
     private int progressStartPx =0;
     private int progressEndPx =offsetProgressElems;
     int startpos,endpos;
-    int height;
-    int delta = 25,delta_o=20;
-
+    int height,width;
+    int delta = 25,delta_o=40;
+    private int topMargin = 8;
 
     public int getProgressStartPx() {
         return (int)((((double)(progress))/100)*this.getWidth());
@@ -58,15 +73,41 @@ public class GraphProgressBar extends View {
         init();
     }
 
+    public void setPlots(List<Plot> plots) {
+        this.plots = plots;
+    }
+
+
+    private void initSizes(){
+        this.width = this.getWidth();
+        this.height= this.getHeight();
+        mp = new MathPlot(width,height,topMargin);
+        this.invalidate();
+
+    }
 
     private void init(){
-        paint.setColor(Color.MAGENTA);
+        paint.setColor(Color.GREEN);
         paint.setTextSize(30);
-        height = this.getHeight();
-
         startpos = getProgressStartPx();
         endpos = getProgressEndPx();
-        Log.d("VIEW: ","INIT: " + startpos+ " " + endpos);
+
+        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initSizes();
+            }
+        });
+
+        grayPaint.setColor(Color.GRAY);
+        grayPaint.setAlpha(60);
+        //grayPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        grayPaint.setAntiAlias(true);
+
+        bluePaint.setColor(Color.BLUE);
+        bluePaint.setAlpha(20);
+        //grayPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        bluePaint.setAntiAlias(true);
 
 
     }
@@ -225,13 +266,39 @@ public class GraphProgressBar extends View {
         startpos = getProgressStartPx();
         endpos = getProgressEndPx();
 
-        int view_offset_s = getProgressStartPx();
-        int view_offset_e = getProgressEndPx();
-        int s = view_offset_s;
-        int e = view_offset_e;
-        canvas.drawCircle(s,h2,25,paint);
-        canvas.drawCircle(e,h2,25,paint);
+
+        drawBackground(canvas);
+
+//        int view_offset_s = getProgressStartPx();
+//        int view_offset_e = getProgressEndPx();
+//        int s = view_offset_s;
+//        int e = view_offset_e;
+//        canvas.drawCircle(s,h2,25,paint);
+//        canvas.drawCircle(e,h2,25,paint);
+
     }
+
+    private void drawBackground(Canvas canvas) {
+        mp.drawCharts(plots,canvas,paint);
+        this.drawSlider(canvas,grayPaint);
+    }
+
+    private final int borderWidth=16;
+    private int sliderTopBorder=4;
+    private void drawSlider(Canvas canvas, Paint grayPaint) {
+        int p = getProgressStartPx();
+        int e = getProgressEndPx();
+        canvas.drawRect(0,0,p,height,grayPaint);
+        canvas.drawRect(e,0,width,height,grayPaint);
+
+        canvas.drawRect(p+borderWidth,0,e-borderWidth,sliderTopBorder,bluePaint);
+        canvas.drawRect(p+borderWidth,height-sliderTopBorder,e-borderWidth,height,bluePaint);
+
+
+        canvas.drawRect(p,0,p+borderWidth,height,bluePaint);
+        canvas.drawRect(e-borderWidth,0,e,height,bluePaint);
+    }
+
     public interface ProgressChangedListener{
         public void onStartProgressChanged(View v,int p1,int p2,int offset);
         public void onEndProgressChanged(View v,int p1,int p2,int offset);

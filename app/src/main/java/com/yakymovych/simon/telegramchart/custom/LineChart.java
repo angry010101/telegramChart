@@ -18,7 +18,7 @@ import java.util.List;
 public class LineChart extends View {
     public List<Integer> x,px,prx;
     public List<Double> y,py,pry;
-    private int start,end;
+    public int start,end;
     private int dividersCount = 6;
     private int y_threshold = 5;
     private final int y_stats_offset=100;
