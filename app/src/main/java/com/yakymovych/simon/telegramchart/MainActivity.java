@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yakymovych.simon.telegramchart.Model.ChartData;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
+import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     TextView tv;
     LineChart lc;
+    GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar,sbend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,21 +31,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ChartData chartData = loadJson();
+
+        Log.d("MAIN","" + chartData.columns.get(0));
+        List<Object> l = chartData.columns.get(0);
+        List<Long> x =  (List<Long>)(Object)l.subList(1,l.size());
+        Log.d("MAIN","CASTED: " + x);
+
+
+        //chartData
         lc = this.findViewById(R.id.chart);
         Plot p = new Plot();
         p.x = lc.x;
         p.y = lc.y;
         p.prx = lc.prx;
         p.pry = lc.pry;
-
         p.start = lc.start;
         p.end = lc.end;
+
+        graphGenerator.generate(10);
+        graphGenerator.generate(100);
+
 
         ArrayList<Plot> pl = new ArrayList<>();
         pl.add(p);
 
         progressbar = this.findViewById(R.id.graphProgressBar);
-        this.progressbar.setPlots(pl);
+        this.progressbar.setPlots(graphGenerator.plots);
 
         progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
             @Override

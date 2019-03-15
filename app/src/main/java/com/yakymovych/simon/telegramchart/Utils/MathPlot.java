@@ -1,6 +1,7 @@
 package com.yakymovych.simon.telegramchart.Utils;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class MathPlot {
     private final int offsetTop;
-    private int inf = 999999999;
+    public static int inf = 999999999;
     private int xmax,xmin;
     private double ymax,ymin;
     private List<Plot> plots = new ArrayList<>();
@@ -103,7 +104,9 @@ public class MathPlot {
     }
 
     public void drawCharts(List<Plot> plots, Canvas canvas, Paint paint) {
+        this.plots = plots;
         for (Plot p : plots){
+            paint.setColor(Color.parseColor("#"+p.color));
             drawChart(p,canvas,paint);
         }
     }

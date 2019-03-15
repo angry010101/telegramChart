@@ -6,4 +6,5 @@ public class Plot {
     public List<Integer> x,prx;
     public List<Double> y,pry;
     public int start,end;
+    public String color = "";
 }

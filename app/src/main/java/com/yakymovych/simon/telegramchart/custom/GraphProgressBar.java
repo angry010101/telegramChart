@@ -279,6 +279,7 @@ public class GraphProgressBar extends View {
     }
 
     private void drawBackground(Canvas canvas) {
+
         mp.drawCharts(plots,canvas,paint);
         this.drawSlider(canvas,grayPaint);
     }
