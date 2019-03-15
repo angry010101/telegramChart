@@ -14,7 +14,6 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class LineChart extends View {
     public List<Integer> x,px,prx;
@@ -25,6 +24,9 @@ public class LineChart extends View {
     private final int y_stats_offset=100;
     private boolean drawToTop = false;
     private final double y_real_threshold = 1.85;
+    private final int intersection_radius = 10;
+    private int stats_x_position = 0;
+    private double stats_y_intersection = 0;
 
     public void setDividersCount(int dividersCount) {
         this.dividersCount = dividersCount;
@@ -111,6 +113,10 @@ public class LineChart extends View {
     private int stats_x,stats_y=100;
     private int stats_w=250,stats_h=160;
     private int stats_offset=20;
+
+    private final int stats_draw_left_threshold = 50;
+    private int stats_draw_right_threshold;
+
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
         Log.d("VIEW: ","TOUCH");
@@ -125,17 +131,29 @@ public class LineChart extends View {
                 isFingerDown = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (isFingerDown){
+                stats_draw_right_threshold = this.getWidth()-stats_w-50;
+                Log.d("VIEW: ","WIDTH" + x + " " + stats_draw_right_threshold + " " + stats_draw_left_threshold);
+                if (isFingerDown && x < stats_draw_right_threshold && x > stats_draw_left_threshold ){
                     y_threshold = (int)(((ymax-ymin)/2)*(y_real_threshold));
-                    Log.d("SEARCH: ","" + x + " \n"+ this.x);
                     int w = this.getWidth();
                     double t = ((double)((end-start))/this.getWidth());
                     int nearest = findNearestFor((int)(x*t));
                     stats_x = (int) (nearest*w/(end-start-1));
+
+                    stats_x_position = nearest;
+
+
                     stats_y = y_stats_offset;
                     drawToTop = false;
 
                     double y_intersection = this.pry.get(nearest);
+                    Log.d("VIEW: ","HAPPENED: " + y_intersection + " max: " + ymax);
+
+                    stats_y_intersection = y_intersection;
+
+                    Log.d("VIEW: ","HAPPENED: " + stats_y_intersection);
+//                    stats_y_intersection = (int) (y_intersection);
+
                     //Log.d("VIEW: ", " " + this.prx.get(nearest) +" "+this.pry.get(nearest) + " " + y_threshold);
                     if (y_intersection>(y_threshold+ymin) ){
                         stats_y = (int)(y_threshold+ymin)+stats_h+y_stats_offset;
@@ -220,6 +238,12 @@ public class LineChart extends View {
             canvas.drawLine(stats_x,(int)(y_threshold+ymin)+stats_h+y_stats_offset,
                     stats_x,0,paint);
         }
+
+        drawIntersection(canvas,paint);
+    }
+
+    private void drawIntersection(Canvas canvas, Paint paint) {
+        canvas.drawCircle(stats_x, (int)(this.getHeight()-(stats_y_intersection-ymin)*((double)this.getHeight())/(ymax-ymin)),intersection_radius,paint);
     }
 
     private void drawXDividers(Canvas canvas, Paint paint) {
@@ -227,7 +251,7 @@ public class LineChart extends View {
         double t = (double)((ymax-ymin))/dividersCount;
         for (int i=0,k=dividersCount;i<h || k>0;i+= h/dividersCount,k--){
             canvas.drawLine(0,i,this.getWidth(),i,paint);
-            canvas.drawText(""+(t*k),0,i,paint);
+            canvas.drawText(""+(t*(k+1)),0,i,paint);
         }
     }
 

@@ -149,8 +149,32 @@ public class GraphProgressBar extends View {
 
     private void handleOffsetMovement(MotionEvent event){
         float x = event.getX();
+
+        int st = getProgressStartPx();
+        int end =getProgressEndPx();
+
+        boolean direction = x-(st+end)/2 > 0;
+
+
+        Log.d("VIEW: ","progress: " + getProgressStartPx() + " " + getProgressEndPx());
+        if ((getProgressEndPx()>=this.getWidth())
+                && direction||
+                (getProgressStartPx() <=0 && !direction))
+            return;
+
+        //fix
         int m = (getProgressEndPx()+getProgressStartPx());
         int d = (int) ((x-(double)m/2)*(100.0/this.getWidth()));
+
+        if (progressEnd+d > 100 && direction) {
+            d=100-progressEnd;
+        }
+        else {
+            if (progress+d<0 && !direction) {
+                d = -progress;
+            }
+        }
+
         progress += d;
         progressEnd += d;
         if (progressChangedListener != null){
