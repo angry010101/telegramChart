@@ -2,6 +2,7 @@ package com.yakymovych.simon.telegramchart;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -57,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onOffsetProgressChanged(View v, int p1, int p2, int offset) {
-                lc.setStart((int)(((double)(p1)/100) * (lc.x.size()-1)));
-                lc.setEnd((int)(((double)(p2)/100) * lc.x.size()));
+                try{
+                    lc.setStart((int)(((double)(p1)/100) * (lc.x.size()-1)));
+                    lc.setEnd((int)(((double)(p2)/100) * lc.x.size()));
+                }
+                catch (Exception e ){
+                    Log.d("ERROR","FATAL ERROR");
+                }
             }
         });
 //        progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
