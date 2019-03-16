@@ -31,14 +31,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ChartData chartData = loadJson();
+        ChartData chartData = graphGenerator.fromJson(this);
 
         Log.d("MAIN","" + chartData.columns.get(0));
         List<Object> l = chartData.columns.get(0);
         List<Long> x =  (List<Long>)(Object)l.subList(1,l.size());
-
-        Log.d("MAIN","CASTED: " + x);
-
+        Plot p = new Plot();
+        //p.x = x;
 
         //chartData
         lc = this.findViewById(R.id.chart);
@@ -80,67 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.d("MAINACTIVITY:","CHANGED: " + progress);
-//                lc.setStart((int)(((double)(progress)/100) * (lc.x.size()-1)));
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-//
-//
-//        sbend.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                Log.d("MAINACTIVITY:","CHANGED: " + progress);
-//                lc.setEnd((int)(((double)(progress)/100) * lc.x.size()));
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-//
-
 
     }
 
 
-    public ChartData loadJson(){
-        String myJson=loadJSONFromAsset();
-        Type listType = new TypeToken<List<ChartData>>(){}.getType();
-        List<ChartData> chartData = new Gson().fromJson(myJson, listType);
-        return chartData.get(0);
-    }
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = this.getAssets().open("chart_data.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
 }

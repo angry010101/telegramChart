@@ -94,7 +94,6 @@ public class MathPlot {
     }
 
     public void setStartAndEnd(int start,int end){
-        Log.d("START AND END","START: " + start + " " + end);
         this.start = start;
         this.end = end;
         //this.calcGlobals();

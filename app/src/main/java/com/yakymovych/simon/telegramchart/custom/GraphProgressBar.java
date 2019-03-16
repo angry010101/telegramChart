@@ -104,7 +104,7 @@ public class GraphProgressBar extends View {
         grayPaint.setAntiAlias(true);
 
         bluePaint.setColor(Color.BLUE);
-        bluePaint.setAlpha(20);
+        bluePaint.setAlpha(40);
         //grayPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         bluePaint.setAntiAlias(true);
 
@@ -290,7 +290,7 @@ public class GraphProgressBar extends View {
         int p = getProgressStartPx();
         int e = getProgressEndPx();
         canvas.drawRect(0,0,p,height,grayPaint);
-        canvas.drawRect(e,0,width,height,grayPaint);
+        canvas.drawRect(e+borderWidth,0,width,height,grayPaint);
 
         canvas.drawRect(p+borderWidth,0,e,sliderTopBorder,bluePaint);
         canvas.drawRect(p+borderWidth,height-sliderTopBorder,e,height,bluePaint);

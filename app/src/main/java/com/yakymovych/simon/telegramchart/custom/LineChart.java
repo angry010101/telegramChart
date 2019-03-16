@@ -161,16 +161,21 @@ public class LineChart extends View {
                     y_threshold = (int)(((ymax-ymin)/2)*(y_real_threshold));
                     int w = this.getWidth();
                     double t = ((double)((end-start))/this.getWidth());
+
                     int nearest = mp.findNearestFor(plots.get(0),(int)(x*t));
+
                     stats_x = (int) (nearest*w/(end-start-1));
-
                     stats_x_position = nearest;
-
-
                     stats_y = y_stats_offset;
                     drawToTop = false;
 
-                    double y_intersection = this.pry.get(nearest);
+
+                    //TODO pry is obsolete there is no calculations
+                    //but buggy behavior
+                    //statictics doesn't include y posittion
+
+                    double y_intersection = this.plots.get(0).y.get(nearest);
+
                     Log.d("VIEW: ","HAPPENED: " + y_intersection + " max: " + ymax);
 
                     stats_y_intersection = y_intersection;
