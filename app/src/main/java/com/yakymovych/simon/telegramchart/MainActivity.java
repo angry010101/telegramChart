@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         List<Object> l = chartData.columns.get(0);
         List<Long> x =  (List<Long>)(Object)l.subList(1,l.size());
         Plot p = new Plot();
+        p.x = x ;
+        //p.y =
         //p.x = x;
 
         //chartData

@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineChart extends View {
-    public List<Integer> x,px,prx;
-    public List<Double> y,py,pry;
     private int start,end;
     private MathPlot mp;
     public List<Plot> plots;
@@ -114,13 +112,6 @@ public class LineChart extends View {
     }
 
     private void init(){
-        x = new ArrayList<>();
-
-        y = new ArrayList<>();
-
-        start=0;
-        end=x.size();
-
 
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

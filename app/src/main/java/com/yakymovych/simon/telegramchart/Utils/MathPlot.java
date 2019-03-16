@@ -13,8 +13,8 @@ import java.util.List;
 
 public class MathPlot {
     private final int offsetTop;
-    public static int inf = 999999999;
-    private int xmax,xmin;
+    public static long inf = 999999999;
+    private long xmax,xmin;
     public int start,end;
     private double ymax,ymin;
     private List<Plot> plots = new ArrayList<>();
