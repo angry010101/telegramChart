@@ -33,7 +33,7 @@ public class LineChart extends View {
     private int width;
     private int height;
     LineChartListener lineChartListener;
-    private int topMargin = 8;
+    private int topMargin = 20;
 
     public void setLineChartListener(LineChartListener lineChartListener) {
         this.lineChartListener = lineChartListener;

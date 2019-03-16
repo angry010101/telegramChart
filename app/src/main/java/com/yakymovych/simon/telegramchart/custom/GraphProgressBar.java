@@ -39,7 +39,8 @@ public class GraphProgressBar extends View {
     private int progressEndPx =offsetProgressElems;
     int startpos,endpos;
     int height,width;
-    int delta = 25,delta_o=40;
+    int delta = 25;
+    int delta_o=50;
     private int topMargin = 8;
 
     public int getProgressStartPx() {

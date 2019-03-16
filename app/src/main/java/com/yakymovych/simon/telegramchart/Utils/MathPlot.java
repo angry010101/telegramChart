@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MathPlot {
     private final int offsetTop;
-    public static long inf = 999999999;
+    public static Long inf = Long.MAX_VALUE;
     private long xmax,xmin;
     public int start,end;
     private double ymax,ymin;
@@ -67,11 +67,11 @@ public class MathPlot {
         }
     }
 
-    Integer calcMaxLocalX(Plot p){
+    Long calcMaxLocalX(Plot p){
         return Collections.max(p.x.subList(start,end));
     }
 
-    Integer calcMinLocalX(Plot p){
+    Long calcMinLocalX(Plot p){
         return Collections.min(p.x.subList(start,end));
     }
 
@@ -104,6 +104,8 @@ public class MathPlot {
         calcMaxGlobalY();
         calcMinGlobalX();
         calcMinGlobalY();
+
+
     }
 
 
@@ -111,8 +113,8 @@ public class MathPlot {
     public void drawChart(Plot p, Canvas canvas, Paint paint){
         List<Integer> prx = new ArrayList<>();
         List<Double> pry =new ArrayList<>();
-        int lmin_x = calcMinLocalX(p);
-        int lmax_x = calcMaxLocalX(p);
+        long lmin_x = calcMinLocalX(p);
+        long lmax_x = calcMaxLocalX(p);
 
         Double lmin_y = calcMinLocalY(p);
         Double lmax_y = calcMaxLocalY(p);
@@ -122,7 +124,7 @@ public class MathPlot {
 
         Log.d("MATHPLOT","PRX SIZE : " + prx.size());
         for (int i=start;i<end;i++){
-            int xi = p.x.get(i);
+            long xi = p.x.get(i);
             double yi = p.y.get(i);
             prx.add((int)((xi-lmin_x)*kx));
             pry.add((h-((yi-ymin))*ky) + offsetTop);
@@ -137,6 +139,7 @@ public class MathPlot {
 
     public void drawCharts(Canvas canvas, Paint paint) {
         calcGlobals();
+
         for (Plot p : plots){
             paint.setColor(Color.parseColor("#"+p.color));
             drawChart(p,canvas,paint);

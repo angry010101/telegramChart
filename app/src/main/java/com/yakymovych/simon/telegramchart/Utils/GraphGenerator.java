@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class GraphGenerator {
     public List<Plot> plots = new ArrayList<Plot>();
-    private double f(int x,int p){
+    private double f(long x,int p){
         return Math.random()*10+10*p;
     }
 
@@ -48,7 +48,7 @@ public class GraphGenerator {
         return json;
     }
 
-    private String generateColor(){
+    public String generateColor(){
         Random randomGenerator = new Random();
         int low = 0;
         int high = 16777215;
@@ -59,9 +59,9 @@ public class GraphGenerator {
     }
     public void generate(int p1){
         Plot p = new Plot();
-        List<Integer> x = new ArrayList<Integer>();
+        List<Long> x = new ArrayList<Long>();
         List<Double> y = new ArrayList<>();
-        for (int i =0;i<100;i++){
+        for (long i =0;i<100;i++){
             x.add(i);
             y.add(f(i,p1));
         }

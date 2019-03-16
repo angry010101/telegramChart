@@ -35,22 +35,47 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("MAIN","" + chartData.columns.get(0));
         List<Object> l = chartData.columns.get(0);
-        List<Long> x =  (List<Long>)(Object)l.subList(1,l.size());
+        List<Object> l1 = chartData.columns.get(1);
+        List<Object> l2 = chartData.columns.get(2);
+
+
+        List<Double> x_d =  (List<Double>)(Object)l.subList(1,l.size());
+        List<Double> y0_d =  (List<Double>)(Object)l1.subList(1,l.size());
+        List<Double> y1_d =  (List<Double>)(Object)l2.subList(1,l.size());
+
+        List<Long> x = new ArrayList<>();
+
+        for (double item : x_d) {
+            x.add((Double.valueOf(item).longValue()));
+        }
+
+
         Plot p = new Plot();
-        p.x = x ;
-        //p.y =
+        p.x =  x;
+        p.y = y0_d;
+        p.color = graphGenerator.generateColor();
+        Plot p1 = new Plot();
+        p1.y = y1_d;
+        p1.color = graphGenerator.generateColor();
         //p.x = x;
 
         //chartData
         lc = this.findViewById(R.id.chart);
 
-        graphGenerator.generate(10);
-        graphGenerator.generate(10);
+        graphGenerator.add(p);
+        graphGenerator.add(p1);
+        //graphGenerator.generate(10);
+        //graphGenerator.generate(11);
+        //graphGenerator.generate(12);
+        //graphGenerator.generate(13);
 
 
         progressbar = this.findViewById(R.id.graphProgressBar);
         this.progressbar.setPlots(graphGenerator.plots);
+//        plot_length = graphGenerator.plots.get(0).x.size();
         plot_length = graphGenerator.plots.get(0).x.size();
+        Log.d("MAIN","PLOT LENGTH:" + plot_length);
+        Log.d("MAIN","PLOT COUNT:" + graphGenerator.plots.size());
         lc.setLineChartListener(new LineChart.LineChartListener() {
             @Override
             public void onDidInit() {
