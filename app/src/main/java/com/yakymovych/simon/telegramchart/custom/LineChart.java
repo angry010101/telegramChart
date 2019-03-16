@@ -63,7 +63,6 @@ public class LineChart extends View {
         this.start = start;
         this.end = end;
         removeStartEnd();
-        this.invalidate();
     }
 
     public void setEnd(int end) {

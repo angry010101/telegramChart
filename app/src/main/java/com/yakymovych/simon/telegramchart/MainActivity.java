@@ -13,6 +13,7 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart;
+import com.yakymovych.simon.telegramchart.custom.LineChartView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     TextView tv;
-    LineChart lc;
+    //LineChart lc;
+    LineChartView lcv;
     int plot_length;
     GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar,sbend;
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        lcv = this.findViewById(R.id.surfaceView);
+
 
         ChartData chartData = graphGenerator.fromJson(this);
 
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         //p.x = x;
 
         //chartData
-        lc = this.findViewById(R.id.chart);
+        //lc = this.findViewById(R.id.chart);
 
         graphGenerator.add(p);
         graphGenerator.add(p1);
@@ -76,36 +81,38 @@ public class MainActivity extends AppCompatActivity {
         plot_length = graphGenerator.plots.get(0).x.size();
         Log.d("MAIN","PLOT LENGTH:" + plot_length);
         Log.d("MAIN","PLOT COUNT:" + graphGenerator.plots.size());
-        lc.setLineChartListener(new LineChart.LineChartListener() {
+
+
+        lcv.setLineChartListener(new LineChart.LineChartListener() {
             @Override
             public void onDidInit() {
-                lc.setStartAndEnd(0,plot_length);
-                lc.setPlots(graphGenerator.plots);
+                lcv.setStartAndEnd(0,plot_length);
+                lcv.setPlots(graphGenerator.plots);
             }
         });
 
-        progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
-            @Override
-            public void onStartProgressChanged(View v, int p1, int p2, int offset) {
-                lc.setStart((int)(((double)(p1)/100) * plot_length));
-            }
-
-            @Override
-            public void onEndProgressChanged(View v, int p1, int p2, int offset) {
-                lc.setEnd((int)(((double)(p2)/100) * plot_length));
-            }
-
-            @Override
-            public void onOffsetProgressChanged(View v, int p1, int p2, int offset) {
-                try{
-                    lc.setStartAndEnd((int)(((double)(p1)/100) * (plot_length-1)),
-                            (int)(((double)(p2)/100) * plot_length));
-                }
-                catch (Exception e ){
-                    Log.d("ERROR","FATAL ERROR");
-                }
-            }
-        });
+//        progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
+//            @Override
+//            public void onStartProgressChanged(View v, int p1, int p2, int offset) {
+//                lc.setStart((int)(((double)(p1)/100) * plot_length));
+//            }
+//
+//            @Override
+//            public void onEndProgressChanged(View v, int p1, int p2, int offset) {
+//                lc.setEnd((int)(((double)(p2)/100) * plot_length));
+//            }
+//
+//            @Override
+//            public void onOffsetProgressChanged(View v, int p1, int p2, int offset) {
+//                try{
+//                    lc.setStartAndEnd((int)(((double)(p1)/100) * (plot_length-1)),
+//                            (int)(((double)(p2)/100) * plot_length));
+//                }
+//                catch (Exception e ){
+//                    Log.d("ERROR","FATAL ERROR");
+//                }
+//            }
+//        });
 
     }
 
