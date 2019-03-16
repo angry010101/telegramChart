@@ -83,7 +83,6 @@ public class GraphProgressBar extends View {
         this.height= this.getHeight();
         mp = new MathPlot(width,height,topMargin);
         this.invalidate();
-
     }
 
     private void init(){
@@ -279,8 +278,9 @@ public class GraphProgressBar extends View {
     }
 
     private void drawBackground(Canvas canvas) {
-
-        mp.drawCharts(plots,canvas,paint);
+        mp.setPlots(plots);
+        mp.setStartAndEnd(0,plots.get(0).x.size());
+        mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,grayPaint);
     }
 

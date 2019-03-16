@@ -23,6 +23,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     TextView tv;
     LineChart lc;
+    int plot_length;
     GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar,sbend;
     @Override
@@ -41,40 +42,38 @@ public class MainActivity extends AppCompatActivity {
 
         //chartData
         lc = this.findViewById(R.id.chart);
-        Plot p = new Plot();
-        p.x = lc.x;
-        p.y = lc.y;
-        p.prx = lc.prx;
-        p.pry = lc.pry;
-        p.start = lc.start;
-        p.end = lc.end;
 
         graphGenerator.generate(10);
-        graphGenerator.generate(100);
+        graphGenerator.generate(10);
 
-
-        ArrayList<Plot> pl = new ArrayList<>();
-        pl.add(p);
 
         progressbar = this.findViewById(R.id.graphProgressBar);
         this.progressbar.setPlots(graphGenerator.plots);
+        plot_length = graphGenerator.plots.get(0).x.size();
+        lc.setLineChartListener(new LineChart.LineChartListener() {
+            @Override
+            public void onDidInit() {
+                lc.setStartAndEnd(0,plot_length);
+                lc.setPlots(graphGenerator.plots);
+            }
+        });
 
         progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
             @Override
             public void onStartProgressChanged(View v, int p1, int p2, int offset) {
-                lc.setStart((int)(((double)(p1)/100) * (lc.x.size()-1)));
+                lc.setStart((int)(((double)(p1)/100) * plot_length));
             }
 
             @Override
             public void onEndProgressChanged(View v, int p1, int p2, int offset) {
-                lc.setEnd((int)(((double)(p2)/100) * lc.x.size()));
+                lc.setEnd((int)(((double)(p2)/100) * plot_length));
             }
 
             @Override
             public void onOffsetProgressChanged(View v, int p1, int p2, int offset) {
                 try{
-                    lc.setStart((int)(((double)(p1)/100) * (lc.x.size()-1)));
-                    lc.setEnd((int)(((double)(p2)/100) * lc.x.size()));
+                    lc.setStartAndEnd((int)(((double)(p1)/100) * (plot_length-1)),
+                            (int)(((double)(p2)/100) * plot_length));
                 }
                 catch (Exception e ){
                     Log.d("ERROR","FATAL ERROR");

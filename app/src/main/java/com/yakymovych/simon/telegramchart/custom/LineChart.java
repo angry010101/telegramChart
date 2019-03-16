@@ -10,15 +10,20 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+
+import com.yakymovych.simon.telegramchart.Model.local.Plot;
+import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class LineChart extends View {
     public List<Integer> x,px,prx;
     public List<Double> y,py,pry;
-    public int start,end;
+    private int start,end;
+    private MathPlot mp;
+    public List<Plot> plots;
     private int dividersCount = 6;
     private int y_threshold = 5;
     private final int y_stats_offset=100;
@@ -27,6 +32,20 @@ public class LineChart extends View {
     private final int intersection_radius = 10;
     private int stats_x_position = 0;
     private double stats_y_intersection = 0;
+    private int width;
+    private int height;
+    LineChartListener lineChartListener;
+    private int topMargin = 8;
+
+    public void setLineChartListener(LineChartListener lineChartListener) {
+        this.lineChartListener = lineChartListener;
+    }
+
+    public void setPlots(List<Plot> plots) {
+        this.plots = plots;
+        mp.setPlots(plots);
+        this.invalidate();
+    }
 
     public void setDividersCount(int dividersCount) {
         this.dividersCount = dividersCount;
@@ -42,6 +61,13 @@ public class LineChart extends View {
         this.invalidate();
     }
 
+    public void setStartAndEnd(int start,int end) {
+        this.start = start;
+        this.end = end;
+        removeStartEnd();
+        this.invalidate();
+    }
+
     public void setEnd(int end) {
         this.end = end;
 
@@ -53,20 +79,13 @@ public class LineChart extends View {
     private void removeStartEnd(){
         int start = this.start;
         int end = this.end;
-        prx = x.subList(start,end);
-        pry = y.subList(start,end);
-
-        //        prx = new ArrayList<>(x);
-//        pry = new ArrayList<>(y);
-//        Log.d("SIZE: ",prx.size() + "");
-//        for (int i =0;i<start-1;i++){
-//            prx.remove(0);
-//            pry.remove(0);
+//        for (Plot p : plots){
+//            prx = x.subList(start,end);
+//            pry = y.subList(start,end);
 //        }
-//        for (int i =prx.size()-1;i>end;i--){
-//            prx.remove(i);
-//            pry.remove(i);
-//        }
+//        mp.setPlots(plots);
+        mp.setStartAndEnd(start,end);
+        this.invalidate();
     }
     public LineChart(Context context) {
         super(context);
@@ -83,28 +102,33 @@ public class LineChart extends View {
         init();
     }
 
-    private double f(int x){
-        return Math.random()*10+10;
+
+    private void initSizes(){
+        this.width = this.getWidth();
+        this.height = this.getHeight();
+        mp = new MathPlot(width,height,topMargin);
+        if (lineChartListener != null){
+            lineChartListener.onDidInit();
+        }
+        this.invalidate();
     }
+
     private void init(){
-        x = new ArrayList<Integer>();
+        x = new ArrayList<>();
 
         y = new ArrayList<>();
-        for (int i =0;i<100;i++){
-            x.add(i);
-            y.add(f(i));
-        }
-        prx = new ArrayList<>(x);
-        pry = new ArrayList<>(y);
+
         start=0;
         end=x.size();
 
 
+        this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                initSizes();
+            }
+        });
 
-        xmin = Collections.min(prx);
-        xmax = Collections.max(prx);
-        ymin = Collections.min(pry);
-        ymax = Collections.max(pry);
     }
 
 
@@ -137,7 +161,7 @@ public class LineChart extends View {
                     y_threshold = (int)(((ymax-ymin)/2)*(y_real_threshold));
                     int w = this.getWidth();
                     double t = ((double)((end-start))/this.getWidth());
-                    int nearest = findNearestFor((int)(x*t));
+                    int nearest = mp.findNearestFor(plots.get(0),(int)(x*t));
                     stats_x = (int) (nearest*w/(end-start-1));
 
                     stats_x_position = nearest;
@@ -170,11 +194,6 @@ public class LineChart extends View {
         //return super.onTouchEvent(event);
     }
 
-    private int findNearestFor(int x) {
-        //List<Integer> prcx = this.x.subList(start,end);
-        Log.d("VIEW: ","START: " +start + " END: " +end+ "CURR: " + this.x.indexOf(x));
-        return this.x.indexOf(x); //+start;
-    }
 
     int xmin,xmax;
     double ymin,ymax;
@@ -191,32 +210,11 @@ public class LineChart extends View {
         rect.bottom = getHeight();
 
 
-
-        px = new ArrayList<Integer>();
-        py = new ArrayList<>();
-
-
-
-        xmin = Collections.min(prx);
-        xmax = Collections.max(prx);
-        ymin = Collections.min(pry);
-        ymax = Collections.max(pry);
-
         y_threshold = (int)((ymax-ymin)/2);
-        int h = this.getHeight();
-        double kx = (double)(this.getWidth())/(xmax-xmin);
-        double ky = (double)(this.getHeight())/(ymax-ymin);
-        for (int xi : prx){
-            px.add((int)((xi-xmin)*kx));
-        }
-        for (Double yi : pry){
-
-            py.add((h-((yi-ymin))*ky));
-        }
-        for (int i=0;i<prx.size()-1;i++ ){
-            canvas.drawLine(px.get(i),py.get(i).intValue(),px.get(i+1),py.get(i+1).intValue(),paint);
-            //canvas.drawText("x: " + x.get(i) + " y: " + y.get(i),15+ px.get(i),py.get(i),paint);
-        }
+        //FIX IT
+        mp.setPlots(plots);
+        mp.setStartAndEnd(start,end);
+        mp.drawCharts(canvas,paint);
 
         this.drawXAsis(canvas,paint);
         this.drawYAsis(canvas,paint);
@@ -261,5 +259,9 @@ public class LineChart extends View {
 
     private void drawYAsis(Canvas canvas,Paint paint) {
         canvas.drawLine(0,0,0,this.getHeight(),paint);
+    }
+
+    public interface LineChartListener{
+        void onDidInit();
     }
 }

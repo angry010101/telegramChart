@@ -34,7 +34,6 @@ public class GraphGenerator {
         }
         p.x = x;
         p.y = y;
-        p.end=x.size();
         p.color = generateColor();
         plots.add(p);
     }
