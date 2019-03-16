@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MAIN","" + chartData.columns.get(0));
         List<Object> l = chartData.columns.get(0);
         List<Long> x =  (List<Long>)(Object)l.subList(1,l.size());
+
         Log.d("MAIN","CASTED: " + x);
 
 

@@ -33,7 +33,7 @@ public class GraphProgressBar extends View {
 
     int offsetProgressPx = 200;
     int offsetProgressElems = 20;
-    int minOffsetElems = 3;
+    int minOffsetElems = 6;
     boolean isChangingOffset = false;
     private int progressStartPx =0;
     private int progressEndPx =offsetProgressElems;
@@ -47,7 +47,7 @@ public class GraphProgressBar extends View {
     }
 
     public int getProgressEndPx() {
-        return ((int)((((((double)(progressEnd))/100))*this.getWidth())));
+        return ((int)((((((double)(progressEnd))/100))*this.getWidth()))) - borderWidth;
     }
 
     private ProgressChangedListener progressChangedListener = null;
@@ -173,7 +173,7 @@ public class GraphProgressBar extends View {
             progress = 0;
         }
         else {
-            if (d >= progressEnd) {
+            if (d >= progressEnd-minOffsetElems) {
                 progress = progressEnd-minOffsetElems;
             }
             else progress = d;
@@ -241,7 +241,7 @@ public class GraphProgressBar extends View {
             progressEnd = 100;
         }
         else {
-            if (progressEnd+d < progress) {
+            if (progressEnd+d < progress+minOffsetElems) {
                 progressEnd = progress+minOffsetElems;
             }
             else progressEnd += d;
@@ -292,12 +292,12 @@ public class GraphProgressBar extends View {
         canvas.drawRect(0,0,p,height,grayPaint);
         canvas.drawRect(e,0,width,height,grayPaint);
 
-        canvas.drawRect(p+borderWidth,0,e-borderWidth,sliderTopBorder,bluePaint);
-        canvas.drawRect(p+borderWidth,height-sliderTopBorder,e-borderWidth,height,bluePaint);
+        canvas.drawRect(p+borderWidth,0,e,sliderTopBorder,bluePaint);
+        canvas.drawRect(p+borderWidth,height-sliderTopBorder,e,height,bluePaint);
 
 
         canvas.drawRect(p,0,p+borderWidth,height,bluePaint);
-        canvas.drawRect(e-borderWidth,0,e,height,bluePaint);
+        canvas.drawRect(e,0,e+borderWidth,height,bluePaint);
     }
 
     public interface ProgressChangedListener{
