@@ -1,5 +1,6 @@
 package com.yakymovych.simon.telegramchart.Utils;
 
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class MathPlot {
     private final int offsetTop;
     public static Long inf = Long.MAX_VALUE;
+    public float e = 0.0001F ;
     private long xmax,xmin;
     public int start,end;
     private double ymax,ymin;
@@ -158,7 +160,7 @@ public class MathPlot {
     }
 
     public void drawCharts(Canvas canvas, Paint paint) {
-        calcGlobals();
+        //calcGlobals();
 
         for (int i : visiblePlots){
             Plot p = plots.get(i);
@@ -188,4 +190,18 @@ public class MathPlot {
         yMinLimit = ymin;
         yMaxLimit = ymax;
     }
+
+    public void rescale(double ymina, double ymaxa) {
+        yMinLimit = ymina;
+        yMaxLimit = ymaxa;
+    }
+
+
+    public void rescaleMin(double ymina) {
+        yMinLimit = ymina;
+    }
+    public void rescaleMax(double ymaxa) {
+        yMaxLimit = ymaxa;
+    }
+
 }
