@@ -18,7 +18,7 @@ import java.util.Random;
 public class GraphGenerator {
     public List<Plot> plots = new ArrayList<Plot>();
     private double f(long x,int p){
-        return Math.random()*10+10*p;
+        return (Math.random()*10)*((Math.random()-0.5) /(Math.abs(Math.random()-0.5)) )+10*p;
     }
 
 
@@ -49,21 +49,22 @@ public class GraphGenerator {
     }
 
     public String generateColor(){
-        Random randomGenerator = new Random();
-        int low = 0;
-        int high = 16777215;
-        int value = randomGenerator.nextInt(high-low) + low;
-        String hex = Integer.toHexString(value);
-        Log.d("GRAPHGENERATOR","COLOR: " + hex);
-        return hex;
+            // create random object - reuse this as often as possible
+            Random random = new Random();
+
+            // create a big random number - maximum is ffffff (hex) = 16777215 (dez)
+            int nextInt = random.nextInt(0xaaaaaa + 1);
+
+            // format it as hexadecimal string (with hashtag and leading zeros)
+            return String.format("%06x", nextInt);
     }
-    public void generate(int p1){
+    public void generate(int p1, int i1){
         Plot p = new Plot();
         List<Long> x = new ArrayList<Long>();
         List<Double> y = new ArrayList<>();
         for (long i =0;i<100;i++){
             x.add(i);
-            y.add(f(i,p1));
+            y.add(i1 * f(i,p1));
         }
         p.x = x;
         p.y = y;

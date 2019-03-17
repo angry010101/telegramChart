@@ -9,7 +9,9 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MathPlot {
     private final int offsetTop;
@@ -22,6 +24,11 @@ public class MathPlot {
     private double yMaxLimit;
     private double yMinLimit;
 
+    private Set<Integer> visiblePlots = new HashSet<Integer>();
+
+    public void setVisiblePlots(Set<Integer> visiblePlots) {
+        this.visiblePlots = visiblePlots;
+    }
 
     public void setyMaxLimit(double yMaxLimit) {
         Log.d("MATHPLOT","set y limit: " + yMaxLimit);
@@ -34,6 +41,7 @@ public class MathPlot {
     }
     public void setPlots(List<Plot> plots) {
         if (yMaxLimit ==0) yMaxLimit = ymax;
+        if (yMinLimit ==0) yMinLimit= ymin;
         this.plots = plots;
         //this.calcMaxGlobalY();
     }
@@ -46,14 +54,16 @@ public class MathPlot {
     void calcMaxGlobalX(){
         xmax = 0;
         if (plots.isEmpty()) return;
-        for (Plot p : plots){
+        for (int i : visiblePlots){
+            Plot p = plots.get(i);
             xmax = Math.max(xmax,Collections.max(p.x.subList(start,end)));
         }
     }
     void calcMinGlobalX(){
         xmin = inf;
         if (plots.isEmpty()) return;
-        for (Plot p : plots){
+        for (int i : visiblePlots){
+            Plot p = plots.get(i);
             xmin = Math.min(xmin,Collections.min(p.x.subList(start,end)));
         }
     }
@@ -61,7 +71,8 @@ public class MathPlot {
     void calcMaxGlobalY(){
         ymax = 0;
         if (plots.isEmpty()) return;
-        for (Plot p : plots){
+        for (int i : visiblePlots){
+            Plot p = plots.get(i);
             ymax = Math.max(ymax,Collections.max(p.y.subList(start,end)));
         }
     }
@@ -69,7 +80,8 @@ public class MathPlot {
     void calcMinGlobalY(){
         ymin = inf;
         if (plots.isEmpty()) return;
-        for (Plot p : plots){
+        for (int i : visiblePlots){
+            Plot p = plots.get(i);
             ymin = Math.min(ymin,Collections.min(p.y.subList(start,end)));
         }
     }
@@ -106,7 +118,7 @@ public class MathPlot {
         //this.calcGlobals();
     }
 
-    void calcGlobals(){
+    public void calcGlobals(){
         calcMaxGlobalX();
         calcMaxGlobalY();
         calcMinGlobalX();
@@ -127,7 +139,7 @@ public class MathPlot {
         Double lmax_y = calcMaxLocalY(p);
 
         double kx = ((double)(w))/(lmax_x-lmin_x);
-        double ky = ((double)(h)/(yMaxLimit -ymin));
+        double ky = ((double)(h)/(yMaxLimit -yMinLimit));
 
 
         Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit);
@@ -135,7 +147,7 @@ public class MathPlot {
             long xi = p.x.get(i);
             double yi = p.y.get(i);
             prx.add((int)((xi-lmin_x)*kx));
-            pry.add((h-((yi-ymin))*ky) + offsetTop);
+            pry.add((h-((yi-yMinLimit))*ky) + offsetTop);
         }
 
         for (int i=0;i<prx.size()-1;i++ ){
@@ -148,7 +160,8 @@ public class MathPlot {
     public void drawCharts(Canvas canvas, Paint paint) {
         calcGlobals();
 
-        for (Plot p : plots){
+        for (int i : visiblePlots){
+            Plot p = plots.get(i);
             paint.setColor(Color.parseColor("#"+p.color));
             drawChart(p,canvas,paint);
         }
@@ -169,5 +182,10 @@ public class MathPlot {
 
     public void setyMinLimit(double ymn) {
         this.yMinLimit = ymn;
+    }
+
+    public void setLimits() {
+        yMinLimit = ymin;
+        yMaxLimit = ymax;
     }
 }

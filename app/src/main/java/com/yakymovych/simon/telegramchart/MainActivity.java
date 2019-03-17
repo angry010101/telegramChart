@@ -4,22 +4,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.yakymovych.simon.telegramchart.Model.ChartData;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +39,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    graphGenerator.generate(15);
-                    lc.startAnim(graphGenerator.plots.get(1));
+                    graphGenerator.generate(0,8);
+                    lc.setPlots(graphGenerator.plots);
+                    lc.startAnimShow(1);
                 }
                 else {
-                    graphGenerator.plots.remove(1);
-                    Log.d("MAIN","PLOTS COUNT: " + graphGenerator.plots.size());
-                    lc.setPlots(new ArrayList());
-                    lc.startAnim(graphGenerator.plots.get(0));
+                    lc.startAnimHide(1);
                 }
             }
         });
@@ -97,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         //graphGenerator.add(p);
 
         //graphGenerator.add(p1);
-        graphGenerator.generate(10);
+        graphGenerator.generate(10, 2);
 
         //graphGenerator.generate(11);
         //graphGenerator.generate(12);

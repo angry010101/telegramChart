@@ -18,7 +18,9 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LineChart extends View {
     private int start,end;
@@ -34,24 +36,57 @@ public class LineChart extends View {
     private double stats_y_intersection = 0;
     private int width;
     private int height;
+    private HashSet<Integer> visiblePlots = new HashSet<>();
+
+    public void setVisiblePlots(HashSet<Integer> visiblePlots) {
+        this.visiblePlots = visiblePlots;
+        mp.setVisiblePlots(visiblePlots);
+    }
+
     LineChartListener lineChartListener;
     private int topMargin = 20;
 
     ValueAnimator animator;
 
 
-    public void startAnim(Plot p1){
-        this.plots.add(p1);
-        mp.setPlots(this.plots);
+    public void startAnimShow(int pos){
+        Plot p1 = this.plots.get(pos);
+        this.setVisiblePlot(pos,true);
+        //this.plots.add(p1);
+        //mp.setPlots(this.plots);
+        PropertyValuesHolder pvhX=null;
+        PropertyValuesHolder pvhY=null;
+        float lcmaxy = Collections.max(p1.y.subList(mp.start,mp.end)).floatValue();
+
+        if (lcmaxy > mp.getYMax())
+            pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX",mp.getYMax(), lcmaxy);
+//
+        float lcminy = Collections.min(p1.y.subList(mp.start,mp.end)).floatValue();
+        if (lcminy < mp.getYMin())
+            pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",mp.getYMin(),lcminy);
 
 
-        PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX",mp.getYMax(),
-                Collections.max(p1.y).floatValue());
-        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",mp.getYMin(),
-                Collections.min(p1.y).floatValue());
+        if (pvhX != null){
+            if (pvhY !=null){
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
+                        .setDuration(1000);
+            }
+            else {
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhX)
+                        .setDuration(1000);
+            }
+        }
+        else {
+            if (pvhY !=null){
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhY)
+                        .setDuration(1000);
+            }
+            else {
+                animator = ValueAnimator.ofPropertyValuesHolder()
+                        .setDuration(1000);
+            }
+        }
 
-        animator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
-                .setDuration(1000);
 
 //        animator = ValueAnimator.ofFloat(mp.getYMax(),
 //                Collections.max(p1.y).floatValue())
@@ -64,6 +99,13 @@ public class LineChart extends View {
         });
         animator.start();
     }
+
+    private void setVisiblePlot(int pos, boolean b) {
+        if (b) visiblePlots.add(pos);
+        else  visiblePlots.remove(pos);
+        mp.setVisiblePlots(visiblePlots);
+    }
+
     public void setLineChartListener(LineChartListener lineChartListener) {
         this.lineChartListener = lineChartListener;
     }
@@ -71,6 +113,7 @@ public class LineChart extends View {
     public void setPlots(List<Plot> plots) {
         this.plots = plots;
         mp.setPlots(plots);
+        this.setVisiblePlot(0,true);
         this.invalidate();
     }
 
@@ -112,6 +155,8 @@ public class LineChart extends View {
 //        }
 //        mp.setPlots(plots);
         mp.setStartAndEnd(start,end);
+        mp.calcGlobals();
+        mp.setLimits();
         this.invalidate();
     }
     public LineChart(Context context) {
@@ -155,11 +200,13 @@ public class LineChart extends View {
     }
 
     private void beginAnimation(ValueAnimator animation) {
-        float ymx = (Float) animation.getAnimatedValue("TRANSLATION_YMAX");
-        float ymn = (Float) animation.getAnimatedValue("TRANSLATION_YMIN");
+        Float ymx = (Float) animation.getAnimatedValue("TRANSLATION_YMAX");
+        Float ymn = (Float) animation.getAnimatedValue("TRANSLATION_YMIN");
         //        this.mp.setyMaxLimit(((Float)animation.getAnimatedValue()).doubleValue());
-        this.mp.setyMaxLimit(ymx);
-        this.mp.setyMinLimit(ymn);
+        if (ymx!=null)
+            this.mp.setyMaxLimit(ymx);
+        if (ymn!=null)
+            this.mp.setyMinLimit(ymn);
         Log.d("ANIMATION","UPDATING" + (Float)animation.getAnimatedValue());
         this.invalidate();
     }
@@ -296,6 +343,57 @@ public class LineChart extends View {
 
     private void drawYAsis(Canvas canvas,Paint paint) {
         canvas.drawLine(0,0,0,this.getHeight(),paint);
+    }
+
+    public void startAnimHide(int pos) {
+        Plot p1 = plots.get(pos);
+        setVisiblePlot(pos,false);
+        Log.d("LINECHART","PLOTS COUNT" + plots.size());
+        mp.calcGlobals();
+        PropertyValuesHolder pvhX=null;
+        PropertyValuesHolder pvhY=null;
+        float lcmaxy = Collections.max(p1.y.subList(mp.start,mp.end)).floatValue();
+
+        if (lcmaxy > mp.getYMax())
+            pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX", lcmaxy,mp.getYMax());
+//
+        float lcminy = Collections.min(p1.y.subList(mp.start,mp.end)).floatValue();
+        if (lcminy < mp.getYMin())
+            pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",lcminy,mp.getYMin());
+
+
+        if (pvhX != null){
+            if (pvhY !=null){
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
+                        .setDuration(1000);
+            }
+            else {
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhX)
+                        .setDuration(1000);
+            }
+        }
+        else {
+            if (pvhY !=null){
+                animator = ValueAnimator.ofPropertyValuesHolder(pvhY)
+                        .setDuration(1000);
+            }
+            else {
+                animator = ValueAnimator.ofPropertyValuesHolder()
+                        .setDuration(1000);
+            }
+        }
+
+
+//        animator = ValueAnimator.ofFloat(mp.getYMax(),
+//                Collections.max(p1.y).floatValue())
+//                .setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                beginAnimation(animation);
+            }
+        });
+        animator.start();
     }
 
     public interface LineChartListener{
