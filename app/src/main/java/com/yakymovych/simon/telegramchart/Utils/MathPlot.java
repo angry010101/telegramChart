@@ -19,16 +19,23 @@ public class MathPlot {
     private double ymax,ymin;
     private List<Plot> plots = new ArrayList<>();
     private int w,h;
+    private double yMaxLimit;
+    private double yMinLimit;
 
+
+    public void setyMaxLimit(double yMaxLimit) {
+        Log.d("MATHPLOT","set y limit: " + yMaxLimit);
+        this.yMaxLimit = yMaxLimit;
+    }
 
     public int findNearestFor(Plot p, int x) {
         //List<Integer> prcx = this.x.subList(start,end);
         return p.x.indexOf(x);
     }
     public void setPlots(List<Plot> plots) {
+        if (yMaxLimit ==0) yMaxLimit = ymax;
         this.plots = plots;
-        Log.d("SETTING PLOTS","PLOTS: " + plots.toString());
-        Log.d("SETTING PLOTS","SIZE: " + plots.get(0).x.size());
+        //this.calcMaxGlobalY();
     }
 
     public MathPlot(int w, int h, int offsetTop){
@@ -120,9 +127,10 @@ public class MathPlot {
         Double lmax_y = calcMaxLocalY(p);
 
         double kx = ((double)(w))/(lmax_x-lmin_x);
-        double ky = ((double)(h)/(ymax-ymin));
+        double ky = ((double)(h)/(yMaxLimit -ymin));
 
-        Log.d("MATHPLOT","PRX SIZE : " + prx.size());
+
+        Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit);
         for (int i=start;i<end;i++){
             long xi = p.x.get(i);
             double yi = p.y.get(i);
@@ -144,5 +152,22 @@ public class MathPlot {
             paint.setColor(Color.parseColor("#"+p.color));
             drawChart(p,canvas,paint);
         }
+    }
+
+    public float getYMax() {
+        return (float)this.ymax;
+    }
+
+    public float getYMin() {
+        return (float)this.ymin;
+    }
+
+
+    public void setHeight(Float h) {
+        ymax = h;
+    }
+
+    public void setyMinLimit(double ymn) {
+        this.yMinLimit = ymn;
     }
 }

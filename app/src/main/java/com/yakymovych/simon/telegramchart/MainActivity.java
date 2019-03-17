@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -24,14 +27,42 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     LineChart lc;
     int plot_length;
+    CheckBox joined,left;
     GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar,sbend;
+    Plot p1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ChartData chartData = graphGenerator.fromJson(this);
+
+        joined = this.findViewById(R.id.joined);
+        left = this.findViewById(R.id.left);
+
+        joined.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    graphGenerator.generate(15);
+                    lc.startAnim(graphGenerator.plots.get(1));
+                }
+                else {
+                    graphGenerator.plots.remove(1);
+                    Log.d("MAIN","PLOTS COUNT: " + graphGenerator.plots.size());
+                    lc.setPlots(new ArrayList());
+                    lc.startAnim(graphGenerator.plots.get(0));
+                }
+            }
+        });
+
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         Log.d("MAIN","" + chartData.columns.get(0));
         List<Object> l = chartData.columns.get(0);
@@ -54,17 +85,20 @@ public class MainActivity extends AppCompatActivity {
         p.x =  x;
         p.y = y0_d;
         p.color = graphGenerator.generateColor();
-        Plot p1 = new Plot();
+        p1 = new Plot();
         p1.y = y1_d;
         p1.color = graphGenerator.generateColor();
         //p.x = x;
 
         //chartData
         lc = this.findViewById(R.id.chart);
+        lc = this.findViewById(R.id.chart);
 
-        graphGenerator.add(p);
-        graphGenerator.add(p1);
-        //graphGenerator.generate(10);
+        //graphGenerator.add(p);
+
+        //graphGenerator.add(p1);
+        graphGenerator.generate(10);
+
         //graphGenerator.generate(11);
         //graphGenerator.generate(12);
         //graphGenerator.generate(13);

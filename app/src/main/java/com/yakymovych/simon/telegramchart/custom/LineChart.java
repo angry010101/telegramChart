@@ -1,5 +1,7 @@
 package com.yakymovych.simon.telegramchart.custom;
 
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,13 +17,13 @@ import android.view.ViewTreeObserver;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LineChart extends View {
     private int start,end;
     private MathPlot mp;
-    public List<Plot> plots;
+    private List<Plot> plots;
     private int dividersCount = 6;
     private int y_threshold = 5;
     private final int y_stats_offset=100;
@@ -35,6 +37,33 @@ public class LineChart extends View {
     LineChartListener lineChartListener;
     private int topMargin = 20;
 
+    ValueAnimator animator;
+
+
+    public void startAnim(Plot p1){
+        this.plots.add(p1);
+        mp.setPlots(this.plots);
+
+
+        PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX",mp.getYMax(),
+                Collections.max(p1.y).floatValue());
+        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",mp.getYMin(),
+                Collections.min(p1.y).floatValue());
+
+        animator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
+                .setDuration(1000);
+
+//        animator = ValueAnimator.ofFloat(mp.getYMax(),
+//                Collections.max(p1.y).floatValue())
+//                .setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                beginAnimation(animation);
+            }
+        });
+        animator.start();
+    }
     public void setLineChartListener(LineChartListener lineChartListener) {
         this.lineChartListener = lineChartListener;
     }
@@ -113,6 +142,9 @@ public class LineChart extends View {
 
     private void init(){
 
+
+
+
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -122,6 +154,15 @@ public class LineChart extends View {
 
     }
 
+    private void beginAnimation(ValueAnimator animation) {
+        float ymx = (Float) animation.getAnimatedValue("TRANSLATION_YMAX");
+        float ymn = (Float) animation.getAnimatedValue("TRANSLATION_YMIN");
+        //        this.mp.setyMaxLimit(((Float)animation.getAnimatedValue()).doubleValue());
+        this.mp.setyMaxLimit(ymx);
+        this.mp.setyMinLimit(ymn);
+        Log.d("ANIMATION","UPDATING" + (Float)animation.getAnimatedValue());
+        this.invalidate();
+    }
 
 
     private boolean isFingerDown = false;
