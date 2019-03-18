@@ -12,7 +12,7 @@ import com.yakymovych.simon.telegramchart.Model.ChartData;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
-import com.yakymovych.simon.telegramchart.custom.LineChart;
+import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
 
 import java.util.ArrayList;
 import java.util.HashSet;

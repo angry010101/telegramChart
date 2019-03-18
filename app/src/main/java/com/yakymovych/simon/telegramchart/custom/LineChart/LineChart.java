@@ -1,4 +1,4 @@
-package com.yakymovych.simon.telegramchart.custom;
+package com.yakymovych.simon.telegramchart.custom.LineChart;
 
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;

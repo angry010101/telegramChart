@@ -2,9 +2,8 @@ package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
 import android.view.MotionEvent;
 
-import com.yakymovych.simon.telegramchart.Utils.ViewPort.BaseViewPortUtils;
 
-public class ProgressBarViewPort extends BaseViewPortUtils {
+public class ProgressBarViewPort {
     int startpos,endpos;
     boolean isChangingStart = false;
     boolean isChangingEnd = false;
