@@ -166,13 +166,19 @@ public class LineChart extends View {
     }
 
     private void animateHeight() {
-        if (heightAnimator != null && heightAnimator.isRunning()){
+        if (heightAnimator != null && heightAnimator.isRunning()  ){
             //heightAnimator.pause();
             //return;
            // Log.d("HEIGHT","PAUSED" );
         }
-        float lcmaxy = mp.getYMax();
-        float lcminy = mp.getYMin();
+        else {
+
+        }
+  //      float lcmaxy = mp.getYMax();
+   //     float lcminy = mp.getYMin();
+        float lcmaxy = (float) mp.getyMaxLimit();
+        float lcminy = (float) mp.getyMinLimit();
+
         mp.calcGlobals();
         PropertyValuesHolder pvhX = null;
         PropertyValuesHolder pvhY = null;
@@ -188,25 +194,22 @@ public class LineChart extends View {
 
         if (pvhX != null){
             if (pvhY !=null){
-                heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
-                        .setDuration(1000);
+                heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY);
             }
             else {
-                heightAnimator= ValueAnimator.ofPropertyValuesHolder(pvhX)
-                        .setDuration(1000);
+                heightAnimator= ValueAnimator.ofPropertyValuesHolder(pvhX);
             }
         }
         else {
             if (pvhY !=null){
-                heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY)
-                        .setDuration(1000);
+                heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
-                heightAnimator = ValueAnimator.ofPropertyValuesHolder()
-                        .setDuration(1000);
+                heightAnimator = ValueAnimator.ofPropertyValuesHolder();
             }
         }
 
+        heightAnimator.setDuration(500);
         heightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -300,8 +303,8 @@ public class LineChart extends View {
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
         Log.d("VIEW: ","TOUCH");
-        int x = (int) event.getX();
-        int y = (int) event.getX();
+        long x = (long) event.getX();
+        double y = event.getX();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 isFingerDown = true;
@@ -318,18 +321,15 @@ public class LineChart extends View {
                     int w = this.getWidth();
                     double t = ((double)((end-start))/this.getWidth());
 
-                    int nearest = mp.findNearestFor(plots.get(0),(int)(x*t));
+                    Log.d("VIEW: ","NEAREST: " + x + " " + t);
 
+                    int nearest = mp.findNearestFor(plots.get(0),(long)(x*t));
                     stats_x = (int) (nearest*w/(end-start-1));
                     stats_x_position = nearest;
                     stats_y = y_stats_offset;
                     drawToTop = false;
 
-
-                    //TODO pry is obsolete there is no calculations
-                    //but buggy behavior
-                    //statictics doesn't include y posittion
-
+                    Log.d("VIEW: ","NEAREST: " + nearest);
                     double y_intersection = this.plots.get(0).y.get(nearest);
 
                     Log.d("VIEW: ","HAPPENED: " + y_intersection + " max: " + ymax);

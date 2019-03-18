@@ -37,9 +37,10 @@ public class MathPlot {
         this.yMaxLimit = yMaxLimit;
     }
 
-    public int findNearestFor(Plot p, int x) {
-        //List<Integer> prcx = this.x.subList(start,end);
-        return p.x.indexOf(x);
+    public int findNearestFor(Plot p, long x) {
+        List<Long> prcx = p.x.subList(start,end);
+        Log.d("SEARCH", "prcx " + prcx.toString() + " \nx = " + x + " zero: " + prcx.get(0));
+        return prcx.indexOf(x+prcx.get(0));
     }
     public void setPlots(List<Plot> plots) {
         if (yMaxLimit ==0) yMaxLimit = ymax;
@@ -196,6 +197,13 @@ public class MathPlot {
         yMaxLimit = ymaxa;
     }
 
+    public double getyMaxLimit() {
+        return yMaxLimit;
+    }
+
+    public double getyMinLimit() {
+        return yMinLimit;
+    }
 
     public void rescaleMin(double ymina) {
         yMinLimit = ymina;

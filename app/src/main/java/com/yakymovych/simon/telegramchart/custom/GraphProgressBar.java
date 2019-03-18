@@ -16,7 +16,9 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GraphProgressBar extends View {
     private MathPlot mp ;
@@ -281,6 +283,11 @@ public class GraphProgressBar extends View {
     private void drawBackground(Canvas canvas) {
         mp.setPlots(plots);
         mp.setStartAndEnd(0,plots.get(0).x.size());
+        Set<Integer> visible_plots =new HashSet<Integer>();
+        visible_plots.add(0);
+        mp.setVisiblePlots(visible_plots);
+
+        mp.calcGlobals();
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,grayPaint);
     }
