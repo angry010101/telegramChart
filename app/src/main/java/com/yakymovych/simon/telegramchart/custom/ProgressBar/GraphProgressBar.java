@@ -2,17 +2,13 @@ package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
-import com.yakymovych.simon.telegramchart.Utils.ViewPort.ProgressBarViewPort;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,26 +19,17 @@ public class GraphProgressBar extends View {
     private MathPlot mp ;
     private List<Plot> plots = new ArrayList<>();
     ProgressBarViewPort viewPort;
-    Paint grayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Paint bluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     ProgressBarDrawManager progressBarDrawManager;
-    int progress=40,progressEnd=80;
-
-    int offsetProgressElems = 20;
+    int progressStart =40,progressEnd=80;
+    private int topMargin = 8;
     int minOffsetElems = 6;
-
     private Set<Integer> visiblePlots =new HashSet<>();
+    private ProgressChangedListener progressChangedListener = null;
 
     public void setVisiblePlots(Set<Integer> visiblePlots) {
         this.visiblePlots = visiblePlots;
     }
 
-    int height,width;
-
-    private int topMargin = 8;
-
-    private ProgressChangedListener progressChangedListener = null;
 
     public void setProgressChangedListener(ProgressChangedListener progressChangedListener) {
         this.progressChangedListener = progressChangedListener;
@@ -68,9 +55,9 @@ public class GraphProgressBar extends View {
     }
 
     private void initSizes(){
-        this.width = this.getWidth();
-        this.height= this.getHeight();
-        this.viewPort = new ProgressBarViewPort(width,height,progress,progressEnd);
+        int width = this.getWidth();
+        int height= this.getHeight();
+        this.viewPort = new ProgressBarViewPort(width,height, progressStart,progressEnd,minOffsetElems);
         this.mp = new MathPlot(width,height,topMargin);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height);
 
@@ -78,29 +65,13 @@ public class GraphProgressBar extends View {
     }
 
     private void init(){
-        paint.setColor(Color.GREEN);
-        paint.setTextSize(30);
-
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 initSizes();
             }
         });
-
-        grayPaint.setColor(Color.GRAY);
-        grayPaint.setAlpha(60);
-        //grayPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-        grayPaint.setAntiAlias(true);
-
-        bluePaint.setColor(Color.BLUE);
-        bluePaint.setAlpha(40);
-        //grayPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-        bluePaint.setAntiAlias(true);
-
-
     }
-
 
 
     @Override
@@ -110,93 +81,67 @@ public class GraphProgressBar extends View {
 
     public void handleStartMovement(int moveTo){
         if (moveTo <= 0) {
-            progress = 0;
+            progressStart = 0;
         }
         else {
             if (moveTo >= progressEnd-minOffsetElems) {
-                progress = progressEnd-minOffsetElems;
+                progressStart = progressEnd-minOffsetElems;
             }
-            else progress = moveTo;
+            else progressStart = moveTo;
         }
 
-        viewPort.setStartpos(progress);
+        viewPort.setStartpos(progressStart);
 
         if (progressChangedListener != null){
             progressChangedListener.onStartProgressChanged(
-                    this,progress, viewPort.getProgressEndPx(progressEnd),
-                    offsetProgressElems);
+                    this, progressStart, viewPort.getProgressEndPx(progressEnd),
+                    1);
         }
-        Log.d("VIEW: ","progress: " + progress);
     }
 
-    public void handleOffsetMovement(MotionEvent event){
-        float x = event.getX();
-
-        int st = viewPort.getProgressStartPx(progress);
-        int end =viewPort.getProgressEndPx(progressEnd);
-
-        boolean direction = x-(st+end)/2 > 0;
-
-
-        if ((end>=this.getWidth())
-                && direction||
-                (st <=0 && !direction))
-            return;
-
-
-        int m = (st+end);
-        int d = (int) ((x-(double)m/2)*(100.0/this.getWidth()));
-
+    public void handleOffsetMovement(int d,boolean direction){
         if (progressEnd+d > 100 && direction) {
             d=100-progressEnd;
         }
         else {
-            if (progress+d<0 && !direction) {
-                d = -progress;
+            if (progressStart +d<0 && !direction) {
+                d = -progressStart;
             }
         }
-
-        progress += d;
+        progressStart += d;
         progressEnd += d;
-
-        viewPort.setStartpos(progress);
+        viewPort.setStartpos(progressStart);
         viewPort.setEndpos(progressEnd);
         if (progressChangedListener != null){
             progressChangedListener.onOffsetProgressChanged(
-                    this,progress, progressEnd,
-                    offsetProgressElems);
+                    this, progressStart, progressEnd,
+                    1);
         }
-
         this.invalidate();
-        Log.d("VIEW: ","delta1: " + d);
-
-        Log.d("VIEW: ","progress: " + progress);
     }
 
     public void handleEndMovement(int moveToProgress){
-
         if (progressEnd+moveToProgress > 100) {
             progressEnd = 100;
         }
         else {
-            if (progressEnd+moveToProgress < progress+minOffsetElems) {
-                progressEnd = progress+minOffsetElems;
+            if (progressEnd+moveToProgress < progressStart +minOffsetElems) {
+                progressEnd = progressStart +minOffsetElems;
             }
             else progressEnd += moveToProgress;
         }
         viewPort.setEndpos(progressEnd);
         if (progressChangedListener != null){
             progressChangedListener.onEndProgressChanged(
-                    this,progress, progressEnd,
-                    offsetProgressElems);
+                    this, progressStart, progressEnd,
+                    1);
         }
-        Log.d("VIEW: ","progress: " + progress);
     }
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         progressBarDrawManager.draw(canvas,plots,visiblePlots,
-                viewPort.getProgressStartPx(progress)
+                viewPort.getProgressStartPx(progressStart)
                 ,viewPort.getProgressEndPx(progressEnd));
     }
 

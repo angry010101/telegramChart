@@ -1,9 +1,9 @@
-package com.yakymovych.simon.telegramchart.Utils.ViewPort;
+package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
+import com.yakymovych.simon.telegramchart.Utils.ViewPort.BaseViewPortUtils;
 
 public class ProgressBarViewPort extends BaseViewPortUtils {
     int startpos,endpos;
@@ -11,6 +11,9 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
     boolean isChangingEnd = false;
     boolean isChangingOffset = false;
     int w,h;
+    int minOffsetPx = 80;
+    private final double unitPerPx;
+    private final double pxPerUnit;
 
 
     public void setStartpos(int startpos) {
@@ -21,19 +24,24 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         this.endpos = this.getProgressEndPx(endpos);
     }
 
+    public void setMinOffsetPx(int minOffsetElements) {
+        this.minOffsetPx = (int) (minOffsetElements * ((double)endpos-startpos)/w);
+    }
+
     int delta = 25;
     int delta_o=50;
 
     int borderWidth = 16;
 
-    public ProgressBarViewPort(int width, int height,int progressLeft,int progressRight) {
+    public ProgressBarViewPort(int width, int height,int progressLeft,int progressRight,int minOffsetElements) {
         super();
         w = width;
         h = height;
-
         startpos = getProgressStartPx(progressLeft);
         endpos = getProgressEndPx(progressRight);
-
+        setMinOffsetPx(minOffsetElements);
+        unitPerPx = 100.0/w;
+        pxPerUnit = ((double)(w)/100.0);
     }
 
 
@@ -70,7 +78,7 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
                     handleEndMovement(view,event);
                 }
                 else if (isChangingOffset){
-                    view.handleOffsetMovement(event);
+                    handleOffsetMovement(view,event);
                 }
                 break;
             default:
@@ -79,9 +87,20 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         view.invalidate();
         return true;
     }
+    public void handleOffsetMovement(GraphProgressBar view,MotionEvent event){
+        float x = event.getX();
+        boolean direction = x-(startpos+endpos)/2 > 0;
+        if ((endpos>=w)
+                && direction||
+                (startpos <=0 && !direction))
+            return;
 
 
-    int minOffsetElems = 80;
+        int m = (startpos+endpos);
+        int d = (int) ((x-(double)m/2)*(100.0/w));
+
+        view.handleOffsetMovement(d,direction);
+    }
 
 
     public void handleStartMovement(GraphProgressBar view, MotionEvent event){
@@ -90,7 +109,7 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         //crunch
         if ((startpos<=0 && direction) || (endpos>=w-borderWidth
                 && direction) ||
-                (Math.abs(endpos-startpos) < minOffsetElems && direction)) return;
+                (Math.abs(endpos-startpos) < minOffsetPx && direction)) return;
 
         //convert to pb units
         startpos = (int)event.getX();
@@ -102,18 +121,17 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         float x = event.getX();
         boolean direction = x-endpos > 0;
         if ((endpos>=w-borderWidth && direction) || (endpos<=borderWidth  && !direction) ||
-                (Math.abs(endpos-startpos) < minOffsetElems && !direction)) return;
+                (Math.abs(endpos-startpos) < minOffsetPx && !direction)) return;
 
 
-
-        int moveToProgress =  (int)(((x-endpos)*100.0/w));
+        int moveToProgress =  (int)(((x-endpos)*unitPerPx));
         endpos= (int)event.getX();
         view.handleEndMovement(moveToProgress);
     }
 
     public int getProgressStartPx(int progressStart) {
-        return (int)((((double)(progressStart))/100)*w);
-    } // this.getWidth()
+        return (int)((((double)(progressStart))*pxPerUnit);
+    }
 
     public int getProgressEndPx(int progressEnd) {
         return ((int)((((((double)(progressEnd))/100))*w))) - borderWidth;

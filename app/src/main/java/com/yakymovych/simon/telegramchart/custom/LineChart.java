@@ -378,7 +378,7 @@ public class LineChart extends View {
         mp.drawCharts(canvas,paint);
 
         this.drawXAsis(canvas,paint);
-        this.drawYAsis(canvas,paint);
+        //this.drawYAsis(canvas,paint);
         this.drawXDividers(canvas,paint);
         if (isFingerDown){
             this.drawStats(canvas,paint);

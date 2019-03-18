@@ -48,8 +48,6 @@ public class ProgressBarDrawManager {
 
 
     private void drawSlider(Canvas canvas,int p,int e) {
-//        int p = viewPort.getProgressStartPx(progress);
-//        int e = viewPort.getProgressEndPx(progressEnd);
         canvas.drawRect(0,0,p,height,grayPaint);
         canvas.drawRect(e+borderWidth,0,width,height,grayPaint);
         canvas.drawRect(p+borderWidth,0,e,sliderTopBorder,bluePaint);
@@ -62,14 +60,10 @@ public class ProgressBarDrawManager {
     public void draw(Canvas canvas, List<Plot> plots,Set<Integer> visiblePlots,int p,int e) {
         mp.setPlots(plots);
         mp.setStartAndEnd(0,plots.get(0).x.size());
-
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
-
         mp.setVisiblePlots(visiblePlots);
-
         mp.calcGlobals();
-
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,p,e);
     }
