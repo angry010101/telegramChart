@@ -1,6 +1,5 @@
 package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.yakymovych.simon.telegramchart.Utils.ViewPort.BaseViewPortUtils;
@@ -30,7 +29,6 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
 
     int delta = 25;
     int delta_o=50;
-
     int borderWidth = 16;
 
     public ProgressBarViewPort(int width, int height,int progressLeft,int progressRight,int minOffsetElements) {
@@ -92,11 +90,8 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
                 (startpos <=0 && !direction))
             return;
 
-
         int m = (startpos+endpos);
-
         int d = (int) ((x-(double)m/2)*(unitPerPx));
-
         view.handleOffsetMovement(d,direction);
     }
 
@@ -120,7 +115,6 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         boolean direction = x-endpos > 0;
         if ((endpos>=w-borderWidth && direction) || (endpos<=borderWidth  && !direction) ||
                 (Math.abs(endpos-startpos) < minOffsetPx && !direction)) return;
-
 
         int moveToProgress =  (int)(((x-endpos)*unitPerPx));
         endpos= (int)event.getX();
