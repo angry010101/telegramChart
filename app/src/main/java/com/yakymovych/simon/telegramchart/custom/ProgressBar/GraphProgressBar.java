@@ -20,7 +20,7 @@ public class GraphProgressBar extends View {
     private List<Plot> plots = new ArrayList<>();
     ProgressBarViewPort viewPort;
     ProgressBarDrawManager progressBarDrawManager;
-    int progressStart =40,progressEnd=80;
+    int progressStart =0,progressEnd=100;
     private int topMargin = 8;
     int minOffsetElems = 6;
     private Set<Integer> visiblePlots =new HashSet<>();

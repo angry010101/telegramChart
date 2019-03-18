@@ -41,7 +41,7 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
         endpos = getProgressEndPx(progressRight);
         setMinOffsetPx(minOffsetElements);
         unitPerPx = 100.0/w;
-        pxPerUnit = ((double)(w)/100.0);
+        pxPerUnit = ((double)(w)/100);
     }
 
 
@@ -54,15 +54,12 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
                     isChangingStart = true;
                 }
                 else if (Math.abs(x-endpos)<delta){
-                    Log.d("VIEW: ","CHANIGNG END");
                     isChangingEnd = true;
                 }
                 else
                 if (Math.abs(x-(startpos+endpos)/2)<delta_o && !isChangingEnd && !isChangingStart){
-                    Log.d("VIEW: ","CHANIGNG OFFSET");
                     isChangingOffset = true;
                 }
-                Log.d("VIEW: ","DOWN " + "x: " +x +  " " + endpos + "de:" + delta);
                 break;
             case MotionEvent.ACTION_UP: // отпускание
             case MotionEvent.ACTION_CANCEL:
@@ -97,7 +94,8 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
 
 
         int m = (startpos+endpos);
-        int d = (int) ((x-(double)m/2)*(100.0/w));
+
+        int d = (int) ((x-(double)m/2)*(unitPerPx));
 
         view.handleOffsetMovement(d,direction);
     }
@@ -106,7 +104,7 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
     public void handleStartMovement(GraphProgressBar view, MotionEvent event){
         float x = event.getX();
         boolean direction = x-endpos > 0;
-        //crunch
+
         if ((startpos<=0 && direction) || (endpos>=w-borderWidth
                 && direction) ||
                 (Math.abs(endpos-startpos) < minOffsetPx && direction)) return;
@@ -130,10 +128,14 @@ public class ProgressBarViewPort extends BaseViewPortUtils {
     }
 
     public int getProgressStartPx(int progressStart) {
-        return (int)((((double)(progressStart))*pxPerUnit);
+        return (int)(((double)(progressStart))*pxPerUnit);
     }
 
     public int getProgressEndPx(int progressEnd) {
-        return ((int)((((((double)(progressEnd))/100))*w))) - borderWidth;
+        //TODO ???
+        double k1 = ((double)(w)/100);
+        //double k1 = pxPerUnit;
+        //Log.d("TEST ", "MSG: " + pxPerUnit + " " + k1);
+        return ((int)((((((double)(progressEnd))))*k1))) - borderWidth;
     }
 }

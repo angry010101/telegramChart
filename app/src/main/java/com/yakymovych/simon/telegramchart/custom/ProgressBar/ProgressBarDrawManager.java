@@ -27,6 +27,11 @@ public class ProgressBarDrawManager {
         this.mp= mp;
         this.width = width;
         this.height = height;
+
+//        mp.calcGlobals();
+//        mp.setyMaxLimit(mp.getYMax());
+//        mp.setyMinLimit(mp.getYMin());
+
         init();
     }
     private void init(){
@@ -60,9 +65,13 @@ public class ProgressBarDrawManager {
     public void draw(Canvas canvas, List<Plot> plots,Set<Integer> visiblePlots,int p,int e) {
         mp.setPlots(plots);
         mp.setStartAndEnd(0,plots.get(0).x.size());
+
+
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
+
         mp.setVisiblePlots(visiblePlots);
+
         mp.calcGlobals();
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,p,e);
