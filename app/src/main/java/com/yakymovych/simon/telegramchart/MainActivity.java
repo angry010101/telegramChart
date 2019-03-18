@@ -11,11 +11,13 @@ import android.widget.TextView;
 import com.yakymovych.simon.telegramchart.Model.ChartData;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
-import com.yakymovych.simon.telegramchart.custom.GraphProgressBar;
+import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     TextView tv;
@@ -42,9 +44,18 @@ public class MainActivity extends AppCompatActivity {
                     graphGenerator.generate(0,8);
                     lc.setPlots(graphGenerator.plots);
                     lc.startAnimShow(1);
+                    Set<Integer> vp = new HashSet<>();
+                    vp.add(0);
+                    vp.add(1);
+                    progressbar.setVisiblePlots(vp);
+                    progressbar.invalidate();
                 }
                 else {
                     lc.startAnimHide(1);
+                    Set<Integer> vp = new HashSet<>();
+                    vp.add(0);
+                    progressbar.setVisiblePlots(vp);
+                    progressbar.invalidate();
                 }
             }
         });

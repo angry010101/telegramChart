@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.yakymovych.simon.telegramchart.custom.GraphProgressBar
+    <com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar
         android:id="@+id/graphProgressBar"
         android:layout_width="match_parent"
         android:layout_height="62dp"
