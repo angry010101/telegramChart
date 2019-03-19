@@ -12,7 +12,7 @@ public class ProgressBarViewPort {
     int minOffsetPx = 80;
     private final double unitPerPx;
     private final double pxPerUnit;
-
+    GraphProgressBar view;
 
     public void setStartpos(int startpos) {
         this.startpos = this.getProgressStartPx(startpos);
@@ -30,7 +30,7 @@ public class ProgressBarViewPort {
     int delta_o=50;
     int borderWidth = 16;
 
-    public ProgressBarViewPort(int width, int height,int progressLeft,int progressRight,int minOffsetElements) {
+    public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int minOffsetElements) {
         super();
         w = width;
         h = height;
@@ -39,10 +39,11 @@ public class ProgressBarViewPort {
         setMinOffsetPx(minOffsetElements);
         unitPerPx = 100.0/w;
         pxPerUnit = ((double)(w)/100);
+        this.view = view;
     }
 
 
-    public synchronized boolean onTouchEvent(GraphProgressBar view, MotionEvent event) {
+    public synchronized boolean onTouchEvent(MotionEvent event) {
         int x = (int) event.getX();
 
         switch (event.getAction()){
@@ -66,13 +67,13 @@ public class ProgressBarViewPort {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isChangingStart){
-                    handleStartMovement(view,event);
+                    handleStartMovement(event);
                 }
                 else if (isChangingEnd){
-                    handleEndMovement(view,event);
+                    handleEndMovement(event);
                 }
                 else if (isChangingOffset){
-                    handleOffsetMovement(view,event);
+                    handleOffsetMovement(event);
                 }
                 break;
             default:
@@ -81,7 +82,7 @@ public class ProgressBarViewPort {
         view.invalidate();
         return true;
     }
-    public void handleOffsetMovement(GraphProgressBar view,MotionEvent event){
+    public void handleOffsetMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-(startpos+endpos)/2 > 0;
         if ((endpos>=w)
@@ -95,7 +96,7 @@ public class ProgressBarViewPort {
     }
 
 
-    public void handleStartMovement(GraphProgressBar view, MotionEvent event){
+    public void handleStartMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-endpos > 0;
 
@@ -109,7 +110,7 @@ public class ProgressBarViewPort {
         view.handleStartMovement(moveToProgress);
     }
 
-    public void handleEndMovement(GraphProgressBar view, MotionEvent event){
+    public void handleEndMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-endpos > 0;
         if ((endpos>=w-borderWidth && direction) || (endpos<=borderWidth  && !direction) ||

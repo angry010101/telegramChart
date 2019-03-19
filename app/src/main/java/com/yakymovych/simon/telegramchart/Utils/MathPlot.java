@@ -36,12 +36,13 @@ public class MathPlot {
         Log.d("MATHPLOT","set y limit: " + yMaxLimit);
         this.yMaxLimit = yMaxLimit;
     }
-
-    public int findNearestFor(Plot p, long x) {
-        List<Long> prcx = p.x.subList(start,end);
-        Log.d("SEARCH", "prcx " + prcx.toString() + " \nx = " + x + " zero: " + prcx.get(0));
-        return prcx.indexOf(x+prcx.get(0));
-    }
+//
+//    public int findNearestFor(Plot p, long x) {
+//        List<Long> prcx = p.x.subList(start,end);
+//        Log.d("SEARCH", "prcx " + prcx.toString() + " \nx = " + x + " zero: " + prcx.get(0));
+//        return prcx.indexOf(x+prcx.get(0));
+//    }
+//
     public void setPlots(List<Plot> plots) {
         if (yMaxLimit ==0) yMaxLimit = ymax;
         if (yMinLimit ==0) yMinLimit= ymin;

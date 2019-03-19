@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
         lc.setLineChartListener(new LineChart.LineChartListener() {
             @Override
             public void onDidInit() {
-                lc.setStartAndEnd(0,plot_length);
                 lc.setPlots(graphGenerator.plots);
+                lc.setStartAndEnd(0,plot_length);
             }
         });
 

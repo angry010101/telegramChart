@@ -57,7 +57,7 @@ public class GraphProgressBar extends View {
     private void initSizes(){
         int width = this.getWidth();
         int height= this.getHeight();
-        this.viewPort = new ProgressBarViewPort(width,height, progressStart,progressEnd,minOffsetElems);
+        this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,minOffsetElems);
         this.mp = new MathPlot(width,height,topMargin);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height);
 
@@ -76,7 +76,7 @@ public class GraphProgressBar extends View {
 
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
-        return viewPort.onTouchEvent(this,event);
+        return viewPort.onTouchEvent(event);
     }
 
     public void handleStartMovement(int moveTo){
