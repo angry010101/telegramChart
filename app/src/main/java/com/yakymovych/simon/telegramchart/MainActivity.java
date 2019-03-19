@@ -20,6 +20,7 @@ import com.yakymovych.simon.telegramchart.custom.XLabelsView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked){
-                graphGenerator.generate(0,18);
-                lc.setPlots(graphGenerator.plots);
+                //graphGenerator.generate(0,18);
+                //lc.setPlots(graphGenerator.plots);
                 lc.startAnimShow(1);
                 Set<Integer> vp = new HashSet<>();
                 vp.add(0);
@@ -73,54 +74,29 @@ public class MainActivity extends AppCompatActivity {
         ChartData chartData = graphGenerator.fromJson(this).get(0);
         Chart c = Chart.fromСhartData(chartData);
 
-        Log.d("MAIN","" + chartData.columns.get(0));
-        List<Object> l = chartData.columns.get(0);
-        List<Object> l1 = chartData.columns.get(1);
-        List<Object> l2 = chartData.columns.get(2);
-
-
-        List<Double> x_d =  (List<Double>)(Object)l.subList(1,l.size());
-        List<Double> y0_d =  (List<Double>)(Object)l1.subList(1,l.size());
-        List<Double> y1_d =  (List<Double>)(Object)l2.subList(1,l.size());
-
-        List<Long> x = new ArrayList<>();
-
-        for (double item : x_d) {
-            x.add((Double.valueOf(item).longValue()));
-        }
-
-
-        Plot p = new Plot();
-        p.x =  x;
-        p.y = y0_d;
-        p.dates = graphGenerator.getStringDates(x);
-        p.color = graphGenerator.generateColor();
-        p1 = new Plot();
-        p1.y = y1_d;
-        p1.color = graphGenerator.generateColor();
-        //p.x = x;
 
         //chartData
 
-        graphGenerator.add(p);
-
-        graphGenerator.add(p1);
         //graphGenerator.generate(10, 2);
 
         //graphGenerator.generate(11);
-        //graphGenerator.generate(12);
-        //graphGenerator.generate(13);
+        graphGenerator.generate(12,1);
+        graphGenerator.generate(13,1);
 
 
         chbCreator =  new CheckBoxCreator(this,ll);
-        List<String> names = new ArrayList<>();
-        names.add("y0");
-        names.add("y1");
-        chbCreator.setData(names);
+        chbCreator.setData(c.names);
         chbCreator.generate(chbListener);
+
 
         this.progressbar.setPlots(graphGenerator.plots);
         plot_length = graphGenerator.plots.get(0).x.size();
+//        plot_length = graphGenerator.plots.get(0).x.size();
+    //    this.progressbar.setPlots(c);
+        //TODO
+        //plot_length = c.columns.get().size();
+
+
         Log.d("MAIN","PLOT LENGTH:" + plot_length);
         Log.d("MAIN","PLOT COUNT:" + graphGenerator.plots.size());
         lc.setLineChartListener(new LineChart.LineChartListener() {

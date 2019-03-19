@@ -7,8 +7,8 @@ import java.util.Map;
 public class Chart {
     public Colors colors;
     public Map<String,List<Double>> columns;
-    public Names names;
-    public Types types;
+    public Map<String,String> names;
+    public Map<Object,String> types;
 
     public static Chart fromСhartData(ChartData chartData) {
         Chart c = new Chart();

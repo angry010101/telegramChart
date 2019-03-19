@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
@@ -54,6 +55,12 @@ public class GraphProgressBar extends View {
     }
 
     public void setPlots(List<Plot> plots) {
+        this.plots = plots;
+    }
+
+
+    public void setPlots(Chart c) {
+
         this.plots = plots;
     }
 

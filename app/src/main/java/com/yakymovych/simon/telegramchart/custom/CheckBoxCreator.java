@@ -7,8 +7,10 @@ import android.widget.LinearLayout;
 
 import com.yakymovych.simon.telegramchart.MainActivity;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class CheckBoxCreator {
     List<String> names;
@@ -21,8 +23,13 @@ public class CheckBoxCreator {
         this.ll = ll;
     }
 
-    public void setData(List<String> names){
-        this.names = names;
+    public void setData(Map<String,String> names){
+        List<String> n = new ArrayList<>();
+        Map<String, String> map = names;
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            n.add(entry.getKey() + "/" + entry.getValue());
+        }
+        this.names = n;
     }
 
     public void generate(CompoundButton.OnCheckedChangeListener chbListener){
