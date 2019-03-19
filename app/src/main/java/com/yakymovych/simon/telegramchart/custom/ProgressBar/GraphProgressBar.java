@@ -3,6 +3,7 @@ package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,6 +22,8 @@ public class GraphProgressBar extends View {
     ProgressBarViewPort viewPort;
     ProgressBarDrawManager progressBarDrawManager;
     int progressStart =0,progressEnd=100;
+
+    public int progressMax = 112;
     private int topMargin = 8;
     int minOffsetElems = 6;
     private Set<Integer> visiblePlots =new HashSet<>();
@@ -57,10 +60,12 @@ public class GraphProgressBar extends View {
     private void initSizes(){
         int width = this.getWidth();
         int height= this.getHeight();
-        this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,minOffsetElems);
-        this.mp = new MathPlot(width,height,topMargin);
+        Log.d("GPB","SETTING PROGRESS " + progressEnd);
+        this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,progressMax,minOffsetElems);
+        this.mp = new MathPlot(width,height,topMargin,topMargin);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height);
 
+        Log.d("GPB","PROGRES BAR INIT: " + progressStart + " " + progressEnd);
         this.invalidate();
     }
 
@@ -94,14 +99,13 @@ public class GraphProgressBar extends View {
 
         if (progressChangedListener != null){
             progressChangedListener.onStartProgressChanged(
-                    this, progressStart, viewPort.getProgressEndPx(progressEnd),
-                    1);
+                    this, progressStart, progressEnd);
         }
     }
 
     public void handleOffsetMovement(int d,boolean direction){
-        if (progressEnd+d > 100 && direction) {
-            d=100-progressEnd;
+        if (progressEnd+d > progressMax && direction) {
+            d=progressMax-progressEnd;
         }
         else {
             if (progressStart +d<0 && !direction) {
@@ -114,15 +118,15 @@ public class GraphProgressBar extends View {
         viewPort.setEndpos(progressEnd);
         if (progressChangedListener != null){
             progressChangedListener.onOffsetProgressChanged(
-                    this, progressStart, progressEnd,
-                    1);
+                    this, progressStart, progressEnd);
         }
         this.invalidate();
     }
 
     public void handleEndMovement(int moveToProgress){
-        if (progressEnd+moveToProgress > 100) {
-            progressEnd = 100;
+        Log.d("GPB","MOVE END " + moveToProgress);
+        if (progressEnd+moveToProgress > progressMax) {
+            progressEnd = progressMax;
         }
         else {
             if (progressEnd+moveToProgress < progressStart +minOffsetElems) {
@@ -133,8 +137,7 @@ public class GraphProgressBar extends View {
         viewPort.setEndpos(progressEnd);
         if (progressChangedListener != null){
             progressChangedListener.onEndProgressChanged(
-                    this, progressStart, progressEnd,
-                    1);
+                    this, progressStart, progressEnd);
         }
     }
 
@@ -147,9 +150,9 @@ public class GraphProgressBar extends View {
 
 
     public interface ProgressChangedListener{
-        public void onStartProgressChanged(View v,int p1,int p2,int offset);
-        public void onEndProgressChanged(View v,int p1,int p2,int offset);
-        public void onOffsetProgressChanged(View v,int p1,int p2,int offset);
+        public void onStartProgressChanged(View v,int p1,int p2);
+        public void onEndProgressChanged(View v,int p1,int p2);
+        public void onOffsetProgressChanged(View v,int p1,int p2);
     }
 }
 

@@ -17,6 +17,7 @@ import java.util.Set;
 public class MathPlot {
     private final int offsetTop;
     public static Long inf = Long.MAX_VALUE;
+    private final int offsetBottom;
     public float e = 0.0001F ;
     private long xmax,xmin;
     public int start,end;
@@ -50,10 +51,11 @@ public class MathPlot {
         //this.calcMaxGlobalY();
     }
 
-    public MathPlot(int w, int h, int offsetTop){
+    public MathPlot(int w, int h, int offsetTop,int offsetBotton){
         this.w = w;
         this.offsetTop = offsetTop;
-        this.h = h-2*offsetTop;
+        this.offsetBottom = offsetBotton;
+        this.h = h-offsetTop-offsetBotton;
     }
     void calcMaxGlobalX(){
         xmax = 0;
@@ -169,6 +171,14 @@ public class MathPlot {
             paint.setColor(Color.parseColor("#"+p.color));
             drawChart(p,canvas,paint);
         }
+    }
+
+    public List<Plot> getPlots() {
+        return plots;
+    }
+
+    public Set<Integer> getVisiblePlots() {
+        return visiblePlots;
     }
 
     public float getYMax() {

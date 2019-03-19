@@ -1,10 +1,12 @@
 package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 
 public class ProgressBarViewPort {
-    int startpos,endpos;
+    int startpos;
+    int endpos;
     boolean isChangingStart = false;
     boolean isChangingEnd = false;
     boolean isChangingOffset = false;
@@ -13,6 +15,7 @@ public class ProgressBarViewPort {
     private final double unitPerPx;
     private final double pxPerUnit;
     GraphProgressBar view;
+    int progressMax;
 
     public void setStartpos(int startpos) {
         this.startpos = this.getProgressStartPx(startpos);
@@ -20,6 +23,7 @@ public class ProgressBarViewPort {
 
     public void setEndpos(int endpos) {
         this.endpos = this.getProgressEndPx(endpos);
+        Log.d("VIEWPORT","SET END POS:  " + endpos);
     }
 
     public void setMinOffsetPx(int minOffsetElements) {
@@ -30,16 +34,19 @@ public class ProgressBarViewPort {
     int delta_o=50;
     int borderWidth = 16;
 
-    public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int minOffsetElements) {
+    public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int progressMax, int minOffsetElements) {
         super();
         w = width;
         h = height;
-        startpos = getProgressStartPx(progressLeft);
-        endpos = getProgressEndPx(progressRight);
+        this.progressMax = progressMax;
+        this.setStartpos(progressLeft);
+        this.setEndpos(progressRight);
         setMinOffsetPx(minOffsetElements);
-        unitPerPx = 100.0/w;
-        pxPerUnit = ((double)(w)/100);
+        unitPerPx = (double)(progressMax)/w;
+        pxPerUnit = ((double)(w)/progressMax);
         this.view = view;
+
+        Log.d("VIEWPORT","INIT WITH: " + this.endpos + "PROGRESS RIGHT : " + progressRight);
     }
 
 
@@ -48,6 +55,7 @@ public class ProgressBarViewPort {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
+                Log.d("ACTIONDOWN","ACTION: " + x + " " + endpos + " " + delta);
                 if (Math.abs(x-startpos)<delta){
                     isChangingStart = true;
                 }
@@ -85,7 +93,7 @@ public class ProgressBarViewPort {
     public void handleOffsetMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-(startpos+endpos)/2 > 0;
-        if ((endpos>=w)
+        if ((endpos>=w-borderWidth)
                 && direction||
                 (startpos <=0 && !direction))
             return;
@@ -106,7 +114,7 @@ public class ProgressBarViewPort {
 
         //convert to pb units
         startpos = (int)event.getX();
-        int moveToProgress =  (int) (((double)(event.getX())/(w))*100);
+        int moveToProgress =  (int) (((double)(event.getX())/(w))*progressMax);
         view.handleStartMovement(moveToProgress);
     }
 
@@ -127,7 +135,8 @@ public class ProgressBarViewPort {
 
     public int getProgressEndPx(int progressEnd) {
         //TODO ???
-        double k1 = ((double)(w)/100);
+        double k1 = ((double)(w)/progressMax);
+        Log.d("ACTIONDOWN","K1: " + k1 + " " + w + " " + progressMax);
         //double k1 = pxPerUnit;
         //Log.d("TEST ", "MSG: " + pxPerUnit + " " + k1);
         return ((int)((((((double)(progressEnd))))*k1))) - borderWidth;

@@ -38,22 +38,19 @@ public class LineChart extends View {
 
     LineChartListener lineChartListener;
     private int topMargin = 20;
-
+    int bottomMargin = 20;
     ValueAnimator newGraphAnimator;
     ValueAnimator heightAnimator;
 
     public void startAnimShow(int pos){
         Plot p1 = this.plots.get(pos);
         this.setVisiblePlot(pos,true);
-        //this.plots.add(p1);
-        //mp.setPlots(this.plots);
         PropertyValuesHolder pvhX=null;
         PropertyValuesHolder pvhY=null;
         float lcmaxy = Collections.max(p1.y.subList(mp.start,mp.end)).floatValue();
 
         if (lcmaxy > mp.getYMax())
             pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX",mp.getYMax(), lcmaxy);
-//
         float lcminy = Collections.min(p1.y.subList(mp.start,mp.end)).floatValue();
         if (lcminy < mp.getYMin())
             pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",mp.getYMin(),lcminy);
@@ -61,29 +58,23 @@ public class LineChart extends View {
 
         if (pvhX != null){
             if (pvhY !=null){
-                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY)
-                        .setDuration(1000);
+                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX,pvhY);
             }
             else {
-                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX)
-                        .setDuration(1000);
+                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhX);
             }
         }
         else {
             if (pvhY !=null){
-                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY)
-                        .setDuration(1000);
+                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
-                newGraphAnimator = ValueAnimator.ofPropertyValuesHolder()
-                        .setDuration(1000);
+                this.invalidate();
+                return;
             }
         }
 
-
-//        newGraphAnimator = ValueAnimator.ofFloat(mp.getYMax(),
-//                Collections.max(p1.y).floatValue())
-//                .setDuration(1000);
+        newGraphAnimator.setDuration(1000);
         newGraphAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -95,7 +86,8 @@ public class LineChart extends View {
 
     private void setVisiblePlot(int pos, boolean b) {
         if (b) visiblePlots.add(pos);
-        else  visiblePlots.remove(pos);
+        else visiblePlots.remove(pos);
+
         mp.setVisiblePlots(visiblePlots);
     }
 
@@ -113,10 +105,7 @@ public class LineChart extends View {
 
     public void setStart(int start) {
         this.start = start;
-
-        Log.d("STARTING: ","STARTED: " + this.start);
         removeStartEnd();
-
         this.invalidate();
     }
 
@@ -124,14 +113,11 @@ public class LineChart extends View {
         this.start = start;
         this.end = end;
         removeStartEnd();
-        //this.invalidate();
     }
 
     public void setEnd(int end) {
         this.end = end;
-
         removeStartEnd();
-        this.invalidate();
     }
 
 
@@ -183,6 +169,7 @@ public class LineChart extends View {
                 heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
+                this.invalidate();
                 return;
             }
         }
@@ -236,7 +223,7 @@ public class LineChart extends View {
     private void initSizes(){
         int width = this.getWidth();
         int height = this.getHeight();
-        mp = new MathPlot(width,height,topMargin);
+        mp = new MathPlot(width,height,topMargin,bottomMargin);
         viewPort = new LineChartViewPort(this,width,height);
         drawManager = new LineChartDrawManager(mp,width,height);
         if (lineChartListener != null){
@@ -277,10 +264,6 @@ public class LineChart extends View {
     }
 
 
-    private int stats_w=250,stats_h=160;
-
-
-
     public void startAnimHide(int pos) {
         Plot p1 = plots.get(pos);
         setVisiblePlot(pos,false);
@@ -311,6 +294,7 @@ public class LineChart extends View {
                 newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
+                this.invalidate();
                 return;
             }
         }
@@ -360,7 +344,7 @@ public class LineChart extends View {
 
         Log.d("VIEW: ","HAPPENED: " + stats_y_intersection);
         if (y_intersection>(y_threshold+ymin) ){
-            stats_y = (int)(y_threshold+ymin)+stats_h+y_stats_offset;
+            stats_y = (int)(y_threshold+ymin)+y_stats_offset;
             drawToTop = true;
         }
         this.invalidate();

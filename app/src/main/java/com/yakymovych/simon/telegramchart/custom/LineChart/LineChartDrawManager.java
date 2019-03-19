@@ -5,7 +5,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
+
+import java.text.SimpleDateFormat;
 
 public class LineChartDrawManager {
 
@@ -18,7 +21,7 @@ public class LineChartDrawManager {
     int statsX, statsY;
     int statsW, statsH;
 
-
+    int dateCount = 5;
 
     //remove some
     int y_stats_offset = 20;
@@ -66,12 +69,15 @@ public class LineChartDrawManager {
     }
 
 
+
+
     private void drawXDividers(Canvas canvas, Paint paint) {
         double t = (double)((mp.getYMax()-mp.getYMin()))/dividersCount;
         for (int i=0,k=dividersCount;i<h || k>0;i+= h/dividersCount,k--){
             canvas.drawLine(0,i,w,i,paint);
             canvas.drawText(""+(t*(k+1)),0,i,paint);
         }
+
     }
 
     private void drawStats(Canvas canvas, Paint paint) {
