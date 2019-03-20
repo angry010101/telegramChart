@@ -76,7 +76,7 @@ Chart chart;
         chbCreator.setData(c.names);
         chbCreator.generate(chbListener);
 
-
+        xLabelsView.setDates(c.columns.get("x"));
         this.progressbar.setPlots(c);
         plot_length =  c.getAxisLength();
 

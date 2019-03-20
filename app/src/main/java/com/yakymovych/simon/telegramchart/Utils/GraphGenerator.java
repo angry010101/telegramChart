@@ -55,7 +55,7 @@ public class GraphGenerator {
         return json;
     }
 
-    public String generateColor(){
+    public static String generateColor(){
             // create random object - reuse this as often as possible
             Random random = new Random();
 
@@ -66,13 +66,13 @@ public class GraphGenerator {
             return String.format("%06x", nextInt);
     }
 
-    DateFormat dateFormat = new SimpleDateFormat("MMM/dd");
+    static DateFormat dateFormat = new SimpleDateFormat("MMM/dd");
 
-    public String getStringDate(long x){
+    public static String getStringDate(long x){
         return dateFormat.format(x);
     }
 
-    public List<String> getStringDates(List<Long> x ){
+    public static List<String> getStringDates(List<Long> x ){
         ArrayList<String> d = new ArrayList<>();
         for (int i=0;i<x.size();i++){
             d.add(getStringDate(x.get(i)));

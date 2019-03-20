@@ -10,14 +10,39 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
+import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
+import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class XLabelsView  extends View {
     private int datesCount = 5;
+    private int visibleDatesCount = 5;
     private double pxPerDate = 5;
     int width,height;
     LineChart.LineChartListener lineChartListener;
     int start,end;
+    List<Long> dates;
+    List<String> datesStr;
+
+
+    public void setDates(List<Double> dates) {
+        List<Long> integers = new ArrayList<>();
+        for (Double item : dates) {
+            integers.add(item.longValue());
+        }
+        this.datesStr = GraphGenerator.getStringDates(integers);
+        this.dates = integers;
+        this.setDatesCount(dates.size());
+    }
+
+    public void setDatesCount(int datesCount) {
+        this.datesCount = datesCount;
+        pxPerDate = (double)(this.width)/visibleDatesCount;
+        this.invalidate();
+    }
 
     public XLabelsView(Context context) {
         super(context);
@@ -38,6 +63,8 @@ public class XLabelsView  extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+
+
 
 
     public void setStart(int start) {
@@ -78,13 +105,13 @@ public class XLabelsView  extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);
-        if (Plot.dates != null && !Plot.dates.isEmpty())
+        if (this.dates != null && !this.dates.isEmpty())
             drawDates(canvas,paint);
     }
 
     private void drawDates(Canvas canvas,Paint paint) {
-        for (int i =0;i<datesCount;i++){
-            canvas.drawText(Plot.dates.get(start+i),(int)(i*pxPerDate),height/2,paint);
+        for (int i =0;i<visibleDatesCount;i++){
+            canvas.drawText(this.datesStr.get(start+i),(int)(i*pxPerDate),height/2,paint);
         }
     }
 
