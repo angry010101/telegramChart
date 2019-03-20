@@ -187,7 +187,7 @@ public class MathPlot {
             y_charts.add(p);
             colors.add(chart.colors.get(i));
         }
-        int y_size = y_charts.size();
+        int y_size = y_charts.size(),g;
         if (y_size == 0) return;
         double lmin_x = xmin,lmax_x = xmax;
 
@@ -205,16 +205,13 @@ public class MathPlot {
             yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
         }
         double xi;
-        int g;
-        for (int i=start+1,k=0,z=0;i<end;i++,k+=2,z+=4){
+        for (int i=start+1,z=0;i<end;i++,z+=4){
 
             for (g =0;g<y_size;g++) {
                 combined[g][z] = x;
             }
-
             xi = xs.get(i);
             x = (long)((xi-lmin_x)*kx);
-
             for (g =0;g<y_size;g++) {
                 combined[g][z+2] = x;
                 combined[g][z+1] = yl[g];

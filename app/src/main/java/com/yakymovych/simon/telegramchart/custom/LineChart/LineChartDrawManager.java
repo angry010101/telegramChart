@@ -52,7 +52,7 @@ public class LineChartDrawManager {
 
     public void draw(Canvas canvas,boolean drawStats){
         mp.drawCharts(canvas,paint);
-        this.drawXAsis(canvas,paint);
+        //this.drawXAsis(canvas,paint);
         this.drawXDividers(canvas,paint);
         if (drawStats){
             this.drawStats(canvas,paint);
@@ -72,10 +72,10 @@ public class LineChartDrawManager {
 
 
     private void drawXDividers(Canvas canvas, Paint paint) {
-        double t = (double)((mp.getYMax()-mp.getYMin()))/dividersCount;
-        for (int i=0,k=dividersCount;i<h || k>0;i+= h/dividersCount,k--){
+        double t = ((mp.getyMaxLimit()-mp.getyMinLimit()))/dividersCount;
+        for (int i=h/dividersCount,k=dividersCount;i<h || k>0;i+= h/dividersCount,k--){
             canvas.drawLine(0,i,w,i,paint);
-            canvas.drawText(""+(t*(k+1)),0,i,paint);
+            canvas.drawText(""+(int)Math.round(t*(k)),0,i,paint);
         }
 
     }

@@ -264,7 +264,6 @@ public class LineChart extends View {
     }
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         drawManager.draw(canvas,viewPort.isFingerDown);
     }
 
