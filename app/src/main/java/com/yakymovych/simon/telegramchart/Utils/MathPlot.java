@@ -195,73 +195,38 @@ public class MathPlot {
         double ky = ((double)(h)/(yMaxLimit-yMinLimit));
 
         List<Double> xs = chart.columns.get("x");
-        float[][] points = new float[y_size+1][(end-start)*2];
 
-        long x;
-        float[] y= new float[y_size];
-        x = (long)((xs.get(start) -lmin_x)*kx);
+        long x = (long)((xs.get(start) -lmin_x)*kx);
 
         float[] yl = new float[y_size];
         float[][] combined = new float[y_size][xs.size()*4];
 
         for (int yi = 0;yi<y_size;yi++){
             yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
-            points[yi+1][0] = yl[yi];
         }
         double xi;
-        double yi;
-
+        int g;
         for (int i=start+1,k=0,z=0;i<end;i++,k+=2,z+=4){
 
-
-            points[0][k] = x;
-            for (int g =0;g<y_size;g++) {
+            for (g =0;g<y_size;g++) {
                 combined[g][z] = x;
             }
 
             xi = xs.get(i);
             x = (long)((xi-lmin_x)*kx);
-            points[0][k+1] = x;
 
-
-            for (int g =0;g<y_size;g++) {
+            for (g =0;g<y_size;g++) {
                 combined[g][z+2] = x;
-            }
-
-
-
-            for (int g =0;g<y_size;g++){
                 combined[g][z+1] = yl[g];
-                points[g+1][k] = yl[g];
-
-                yi = y_charts.get(g).get(i);
-                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
-
-                points[g+1][k+1] = y[g];
-                combined[g][z+3] = y[g];
-                yl[g] = y[g];
-
+                combined[g][z+3] = (float)(h-((y_charts.get(g).get(i)-yMinLimit))*ky) + offsetTop;;
+                yl[g] = combined[g][z+3];
             }
-
-
         }
 
-        for (int g =1;g<y_size+1;g++) {
-            //float[] arr = combine(points[0] , points[g]);
-            float[] arr = combined[g-1];
+        for (g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
-            canvas.drawLines(arr, paint);
+            canvas.drawLines(combined[g-1], paint);
         }
-    }
-
-    public static float[] combine(float[] a, float[] b){
-        int length = a.length + b.length;
-        float[] result = new float[length];
-        for (int i=0;i<a.length;i++){
-            result[2*i] = a[i];
-            result[2*i+1] = b[i];
-        }
-        return result;
     }
 
     public Set<String> getVisiblePlots() {
