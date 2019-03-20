@@ -9,17 +9,14 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class GraphProgressBar extends View {
     private MathPlot mp ;
-    private List<Plot> plots = new ArrayList<>();
+    //private List<Plot> plots = new ArrayList<>();
     ProgressBarViewPort viewPort;
     ProgressBarDrawManager progressBarDrawManager;
     int progressStart =0,progressEnd=100;
@@ -27,10 +24,12 @@ public class GraphProgressBar extends View {
     public int progressMax = 112;
     private int topMargin = 8;
     int minOffsetElems = 6;
-    private Set<Integer> visiblePlots =new HashSet<>();
+    private Set<String> visiblePlots =new HashSet<>();
     private ProgressChangedListener progressChangedListener = null;
+    private Chart chart;
 
-    public void setVisiblePlots(Set<Integer> visiblePlots) {
+
+    public void setVisiblePlots(Set<String> visiblePlots) {
         this.visiblePlots = visiblePlots;
     }
 
@@ -54,14 +53,9 @@ public class GraphProgressBar extends View {
         init();
     }
 
-    public void setPlots(List<Plot> plots) {
-        this.plots = plots;
-    }
-
 
     public void setPlots(Chart c) {
-
-        this.plots = plots;
+        this.chart = c;
     }
 
     private void initSizes(){
@@ -150,9 +144,14 @@ public class GraphProgressBar extends View {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
-        progressBarDrawManager.draw(canvas,plots,visiblePlots,
+        progressBarDrawManager.draw(canvas,chart,visiblePlots,
                 viewPort.getProgressStartPx(progressStart)
                 ,viewPort.getProgressEndPx(progressEnd));
+    }
+
+    public void setVisiblePlot(String vp, boolean b) {
+        if (b)  visiblePlots.add(vp);
+        else visiblePlots.remove(vp);
     }
 
 

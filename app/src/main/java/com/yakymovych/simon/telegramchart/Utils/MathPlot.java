@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 
 import java.util.ArrayList;
@@ -19,17 +20,18 @@ public class MathPlot {
     public static Long inf = Long.MAX_VALUE;
     private final int offsetBottom;
     public float e = 0.0001F ;
-    private long xmax,xmin;
+    private double xmax,xmin;
     public int start,end;
     private double ymax,ymin;
-    private List<Plot> plots = new ArrayList<>();
+    //private List<Plot> plots = new ArrayList<>();
     private int w,h;
     private double yMaxLimit;
     private double yMinLimit;
 
-    private Set<Integer> visiblePlots = new HashSet<Integer>();
+    private Set<String> visiblePlots = new HashSet<>();
+    private Chart chart;
 
-    public void setVisiblePlots(Set<Integer> visiblePlots) {
+    public void setVisiblePlots(Set<String> visiblePlots) {
         this.visiblePlots = visiblePlots;
     }
 
@@ -44,10 +46,20 @@ public class MathPlot {
 //        return prcx.indexOf(x+prcx.get(0));
 //    }
 //
-    public void setPlots(List<Plot> plots) {
+//
+//    public void setPlots(List<Plot> plots) {
+//        if (yMaxLimit ==0) yMaxLimit = ymax;
+//        if (yMinLimit ==0) yMinLimit= ymin;
+//        this.plots = plots;
+//        //this.calcMaxGlobalY();
+//    }
+
+
+    public void setPlots(Chart chart) {
         if (yMaxLimit ==0) yMaxLimit = ymax;
         if (yMinLimit ==0) yMinLimit= ymin;
-        this.plots = plots;
+        //this.plots = plots;
+        this.chart = chart;
         //this.calcMaxGlobalY();
     }
 
@@ -59,53 +71,39 @@ public class MathPlot {
     }
     void calcMaxGlobalX(){
         xmax = 0;
-        if (plots.isEmpty()) return;
-        for (int i : visiblePlots){
-            Plot p = plots.get(i);
-            xmax = Math.max(xmax,Collections.max(p.x.subList(start,end)));
-        }
+            List<Double> ys = chart.columns.get("x");
+            xmax = Math.max(xmax,Collections.max(ys.subList(start,end)));
+        Log.d("CALCMAX","MAXIMUM: " + xmax);
+
     }
     void calcMinGlobalX(){
         xmin = inf;
-        if (plots.isEmpty()) return;
-        for (int i : visiblePlots){
-            Plot p = plots.get(i);
-            xmin = Math.min(xmin,Collections.min(p.x.subList(start,end)));
-        }
+        List<Double> xs = chart.columns.get("x");
+        xmin = Math.min(xmin,Collections.min(xs.subList(start,end)));
     }
 
     void calcMaxGlobalY(){
         ymax = 0;
-        if (plots.isEmpty()) return;
-        for (int i : visiblePlots){
-            Plot p = plots.get(i);
-            ymax = Math.max(ymax,Collections.max(p.y.subList(start,end)));
+
+        for (String i : visiblePlots){
+            List<Double> ys = chart.columns.get(i);
+            ymax = Math.max(ymax,Collections.max(ys.subList(start,end)));
         }
     }
 
     void calcMinGlobalY(){
         ymin = inf;
-        if (plots.isEmpty()) return;
-        for (int i : visiblePlots){
-            Plot p = plots.get(i);
-            ymin = Math.min(ymin,Collections.min(p.y.subList(start,end)));
+        for (String i : visiblePlots){
+            List<Double> ys = chart.columns.get(i);
+            ymin = Math.min(ymin,Collections.min(ys.subList(start,end)));
         }
     }
-
-    Long calcMaxLocalX(Plot p){
-        return Collections.max(p.x.subList(start,end));
+    Double calcMaxLocalY(List<Double> p){
+        return Collections.max(p.subList(start,end));
     }
 
-    Long calcMinLocalX(Plot p){
-        return Collections.min(p.x.subList(start,end));
-    }
-
-    Double calcMaxLocalY(Plot p){
-        return Collections.max(p.y.subList(start,end));
-    }
-
-    Double calcMinLocalY(Plot p){
-        return Collections.min(p.y.subList(start,end));
+    Double calcMinLocalY(List<Double> p){
+        return Collections.min(p.subList(start,end));
     }
 
     public void setStart(int start) {
@@ -135,11 +133,13 @@ public class MathPlot {
 
 
 
-    public void drawChart(Plot p, Canvas canvas, Paint paint){
-        List<Integer> prx = new ArrayList<>();
+    public void drawChart(List<Double> p, Canvas canvas, Paint paint){
+        List<Long> prx = new ArrayList<>();
         List<Double> pry =new ArrayList<>();
-        long lmin_x = calcMinLocalX(p);
-        long lmax_x = calcMaxLocalX(p);
+        this.calcGlobals();
+        Log.d("MATHPLOT","XMIN : " + xmin + " xmax: " + xmax);
+        double lmin_x = xmin;
+        double lmax_x = xmax;
 
         Double lmin_y = calcMinLocalY(p);
         Double lmax_y = calcMaxLocalY(p);
@@ -148,14 +148,15 @@ public class MathPlot {
         double ky = ((double)(h)/(yMaxLimit -yMinLimit));
 
 
-        Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit);
+        Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit + " " + start + " " + end);
         for (int i=start;i<end;i++){
-            long xi = p.x.get(i);
-            double yi = p.y.get(i);
-            prx.add((int)((xi-lmin_x)*kx));
+            double xi = chart.columns.get("x").get(i);
+            double yi = p.get(i);
+            prx.add((long)((xi-lmin_x)*kx));
             pry.add((h-((yi-yMinLimit))*ky) + offsetTop);
         }
 
+        Log.d("MATHPLOT","PLOTTING " + prx.toString());
         for (int i=0;i<prx.size()-1;i++ ){
             canvas.drawLine(prx.get(i),pry.get(i).intValue(),
                     prx.get(i+1),pry.get(i+1).intValue(),paint);
@@ -165,19 +166,17 @@ public class MathPlot {
 
     public void drawCharts(Canvas canvas, Paint paint) {
         //calcGlobals();
-
-        for (int i : visiblePlots){
-            Plot p = plots.get(i);
-            paint.setColor(Color.parseColor("#"+p.color));
+        Log.d("VIEW","DRAWING CHARTS" + visiblePlots );
+        for (String i : visiblePlots){
+            List<Double> p = chart.columns.get(i);
+            Log.d("DRAWING","CHART " + i + " " + p);
+            String color = chart.colors.get(i);
+            paint.setColor(Color.parseColor(color));
             drawChart(p,canvas,paint);
         }
     }
 
-    public List<Plot> getPlots() {
-        return plots;
-    }
-
-    public Set<Integer> getVisiblePlots() {
+    public Set<String> getVisiblePlots() {
         return visiblePlots;
     }
 

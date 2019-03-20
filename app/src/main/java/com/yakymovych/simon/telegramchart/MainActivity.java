@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,10 +17,7 @@ import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
 import com.yakymovych.simon.telegramchart.custom.XLabelsView;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,26 +36,25 @@ public class MainActivity extends AppCompatActivity {
     CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            String tag = (String) (buttonView).getTag();
+            Log.d("TAG:",tag);
             if (isChecked){
                 //graphGenerator.generate(0,18);
                 //lc.setPlots(graphGenerator.plots);
-                lc.startAnimShow(1);
-                Set<Integer> vp = new HashSet<>();
-                vp.add(0);
-                vp.add(1);
-                progressbar.setVisiblePlots(vp);
+                lc.setVisiblePlot(tag,true);
+                progressbar.setVisiblePlot(tag,true);
+                lc.startAnimShow(tag);
                 progressbar.invalidate();
             }
             else {
-                lc.startAnimHide(1);
-                Set<Integer> vp = new HashSet<>();
-                vp.add(0);
-                progressbar.setVisiblePlots(vp);
+                lc.startAnimHide(tag);
+                lc.setVisiblePlot(tag,false);
+                progressbar.setVisiblePlot(tag,false);
                 progressbar.invalidate();
             }
         }
     };
-
+Chart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,15 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         ChartData chartData = graphGenerator.fromJson(this).get(0);
         Chart c = Chart.fromСhartData(chartData);
+        this.chart = c;
 
-
-        //chartData
-
-        //graphGenerator.generate(10, 2);
-
-        //graphGenerator.generate(11);
-        graphGenerator.generate(12,1);
-        graphGenerator.generate(13,1);
 
 
         chbCreator =  new CheckBoxCreator(this,ll);
@@ -89,21 +77,18 @@ public class MainActivity extends AppCompatActivity {
         chbCreator.generate(chbListener);
 
 
-        this.progressbar.setPlots(graphGenerator.plots);
-        plot_length = graphGenerator.plots.get(0).x.size();
+        this.progressbar.setPlots(c);
+        plot_length =  c.getAxisLength();
+
 //        plot_length = graphGenerator.plots.get(0).x.size();
     //    this.progressbar.setPlots(c);
         //TODO
         //plot_length = c.columns.get().size();
 
-
-        Log.d("MAIN","PLOT LENGTH:" + plot_length);
-        Log.d("MAIN","PLOT COUNT:" + graphGenerator.plots.size());
         lc.setLineChartListener(new LineChart.LineChartListener() {
             @Override
             public void onDidInit() {
-                lc.setPlots(graphGenerator.plots);
-                lc.setStartAndEnd(0,plot_length);
+                didInit();
             }
         });
 
@@ -130,6 +115,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    void didInit() {
+        lc.setPlots(this.chart);
+        lc.setStartAndEnd(0,plot_length);
     }
 
 

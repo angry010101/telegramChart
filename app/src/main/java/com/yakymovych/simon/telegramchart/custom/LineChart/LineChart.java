@@ -14,24 +14,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LineChart extends View {
     private int start,end;
     private MathPlot mp;
-    private List<Plot> plots;
+    //private List<Plot> plots;
 
 
     LineChartDrawManager drawManager;
     LineChartViewPort viewPort;
-    private HashSet<Integer> visiblePlots = new HashSet<>();
+    private Set<String> visiblePlots = new HashSet<>();
+    private Chart chart;
 
-    public void setVisiblePlots(HashSet<Integer> visiblePlots) {
+    public void setVisiblePlots(Set<String> visiblePlots) {
         this.visiblePlots = visiblePlots;
         mp.setVisiblePlots(visiblePlots);
     }
@@ -42,16 +45,16 @@ public class LineChart extends View {
     ValueAnimator newGraphAnimator;
     ValueAnimator heightAnimator;
 
-    public void startAnimShow(int pos){
-        Plot p1 = this.plots.get(pos);
+    public void startAnimShow(String pos){
+        List<Double> p1 = chart.columns.get(pos);
         this.setVisiblePlot(pos,true);
         PropertyValuesHolder pvhX=null;
         PropertyValuesHolder pvhY=null;
-        float lcmaxy = Collections.max(p1.y.subList(mp.start,mp.end)).floatValue();
+        float lcmaxy = Collections.max(p1.subList(mp.start,mp.end)).floatValue();
 
         if (lcmaxy > mp.getYMax())
             pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX",mp.getYMax(), lcmaxy);
-        float lcminy = Collections.min(p1.y.subList(mp.start,mp.end)).floatValue();
+        float lcminy = Collections.min(p1.subList(mp.start,mp.end)).floatValue();
         if (lcminy < mp.getYMin())
             pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",mp.getYMin(),lcminy);
 
@@ -84,7 +87,7 @@ public class LineChart extends View {
         newGraphAnimator.start();
     }
 
-    private void setVisiblePlot(int pos, boolean b) {
+    public void setVisiblePlot(String pos, boolean b) {
         if (b) visiblePlots.add(pos);
         else visiblePlots.remove(pos);
 
@@ -95,10 +98,12 @@ public class LineChart extends View {
         this.lineChartListener = lineChartListener;
     }
 
-    public void setPlots(List<Plot> plots) {
-        this.plots = plots;
-        mp.setPlots(plots);
-        this.setVisiblePlot(0,true);
+
+    public void setPlots(Chart c) {
+        this.chart = c;
+        //this.plots = plots;
+        mp.setPlots(c);
+        //this.setVisiblePlot(,true);
         this.invalidate();
     }
 
@@ -264,19 +269,18 @@ public class LineChart extends View {
     }
 
 
-    public void startAnimHide(int pos) {
-        Plot p1 = plots.get(pos);
+    public void startAnimHide(String pos) {
+        List<Double> p1 = chart.columns.get(pos);
         setVisiblePlot(pos,false);
-        Log.d("LINECHART","PLOTS COUNT" + plots.size());
         mp.calcGlobals();
         PropertyValuesHolder pvhX=null;
         PropertyValuesHolder pvhY=null;
-        float lcmaxy = Collections.max(p1.y.subList(mp.start,mp.end)).floatValue();
+        float lcmaxy = Collections.max(p1.subList(mp.start,mp.end)).floatValue();
 
         if (lcmaxy > mp.getYMax())
             pvhX = PropertyValuesHolder.ofFloat("TRANSLATION_YMAX", lcmaxy,mp.getYMax());
 
-        float lcminy = Collections.min(p1.y.subList(mp.start,mp.end)).floatValue();
+        float lcminy = Collections.min(p1.subList(mp.start,mp.end)).floatValue();
         if (lcminy < mp.getYMin())
             pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN",lcminy,mp.getYMin());
 
@@ -322,8 +326,8 @@ public class LineChart extends View {
     private boolean drawToTop = false;
 
     public void handleMove(long x,int w) {
-        Log.d("LINECHART","PLOT SIZE " + plots.get(0).x.size() );
-        int nearest = viewPort.findNearestFor(plots.get(0),x);
+
+        /*int nearest = viewPort.findNearestFor(plots.get(0),x);
         //stats_x = (int) (nearest*w/(end-start-1));
         //stats_x_position = nearest;
 
@@ -346,7 +350,7 @@ public class LineChart extends View {
         if (y_intersection>(y_threshold+ymin) ){
             stats_y = (int)(y_threshold+ymin)+y_stats_offset;
             drawToTop = true;
-        }
+        }*/
         this.invalidate();
     }
 

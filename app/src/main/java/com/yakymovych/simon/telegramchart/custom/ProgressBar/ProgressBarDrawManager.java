@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
@@ -55,9 +56,9 @@ public class ProgressBarDrawManager {
     }
 
 
-    public void draw(Canvas canvas, List<Plot> plots,Set<Integer> visiblePlots,int p,int e) {
-        mp.setPlots(plots);
-        mp.setStartAndEnd(0,plots.get(0).x.size());
+    public void draw(Canvas canvas, Chart chart, Set<String> visiblePlots, int p, int e) {
+        mp.setPlots(chart);
+        mp.setStartAndEnd(0,chart.getAxisLength());
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
         mp.setVisiblePlots(visiblePlots);

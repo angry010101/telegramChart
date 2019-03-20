@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ChartData {
-    public Colors colors;
+    public Map<String,String> colors;
     public List<List<Object>> columns;
     public Map<String,String> names;
-    public Map<Object,String> types;
+    public Map<String,String> types;
 }

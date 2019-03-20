@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class CheckBoxCreator {
     List<String> names;
+    List<String> tags;
     Context context;
     LinearLayout ll;
     CompoundButton.OnCheckedChangeListener chbListener;
@@ -25,27 +26,29 @@ public class CheckBoxCreator {
 
     public void setData(Map<String,String> names){
         List<String> n = new ArrayList<>();
+        List<String> tags = new ArrayList<>();
         Map<String, String> map = names;
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            n.add(entry.getKey() + "/" + entry.getValue());
+            n.add(entry.getValue());
+            tags.add(entry.getKey());
         }
         this.names = n;
+        this.tags = tags;
     }
 
     public void generate(CompoundButton.OnCheckedChangeListener chbListener){
         this.chbListener = chbListener;
-        Iterator<String> i = names.iterator();
-        while (i.hasNext()){
-            CheckBox ch = createCheckBox(i.next());
+        for (int i = 0;i<names.size();i++){
+            CheckBox ch = createCheckBox(names.get(i), tags.get(i));
         }
 
     }
 
 
-    private CheckBox createCheckBox(String text){
+    private CheckBox createCheckBox(String text,String tag){
         CheckBox ch = new CheckBox(context);
         ch.setText(text);
-        ch.setTag(text);
+        ch.setTag(tag);
         ch.setOnCheckedChangeListener(chbListener);
         ll.addView(ch);
         return ch;
