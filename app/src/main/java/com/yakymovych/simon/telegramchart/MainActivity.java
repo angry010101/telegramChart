@@ -1,8 +1,12 @@
 package com.yakymovych.simon.telegramchart;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -20,18 +24,34 @@ import com.yakymovych.simon.telegramchart.custom.XLabelsView;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     TextView tv;
     LineChart lc;
     int plot_length;
-
+    boolean theme=false;
     CheckBoxCreator chbCreator;
     GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar;
     XLabelsView xLabelsView;
     Plot p1;
+    private final String THEME_TAG = "theme_tag";
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_theme:
+                changeTheme();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-
+    private void changeTheme() {
+        Intent i = new Intent(this,MainActivity.class);
+        i.putExtra(THEME_TAG,!this.theme);
+        startActivity(i);
+        finish();
+    }
 
     CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -58,6 +78,12 @@ Chart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle b = getIntent().getExtras();
+        if (b!=null){
+            this.theme = b.getBoolean(THEME_TAG);
+        }
+        if (this.theme) setTheme(R.style.AppThemeDark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -115,6 +141,13 @@ Chart chart;
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.my_menu, menu);
+        return true;
     }
 
     void didInit() {

@@ -189,14 +189,11 @@ public class MathPlot {
         }
         int y_size = y_charts.size(),g;
         if (y_size == 0) return;
-        double lmin_x = xmin,lmax_x = xmax;
 
-        double kx = ((double)(w))/(lmax_x-lmin_x);
+        double kx = ((double)(w))/(xmax-xmin);
         double ky = ((double)(h)/(yMaxLimit-yMinLimit));
-
         List<Double> xs = chart.columns.get("x");
-
-        long x = (long)((xs.get(start) -lmin_x)*kx);
+        long x = (long)((xs.get(start) -xmin)*kx);
 
         float[] yl = new float[y_size];
         float[][] combined = new float[y_size][xs.size()*4];
@@ -211,7 +208,7 @@ public class MathPlot {
                 combined[g][z] = x;
             }
             xi = xs.get(i);
-            x = (long)((xi-lmin_x)*kx);
+            x = (long)((xi-xmin)*kx);
             for (g =0;g<y_size;g++) {
                 combined[g][z+2] = x;
                 combined[g][z+1] = yl[g];
