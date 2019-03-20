@@ -4,14 +4,12 @@ import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -136,34 +134,35 @@ public class MathPlot {
 
 
     public void drawChart(List<Double> p, Canvas canvas, Paint paint){
-        List<Long> prx = new ArrayList<>();
-        List<Double> pry =new ArrayList<>();
-        this.calcGlobals();
-        Log.d("MATHPLOT","XMIN : " + xmin + " xmax: " + xmax);
         double lmin_x = xmin;
         double lmax_x = xmax;
-
-        Double lmin_y = calcMinLocalY(p);
-        Double lmax_y = calcMaxLocalY(p);
 
         double kx = ((double)(w))/(lmax_x-lmin_x);
         double ky = ((double)(h)/(yMaxLimit -yMinLimit));
 
+        List<Double> xs = chart.columns.get("x");
+        float[] points = new float[(end-start)*4];
 
-        Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit + " " + start + " " + end);
-        for (int i=start;i<end;i++){
-            double xi = chart.columns.get("x").get(i);
-            double yi = p.get(i);
-            prx.add((long)((xi-lmin_x)*kx));
-            pry.add((h-((yi-yMinLimit))*ky) + offsetTop);
-        }
 
-        Log.d("MATHPLOT","PLOTTING " + prx.toString());
-        for (int i=0;i<prx.size()-1;i++ ){
-            canvas.drawLine(prx.get(i),pry.get(i).intValue(),
-                    prx.get(i+1),pry.get(i+1).intValue(),paint);
-            //canvas.drawText("x: " + x.get(i) + " y: " + y.get(i),15+ px.get(i),py.get(i),paint);
+        long x = (long)((xs.get(0) -lmin_x)*kx);
+        float y = (float)(h-((p.get(0)-yMinLimit))*ky) + offsetTop;
+        double xi;
+        double yi;
+
+        for (int i=start,k=0;i<end;i++,k+=4){
+            points[k] = x;
+            points[k+1] = y;
+
+            xi = xs.get(i);
+            yi = p.get(i);
+
+            x = (long)((xi-lmin_x)*kx);
+            y = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+
+            points[k+2] = x;
+            points[k+3] = y;
         }
+        canvas.drawLines(points,paint);
     }
 //
 //    public void drawCharts(Canvas canvas, Paint paint) {
@@ -179,82 +178,79 @@ public class MathPlot {
 //    }
 
 
-
     public void drawCharts(Canvas canvas, Paint paint) {
-        int i,k;
         List<List<Double>> y_charts = new ArrayList<>();
         List<String> colors = new ArrayList<>();
 
-        for (String s : visiblePlots){
-            List<Double> p = chart.columns.get(s);
+        for (String i : visiblePlots){
+            List<Double> p = chart.columns.get(i);
             y_charts.add(p);
-            colors.add(chart.colors.get(s));
+            colors.add(chart.colors.get(i));
         }
-
         int y_size = y_charts.size();
         if (y_size == 0) return;
-        double lmin_x = xmin;
-        double lmax_x = xmax;
+        double lmin_x = xmin,lmax_x = xmax;
 
         double kx = ((double)(w))/(lmax_x-lmin_x);
-        double ky = ((double)(h)/(yMaxLimit -yMinLimit));
+        double ky = ((double)(h)/(yMaxLimit-yMinLimit));
 
         List<Double> xs = chart.columns.get("x");
         float[][] points = new float[y_size+1][(end-start)*2];
 
         long x;
-        float y;
+        float[] y= new float[y_size];
+        x = (long)((xs.get(start) -lmin_x)*kx);
+
+        float[] yl = new float[y_size];
+        float[][] combined = new float[y_size][xs.size()*4];
+
+        for (int yi = 0;yi<y_size;yi++){
+            yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
+            points[yi+1][0] = yl[yi];
+        }
         double xi;
         double yi;
-        ArrayList<Path> paths = new ArrayList<>();
-        for (i =0;i<y_size;i++){
-            Path p = new Path();
 
-            p.setFillType(Path.FillType.WINDING);
-            float x1 = (float) (double) xs.get(0);
-            float y1 = (float) (double) y_charts.get(i).get(0);
+        for (int i=start+1,k=0,z=0;i<end;i++,k+=2,z+=4){
 
-            x = (long)((x1-lmin_x)*kx);
-            y = (float)(h-((y1-yMinLimit))*ky) + offsetTop;
-            p.reset();
-            p.moveTo(x,y);
-            paths.add(p);
-        }
-        for (i=start+1;i<end;i++){
+
+            points[0][k] = x;
+            for (int g =0;g<y_size;g++) {
+                combined[g][z] = x;
+            }
+
             xi = xs.get(i);
             x = (long)((xi-lmin_x)*kx);
-            for (int g =0;g<y_size;g++){
-                yi = y_charts.get(g).get(i);
-                y = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
-                paths.get(g).lineTo(x,y);
+            points[0][k+1] = x;
+
+
+            for (int g =0;g<y_size;g++) {
+                combined[g][z+2] = x;
             }
+
+
+
+            for (int g =0;g<y_size;g++){
+                combined[g][z+1] = yl[g];
+                points[g+1][k] = yl[g];
+
+                yi = y_charts.get(g).get(i);
+                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+
+                points[g+1][k+1] = y[g];
+                combined[g][z+3] = y[g];
+                yl[g] = y[g];
+
+            }
+
+
         }
 
-
-
-//        for (int i=start+1,k=0;i<end;i++,k+=2){
-//            points[0][k] = x;
-//            xi = xs.get(i);
-//            x = (long)((xi-lmin_x)*kx);
-//            points[0][k+1] = x;
-//
-//            for (int g =0;g<y_charts.size();g++){
-//                points[g+1][k] = yl[g];
-//                yi = y_charts.get(g).get(i);
-//                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
-//                points[g+1][k+1] = y[g];
-//                yl[g] = y[g];
-//            }
-//        }
-
-        paint.setStrokeWidth(3);
-        paint.setStyle(Paint.Style.STROKE);
-
-        for (int g =1;g<y_charts.size()+1;g++) {
-            Path p = paths.get(g-1);
+        for (int g =1;g<y_size+1;g++) {
+            //float[] arr = combine(points[0] , points[g]);
+            float[] arr = combined[g-1];
             paint.setColor(Color.parseColor(colors.get(g-1)));
-            canvas.drawPath(p,paint);
-//            canvas.drawLines(arr, paint);
+            canvas.drawLines(arr, paint);
         }
     }
 
