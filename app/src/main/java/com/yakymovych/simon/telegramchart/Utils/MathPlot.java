@@ -134,34 +134,35 @@ public class MathPlot {
 
 
     public void drawChart(List<Double> p, Canvas canvas, Paint paint){
-        List<Long> prx = new ArrayList<>();
-        List<Double> pry =new ArrayList<>();
-        this.calcGlobals();
-        Log.d("MATHPLOT","XMIN : " + xmin + " xmax: " + xmax);
         double lmin_x = xmin;
         double lmax_x = xmax;
-
-        Double lmin_y = calcMinLocalY(p);
-        Double lmax_y = calcMaxLocalY(p);
 
         double kx = ((double)(w))/(lmax_x-lmin_x);
         double ky = ((double)(h)/(yMaxLimit -yMinLimit));
 
+        List<Double> xs = chart.columns.get("x");
+        float[] points = new float[(end-start)*4];
 
-        Log.d("MATHPLOT","ky: " + ky + " yMaxLimit: " + yMaxLimit + " " + start + " " + end);
-        for (int i=start;i<end;i++){
-            double xi = chart.columns.get("x").get(i);
-            double yi = p.get(i);
-            prx.add((long)((xi-lmin_x)*kx));
-            pry.add((h-((yi-yMinLimit))*ky) + offsetTop);
-        }
 
-        Log.d("MATHPLOT","PLOTTING " + prx.toString());
-        for (int i=0;i<prx.size()-1;i++ ){
-            canvas.drawLine(prx.get(i),pry.get(i).intValue(),
-                    prx.get(i+1),pry.get(i+1).intValue(),paint);
-            //canvas.drawText("x: " + x.get(i) + " y: " + y.get(i),15+ px.get(i),py.get(i),paint);
+        long x = (long)((xs.get(0) -lmin_x)*kx);
+        float y = (float)(h-((p.get(0)-yMinLimit))*ky) + offsetTop;
+        double xi;
+        double yi;
+
+        for (int i=start,k=0;i<end;i++,k+=4){
+            points[k] = x;
+            points[k+1] = y;
+
+            xi = xs.get(i);
+            yi = p.get(i);
+
+            x = (long)((xi-lmin_x)*kx);
+            y = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+
+            points[k+2] = x;
+            points[k+3] = y;
         }
+        canvas.drawLines(points,paint);
     }
 
     public void drawCharts(Canvas canvas, Paint paint) {
