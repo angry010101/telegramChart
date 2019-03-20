@@ -164,17 +164,88 @@ public class MathPlot {
         }
         canvas.drawLines(points,paint);
     }
+//
+//    public void drawCharts(Canvas canvas, Paint paint) {
+//        //calcGlobals();
+//        Log.d("VIEW","DRAWING CHARTS" + visiblePlots );
+//        for (String i : visiblePlots){
+//            List<Double> p = chart.columns.get(i);
+//            Log.d("DRAWING","CHART " + i + " " + p);
+//            String color = chart.colors.get(i);
+//            paint.setColor(Color.parseColor(color));
+//            drawChart(p,canvas,paint);
+//        }
+//    }
+
 
     public void drawCharts(Canvas canvas, Paint paint) {
-        //calcGlobals();
-        Log.d("VIEW","DRAWING CHARTS" + visiblePlots );
+        List<List<Double>> y_charts = new ArrayList<>();
+        List<String> colors = new ArrayList<>();
+
         for (String i : visiblePlots){
             List<Double> p = chart.columns.get(i);
-            Log.d("DRAWING","CHART " + i + " " + p);
-            String color = chart.colors.get(i);
-            paint.setColor(Color.parseColor(color));
-            drawChart(p,canvas,paint);
+            y_charts.add(p);
+            colors.add(chart.colors.get(i));
         }
+
+        if (y_charts.size() == 0) return;
+        double lmin_x = xmin;
+        double lmax_x = xmax;
+
+        double kx = ((double)(w))/(lmax_x-lmin_x);
+        double ky = ((double)(h)/(yMaxLimit -yMinLimit));
+
+        List<Double> xs = chart.columns.get("x");
+        float[][] points = new float[y_charts.size()+1][(end-start)*2];
+
+        long x;
+        float[] y= new float[y_charts.size()];
+        x = (long)((xs.get(start) -lmin_x)*kx);
+
+
+        float[] yl = new float[y_charts.size()];
+        for (int yi = 0;yi<y_charts.size();yi++){
+            yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
+            points[yi+1][0] = yl[yi];
+        }
+
+        int graph_length = xs.size()-1;
+        double xi;
+        double yi;
+
+        for (int i=start+1,k=0;i<end;i++,k+=2){
+            points[0][k] = x;
+            xi = xs.get(i);
+            x = (long)((xi-lmin_x)*kx);
+            points[0][k+1] = x;
+
+            for (int g =0;g<y_charts.size();g++){
+                points[g+1][k] = yl[g];
+                yi = y_charts.get(g).get(i);
+                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+                points[g+1][k+1] = y[g];
+                yl[g] = y[g];
+            }
+
+
+        }
+        for (int g =1;g<y_charts.size()+1;g++) {
+            float[] arr = combine(points[0] , points[g]);
+            canvas.drawLines(arr, paint);
+        }
+    }
+
+    public static float[] combine(float[] a, float[] b){
+        int length = a.length + b.length;
+        float[] result = new float[length];
+
+        for (int i=0;i<a.length;i++){
+            result[2*i] = a[i];
+            result[2*i+1] = b[i];
+        }
+//        System.arraycopy(a, 0, result, 0, a.length);
+//        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
     }
 
     public Set<String> getVisiblePlots() {
