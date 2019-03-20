@@ -4,12 +4,14 @@ import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -178,17 +180,20 @@ public class MathPlot {
 //    }
 
 
+
     public void drawCharts(Canvas canvas, Paint paint) {
+        int i,k;
         List<List<Double>> y_charts = new ArrayList<>();
         List<String> colors = new ArrayList<>();
 
-        for (String i : visiblePlots){
-            List<Double> p = chart.columns.get(i);
+        for (String s : visiblePlots){
+            List<Double> p = chart.columns.get(s);
             y_charts.add(p);
-            colors.add(chart.colors.get(i));
+            colors.add(chart.colors.get(s));
         }
 
-        if (y_charts.size() == 0) return;
+        int y_size = y_charts.size();
+        if (y_size == 0) return;
         double lmin_x = xmin;
         double lmax_x = xmax;
 
@@ -196,55 +201,71 @@ public class MathPlot {
         double ky = ((double)(h)/(yMaxLimit -yMinLimit));
 
         List<Double> xs = chart.columns.get("x");
-        float[][] points = new float[y_charts.size()+1][(end-start)*2];
+        float[][] points = new float[y_size+1][(end-start)*2];
 
         long x;
-        float[] y= new float[y_charts.size()];
-        x = (long)((xs.get(start) -lmin_x)*kx);
-
-
-        float[] yl = new float[y_charts.size()];
-        for (int yi = 0;yi<y_charts.size();yi++){
-            yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
-            points[yi+1][0] = yl[yi];
-        }
-
-        int graph_length = xs.size()-1;
+        float y;
         double xi;
         double yi;
+        ArrayList<Path> paths = new ArrayList<>();
+        for (i =0;i<y_size;i++){
+            Path p = new Path();
 
-        for (int i=start+1,k=0;i<end;i++,k+=2){
-            points[0][k] = x;
+            p.setFillType(Path.FillType.WINDING);
+            float x1 = (float) (double) xs.get(0);
+            float y1 = (float) (double) y_charts.get(i).get(0);
+
+            x = (long)((x1-lmin_x)*kx);
+            y = (float)(h-((y1-yMinLimit))*ky) + offsetTop;
+            p.reset();
+            p.moveTo(x,y);
+            paths.add(p);
+        }
+        for (i=start+1;i<end;i++){
             xi = xs.get(i);
             x = (long)((xi-lmin_x)*kx);
-            points[0][k+1] = x;
-
-            for (int g =0;g<y_charts.size();g++){
-                points[g+1][k] = yl[g];
+            for (int g =0;g<y_size;g++){
                 yi = y_charts.get(g).get(i);
-                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
-                points[g+1][k+1] = y[g];
-                yl[g] = y[g];
+                y = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+                paths.get(g).lineTo(x,y);
             }
-
-
         }
+
+
+
+//        for (int i=start+1,k=0;i<end;i++,k+=2){
+//            points[0][k] = x;
+//            xi = xs.get(i);
+//            x = (long)((xi-lmin_x)*kx);
+//            points[0][k+1] = x;
+//
+//            for (int g =0;g<y_charts.size();g++){
+//                points[g+1][k] = yl[g];
+//                yi = y_charts.get(g).get(i);
+//                y[g] = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
+//                points[g+1][k+1] = y[g];
+//                yl[g] = y[g];
+//            }
+//        }
+
+        paint.setStrokeWidth(3);
+        paint.setStyle(Paint.Style.STROKE);
+
         for (int g =1;g<y_charts.size()+1;g++) {
-            float[] arr = combine(points[0] , points[g]);
-            canvas.drawLines(arr, paint);
+            Path p = paths.get(g-1);
+            paint.setColor(Color.parseColor(colors.get(g-1)));
+            canvas.drawPath(p,paint);
+//            canvas.drawLines(arr, paint);
         }
     }
 
     public static float[] combine(float[] a, float[] b){
         int length = a.length + b.length;
         float[] result = new float[length];
-
         for (int i=0;i<a.length;i++){
             result[2*i] = a[i];
             result[2*i+1] = b[i];
         }
-//        System.arraycopy(a, 0, result, 0, a.length);
-//        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
