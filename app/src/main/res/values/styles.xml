@@ -5,26 +5,32 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorLightGray</item>
+        <item name="colorAccent">@color/colorLightBlue</item>
 
         <item name="android:textColorPrimary">@color/colorBlack</item>
         <item name="android:textColorSecondary">@color/colorTextGray</item>
 
-        <item name="android:colorForeground">@color/foregroundLight</item>
-        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="android:colorForeground">@color/colorLightGray</item>
+        <item name="background">@color/foregroundLight</item>
+        <item name="mainBackground">@color/colorBackground</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorThemeDark</item>
         <item name="colorPrimaryDark">@color/colorThemeDeepDark</item>
         <item name="colorAccent">@color/colorThemeLightGray</item>
         <item name="android:textColorPrimary">@color/foregroundLight</item>
         <item name="android:textColorSecondary">@color/colorThemeTextGray</item>
 
-        <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
+        <item name="mainBackground">@color/colorThemeBackground</item>
 
-        <item name="android:colorBackground">@color/colorThemeBackground</item>
+        <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
+        <item name="background">@color/colorThemePrimaryDark</item>
     </style>
 
+    <style name="checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textColor">@color/colorBlue</item>
+    </style>
 </resources>

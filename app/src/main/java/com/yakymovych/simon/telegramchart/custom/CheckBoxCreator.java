@@ -1,11 +1,13 @@
 package com.yakymovych.simon.telegramchart.custom;
 
 import android.content.Context;
+import android.view.ContextThemeWrapper;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.yakymovych.simon.telegramchart.MainActivity;
+import com.yakymovych.simon.telegramchart.R;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -40,13 +42,15 @@ public class CheckBoxCreator {
         this.chbListener = chbListener;
         for (int i = 0;i<names.size();i++){
             CheckBox ch = createCheckBox(names.get(i), tags.get(i));
+
         }
 
     }
 
 
     private CheckBox createCheckBox(String text,String tag){
-        CheckBox ch = new CheckBox(context);
+//        CheckBox ch = new CheckBox(context);
+        CheckBox ch = new CheckBox(new ContextThemeWrapper(this.context, R.style.checkbox), null, 0);
         ch.setText(text);
         ch.setTag(tag);
         ch.setOnCheckedChangeListener(chbListener);

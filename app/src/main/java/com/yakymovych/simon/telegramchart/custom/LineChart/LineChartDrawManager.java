@@ -52,7 +52,6 @@ public class LineChartDrawManager {
     }
 
     public void draw(Canvas canvas,boolean drawStats){
-        //this.drawXAsis(canvas,paint);
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         if (drawStats){
