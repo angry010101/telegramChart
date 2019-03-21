@@ -1,12 +1,15 @@
 package com.yakymovych.simon.telegramchart.custom;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -14,6 +17,8 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
 import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
+
+import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,22 +53,22 @@ public class XLabelsView  extends View {
 
     public XLabelsView(Context context) {
         super(context);
-        init();
+        init(context,null);
     }
 
     public XLabelsView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context,attrs);
     }
 
     public XLabelsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context,attrs);
     }
 
     public XLabelsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(context,attrs);
     }
 
 
@@ -94,11 +99,22 @@ public class XLabelsView  extends View {
         this.invalidate();
     }
 
-    private void init(){
+    private void init(Context context, AttributeSet attrs){
         //int myColor = 0x88f5f8f9;
         paint.setColor(Color.RED);
         paint.setTextSize(20);
         paint.setAntiAlias(true);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr =
+                context.obtainStyledAttributes(typedValue.data, new int[]{
+                        android.R.attr.textColorPrimary,
+                        android.R.attr.textColorSecondary});
+        int primaryColor = arr.getColor(1, -1);
+
+        paint.setColor(primaryColor);
 
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

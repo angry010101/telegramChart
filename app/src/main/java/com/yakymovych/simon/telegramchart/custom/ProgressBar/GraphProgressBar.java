@@ -1,9 +1,13 @@
 package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -40,17 +44,17 @@ public class GraphProgressBar extends View {
 
     public GraphProgressBar(Context context) {
         super(context);
-        init();
+        init(context,null);
     }
 
     public GraphProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context,attrs);
     }
 
     public GraphProgressBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context,attrs);
     }
 
 
@@ -58,23 +62,35 @@ public class GraphProgressBar extends View {
         this.chart = c;
     }
 
-    private void initSizes(){
+    private void initSizes(int colorBorders, int colorShadow){
         int width = this.getWidth();
         int height= this.getHeight();
         Log.d("GPB","SETTING PROGRESS " + progressEnd);
         this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,progressMax,minOffsetElems);
         this.mp = new MathPlot(width,height,topMargin,topMargin);
-        this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height);
+        this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
 
         Log.d("GPB","PROGRES BAR INIT: " + progressStart + " " + progressEnd);
         this.invalidate();
     }
 
-    private void init(){
+    private void init(Context context,AttributeSet attrs){
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr =
+                context.obtainStyledAttributes(typedValue.data, new int[]{
+                        android.R.attr.colorAccent,
+                        android.R.attr.colorForeground});
+        final int colorShadow = arr.getColor(0, -1);
+        final int colorBorders = arr.getColor(1, -1);
+
+
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                initSizes();
+                initSizes(colorBorders,colorShadow);
             }
         });
     }

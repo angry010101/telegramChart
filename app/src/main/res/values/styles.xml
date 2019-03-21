@@ -5,20 +5,26 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorForeground">@color/foreground_material_light</item>
+        <item name="colorAccent">@color/colorLightGray</item>
+
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+        <item name="android:textColorSecondary">@color/colorTextGray</item>
+
+        <item name="android:colorForeground">@color/foregroundLight</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorThemeDark</item>
-        <item name="colorPrimaryDark">@color/colorThemeDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:colorForeground">@color/foreground_material_light</item>
+        <item name="colorPrimaryDark">@color/colorThemeDeepDark</item>
+        <item name="colorAccent">@color/colorThemeLightGray</item>
+        <item name="android:textColorPrimary">@color/foregroundLight</item>
+        <item name="android:textColorSecondary">@color/colorThemeTextGray</item>
+
+        <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
+
+        <item name="android:colorBackground">@color/colorThemeBackground</item>
     </style>
 
-
-
-    <color name="colorThemeDark">#212d3b</color>
-    <color name="colorThemePrimaryDark">#1d2733</color>
 </resources>

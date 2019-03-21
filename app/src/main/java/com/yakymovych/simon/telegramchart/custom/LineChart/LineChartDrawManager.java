@@ -14,6 +14,7 @@ public class LineChartDrawManager {
 
 
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint graphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Rect rect = new Rect();
     MathPlot mp;
     int w,h;
@@ -38,7 +39,7 @@ public class LineChartDrawManager {
     }
 
 
-    public LineChartDrawManager(MathPlot mp, int w, int h){
+    public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor){
         rect.left = 0;
         this.w = w;
         this.h = h;
@@ -46,13 +47,13 @@ public class LineChartDrawManager {
         rect.top = 0;
         rect.bottom = h;
         this.mp = mp;
-        paint.setColor(Color.MAGENTA);
+        paint.setColor(paintColor);
         paint.setTextSize(30);
     }
 
     public void draw(Canvas canvas,boolean drawStats){
-        mp.drawCharts(canvas,paint);
         //this.drawXAsis(canvas,paint);
+        mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         if (drawStats){
             this.drawStats(canvas,paint);

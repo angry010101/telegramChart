@@ -24,22 +24,22 @@ public class ProgressBarDrawManager {
     private final int borderWidth=16;
     private int sliderTopBorder=4;
 
-    public ProgressBarDrawManager(MathPlot mp, int width, int height){
+    public ProgressBarDrawManager(MathPlot mp, int width, int height,int colorBorders,int colorShadow){
         this.mp= mp;
         this.width = width;
         this.height = height;
-        init();
+        init(colorBorders,colorShadow);
     }
-    private void init(){
+    private void init(int colorBorders, int colorShadow){
         paint.setColor(Color.GREEN);
         paint.setTextSize(30);
 
-        int myColor = 0x88f5f8f9;
-        grayPaint.setColor(myColor);
+        //int myColor = 0x88f5f8f9;
+        grayPaint.setColor(colorBorders);
         grayPaint.setAntiAlias(true);
         //#AARRGGBB
-        int blueColor = 0x88dbe7f0;
-        bluePaint.setColor(blueColor);
+        //int blueColor = 0x88dbe7f0;
+        bluePaint.setColor(colorShadow);
         bluePaint.setAntiAlias(true);
 
 

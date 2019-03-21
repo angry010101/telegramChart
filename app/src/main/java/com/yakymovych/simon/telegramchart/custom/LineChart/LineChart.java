@@ -3,19 +3,20 @@ package com.yakymovych.simon.telegramchart.custom.LineChart;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
+import com.yakymovych.simon.telegramchart.R;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.Collections;
@@ -211,37 +212,47 @@ public class LineChart extends View {
 
     public LineChart(Context context) {
         super(context);
-        init();
+        init(context,null);
     }
 
     public LineChart(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context,attrs);
     }
 
     public LineChart(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context,attrs);
     }
 
 
-    private void initSizes(){
+    private void initSizes(int color){
         int width = this.getWidth();
         int height = this.getHeight();
         mp = new MathPlot(width,height,topMargin,bottomMargin);
         viewPort = new LineChartViewPort(this,width,height);
-        drawManager = new LineChartDrawManager(mp,width,height);
+        drawManager = new LineChartDrawManager(mp,width,height,color);
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
         this.invalidate();
     }
 
-    private void init(){
+    private void init(Context context,AttributeSet attrs){
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
+        TypedArray arr =
+                context.obtainStyledAttributes(typedValue.data, new int[]{
+                        android.R.attr.textColorPrimary,
+                        android.R.attr.textColorSecondary});
+        final int primaryColor = arr.getColor(1, -1);
+
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                initSizes();
+                initSizes(primaryColor);
             }
         });
 
