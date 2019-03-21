@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -21,6 +22,7 @@ public class XLabelsView  extends View {
     private int datesCount = 5;
     private int visibleDatesCount = 5;
     private double pxPerDate = 5;
+    private int datesStep = 5;
     int width,height;
     LineChart.LineChartListener lineChartListener;
     int start,end;
@@ -68,20 +70,24 @@ public class XLabelsView  extends View {
 
 
     public void setStart(int start) {
-        this.start = start;
-    }
 
+        this.start = start;
+        this.setDatesStep();
+    }
     public void setEnd(int end) {
         this.end = end;
+        this.setDatesStep();
     }
-
+    private void setDatesStep(){
+        this.datesStep = (this.end - this.start)/visibleDatesCount;
+    }
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
     private void initSizes(){
         width = this.getWidth();
         height = this.getHeight();
-        pxPerDate = (double)width/datesCount;
+        pxPerDate = (double)width/visibleDatesCount;
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
@@ -104,14 +110,14 @@ public class XLabelsView  extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //super.onDraw(canvas);
         if (this.dates != null && !this.dates.isEmpty())
             drawDates(canvas,paint);
     }
 
     private void drawDates(Canvas canvas,Paint paint) {
+        Log.d("XLABELSIEW"," " + pxPerDate + " " + this.width + " datesstep " + datesStep);
         for (int i =0;i<visibleDatesCount;i++){
-            canvas.drawText(this.datesStr.get(start+i),(int)(i*pxPerDate),height/2,paint);
+            canvas.drawText(this.datesStr.get(start+(i*datesStep)),(int)(i*pxPerDate),height/2,paint);
         }
     }
 
@@ -119,6 +125,7 @@ public class XLabelsView  extends View {
     public void moveTo(int p1, int p2) {
         start = p1;
         end = p2;
+        this.setDatesStep();
         this.invalidate();
     }
 }

@@ -18,5 +18,7 @@
     </style>
 
 
+
     <color name="colorThemeDark">#212d3b</color>
+    <color name="colorThemePrimaryDark">#1d2733</color>
 </resources>
