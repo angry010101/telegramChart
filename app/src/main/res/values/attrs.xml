@@ -2,5 +2,6 @@
 <resources>
     <attr name="mainBackground" format="reference"/>
     <attr name="background" format="reference"/>
+    <attr name="chartStatsBackground" format="reference"/>
 
 </resources>

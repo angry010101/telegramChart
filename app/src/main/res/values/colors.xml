@@ -20,6 +20,8 @@
 
     <color name="colorThemeTextGray">#546778</color>
     <color name="colorThemeLightGray">#AA546778</color>
-    <color name="colorThemeForegroundGray">#882b4256</color>
+    <color name="colorThemeForegroundGray">#8819232e</color>
+    <color name="colorChartStatsWindow">#202b38</color>
+
 
 </resources>

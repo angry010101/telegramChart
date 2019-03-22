@@ -28,6 +28,7 @@ public class LineChartDrawManager {
     int statsXoffsetLeft=20;
     int statsW = 220, statsH = 160;
 
+    int chartBackground ;
     float stats_radius = 20;
     int dateCount = 5;
 
@@ -47,7 +48,8 @@ public class LineChartDrawManager {
     }
 
 
-    public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor){
+    public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor,int chartBackground){
+        this.chartBackground = chartBackground;
         intersectionPaint.setColor(Color.WHITE);
         intersectionPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         intersectionPaint.setAntiAlias(true);
@@ -97,7 +99,8 @@ public class LineChartDrawManager {
         int statsX = this.statsX-statsXoffsetLeft;
         statsY=80;
         RectF rect = new RectF(statsX, statsY,statsX + statsW, statsY + statsH);
-
+        int lastColor = paint.getColor();
+        paint.setColor(chartBackground);
         //canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
         canvas.drawRoundRect(rect,stats_radius,stats_radius,paint);
         if (true){
@@ -109,6 +112,7 @@ public class LineChartDrawManager {
             canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
                     statsX+statsXoffsetLeft,0,paint);
         }
+        paint.setColor(lastColor);
     }
 
     private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {

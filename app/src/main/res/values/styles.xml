@@ -13,10 +13,14 @@
         <item name="android:colorForeground">@color/colorLightGray</item>
         <item name="background">@color/foregroundLight</item>
         <item name="mainBackground">@color/colorBackground</item>
+        <item name="chartStatsBackground">@color/foregroundLight</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorThemeDark</item>
+
+        <item name="chartStatsBackground">@color/colorChartStatsWindow</item>
+
         <item name="colorPrimaryDark">@color/colorThemeDeepDark</item>
         <item name="colorAccent">@color/colorThemeLightGray</item>
         <item name="android:textColorPrimary">@color/foregroundLight</item>
@@ -25,7 +29,7 @@
         <item name="mainBackground">@color/colorThemeBackground</item>
 
         <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
-        <item name="background">@color/colorThemePrimaryDark</item>
+        <item name="background">@color/colorThemeDeepDark</item>
     </style>
 
     <style name="checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">

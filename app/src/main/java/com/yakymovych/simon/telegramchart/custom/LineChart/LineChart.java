@@ -30,7 +30,7 @@ public class LineChart extends View {
     private int start,end;
     private MathPlot mp;
     //private List<Plot> plots;
-
+    int chartBackground;
 
     LineChartDrawManager drawManager;
     LineChartViewPort viewPort;
@@ -235,7 +235,7 @@ public class LineChart extends View {
         int height = this.getHeight();
         mp = new MathPlot(width,height,topMargin,bottomMargin);
         viewPort = new LineChartViewPort(this,width,height);
-        drawManager = new LineChartDrawManager(mp,width,height,color);
+        drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground);
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
@@ -250,8 +250,10 @@ public class LineChart extends View {
         TypedArray arr =
                 context.obtainStyledAttributes(typedValue.data, new int[]{
                         android.R.attr.textColorPrimary,
-                        android.R.attr.textColorSecondary});
+                        android.R.attr.textColorSecondary,
+                    R.attr.chartStatsBackground});
         final int primaryColor = arr.getColor(1, -1);
+        chartBackground = arr.getColor(2, -1);
 
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
