@@ -30,6 +30,7 @@ public class LineChartViewPort {
     int xmin,xmax;
     double ymin,ymax;
     private double unitPerPx;
+    double t;
 
     LineChartViewPort(LineChart view,int w,int h){
         this.w = w;
@@ -43,10 +44,12 @@ public class LineChartViewPort {
     }
 
 
+
     public void setEnd(int end) {
         this.end = end;
         unitPerPx = ((double)((end-start))/w);
     }
+
 
     public void setStartAndEnd(int start,int end){
         this.start = start;
@@ -59,11 +62,12 @@ public class LineChartViewPort {
     private int stats_draw_right_threshold;
 
 
-    public int findNearestFor(Plot p, long x) {
-        List<Long> prcx = p.x.subList(start,end);
+    public int findNearestFor(List<Double> p, long x) {
+        List<Double> prcx = p.subList(start,end);
         Log.d("SEARCH", "prcx " + start + "END: " + end);
         Log.d("SEARCH", "prcx " + prcx.toString() + " \nx = " + x + " zero: " + prcx.get(0));
-        return prcx.indexOf(x+prcx.get(0));
+        Log.d("SEARCH", "prcx " + prcx.indexOf(x));
+        return prcx.indexOf(x);
     }
 
     public synchronized boolean onTouchEvent(MotionEvent event) {
@@ -84,8 +88,7 @@ public class LineChartViewPort {
                 Log.d("VIEW: ","WIDTH" + x + " " + stats_draw_right_threshold + " " + stats_draw_left_threshold);
                 if (isFingerDown && x < stats_draw_right_threshold && x > stats_draw_left_threshold ){
                     //y_threshold = (int)(((ymax-ymin)/2)*(y_real_threshold));
-                    double t = ((double)((end-start))/w);
-                    view.handleMove((long)(x*t),w);
+                    view.handleMove((long)(x*unitPerPx),x,w);
 
                 }
                 break;

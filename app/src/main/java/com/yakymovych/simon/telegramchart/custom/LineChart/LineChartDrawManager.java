@@ -3,16 +3,20 @@ package com.yakymovych.simon.telegramchart.custom.LineChart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.util.Log;
 
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class LineChartDrawManager {
 
 
+    public double pxPerUnit;
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Paint graphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Rect rect = new Rect();
@@ -29,6 +33,7 @@ public class LineChartDrawManager {
     int y_threshold=5;
     int stats_y_intersection = 20;
     int intersection_radius = 10;
+    Paint intersectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public void setStatsX(int statsX) {
         this.statsX = statsX;
@@ -40,6 +45,9 @@ public class LineChartDrawManager {
 
 
     public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor){
+        intersectionPaint.setColor(Color.WHITE);
+        intersectionPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        intersectionPaint.setAntiAlias(true);
         rect.left = 0;
         this.w = w;
         this.h = h;
@@ -51,10 +59,11 @@ public class LineChartDrawManager {
         paint.setTextSize(30);
     }
 
-    public void draw(Canvas canvas,boolean drawStats){
+    public void draw(Canvas canvas, boolean drawStats, double[] ys, ArrayList<String> ysColors){
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
-        if (drawStats){
+        if (drawStats && ys != null){
+            this.drawIntersection(canvas,paint, ys,ysColors);
             this.drawStats(canvas,paint);
         }
     }
@@ -91,14 +100,23 @@ public class LineChartDrawManager {
             canvas.drawLine(statsX,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
                     statsX,0,paint);
         }
-
-        drawIntersection(canvas,paint);
     }
 
-    private void drawIntersection(Canvas canvas, Paint paint) {
-        canvas.drawCircle(statsX,
-                (int)(h-(stats_y_intersection-mp.getYMin())*((double)h)/(mp.getYMax()-mp.getYMin())),
-                intersection_radius,paint);
+    private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {
+
+        for (int i =0;i<ys.length;i++){
+            double y = ys[i];
+            paint.setColor(Color.parseColor(ysColors.get(i)));
+            Log.d("INTERSECTION","Y: " + y);
+            int ytodraw = mp.h-(int)y+mp.offsetTop;
+            canvas.drawCircle(statsX,
+                    ytodraw,
+                    intersection_radius,paint);
+//            Path smallPath = new Path();
+//            smallPath.addCircle(statsX,ytodraw,intersection_radius/2,Path.Direction.CW);
+//            canvas.clipPath(smallPath);
+            canvas.drawCircle(statsX,ytodraw,intersection_radius/2,intersectionPaint);
+        }
     }
 
 

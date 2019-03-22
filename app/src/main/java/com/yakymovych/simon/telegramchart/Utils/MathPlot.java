@@ -16,15 +16,15 @@ import java.util.List;
 import java.util.Set;
 
 public class MathPlot {
-    private final int offsetTop;
+    public final int offsetTop;
     public static Long inf = Long.MAX_VALUE;
-    private final int offsetBottom;
+    public final int offsetBottom;
     public float e = 0.0001F ;
     private double xmax,xmin;
     public int start,end;
     private double ymax,ymin;
     //private List<Plot> plots = new ArrayList<>();
-    private int w,h;
+    public int w,h;
     private double yMaxLimit;
     private double yMinLimit;
 

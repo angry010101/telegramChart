@@ -19,9 +19,11 @@ import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.R;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class LineChart extends View {
@@ -45,6 +47,8 @@ public class LineChart extends View {
     int bottomMargin = 20;
     ValueAnimator newGraphAnimator;
     ValueAnimator heightAnimator;
+
+
 
     public void startAnimShow(String pos){
         List<Double> p1 = chart.columns.get(pos);
@@ -275,7 +279,7 @@ public class LineChart extends View {
     }
     @Override
     protected void onDraw(Canvas canvas) {
-        drawManager.draw(canvas,viewPort.isFingerDown);
+        drawManager.draw(canvas,viewPort.isFingerDown,ys,ysColors);
     }
 
 
@@ -335,32 +339,30 @@ public class LineChart extends View {
     private final int y_stats_offset=100;
     private boolean drawToTop = false;
 
-    public void handleMove(long x,int w) {
+    double[] ys;
+    ArrayList<String> ysColors;
+    public void handleMove(long pos,long x_px, int w) {
+        ys = new double[this.chart.columns.size()-1];
 
-        /*int nearest = viewPort.findNearestFor(plots.get(0),x);
-        //stats_x = (int) (nearest*w/(end-start-1));
-        //stats_x_position = nearest;
+        int xpos = (int) pos;//viewPort.findNearestFor(this.chart.columns.get("x"),pos);
+        //drawManager.statsX = this.chart.columns.get("x").get((int)pos+start).intValue();
+        Double xs = this.chart.columns.get("x").get((int) (pos+start));
+        Double xsStart = this.chart.columns.get("x").get((int) (start));
+        Double xsEnd = this.chart.columns.get("x").get((int) (end-1));
+        int i=0;
+        double pxPerUnitY = (double)mp.h/(mp.getyMaxLimit()-mp.getyMinLimit());
 
-        drawManager.setStatsX((nearest*w/(end-start-1)));
-
-        stats_y = y_stats_offset;
-        drawToTop = false;
-
-        Log.d("VIEW: ","NEAREST: " + nearest);
-        double y_intersection = this.plots.get(0).y.get(nearest);
-
-        float ymax = mp.getYMax();
-        float ymin = mp.getYMin();
-        Log.d("VIEW: ","HAPPENED: " + y_intersection + " max: " + ymax);
-
-        stats_y_intersection = y_intersection;
-
-
-        Log.d("VIEW: ","HAPPENED: " + stats_y_intersection);
-        if (y_intersection>(y_threshold+ymin) ){
-            stats_y = (int)(y_threshold+ymin)+y_stats_offset;
-            drawToTop = true;
-        }*/
+        ysColors = new ArrayList<>();
+        for (Map.Entry<String, List<Double>> entry : this.chart.columns.entrySet()) {
+            List<Double> ys1 = entry.getValue();
+            String key = entry.getKey();
+            if (!key.equals("x")){
+                ysColors.add(i, this.chart.colors.get(key));
+                ys[i++] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
+            }
+        }
+        double pxPerUnit = (double)w/(xsEnd-xsStart);
+        drawManager.statsX =(int)((xs-xsStart)*pxPerUnit);
         this.invalidate();
     }
 
