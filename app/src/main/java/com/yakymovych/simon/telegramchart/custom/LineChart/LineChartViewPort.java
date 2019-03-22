@@ -11,7 +11,7 @@ public class LineChartViewPort {
     int w,h;
     int start,end;
 
-    private int stats_w=250,stats_h=160;
+    private int stats_w=180,stats_h=160;
     LineChart view;
     private int stats_x,stats_y=100;
     private int stats_offset=20;

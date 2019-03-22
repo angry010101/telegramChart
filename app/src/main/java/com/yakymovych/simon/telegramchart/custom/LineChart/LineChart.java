@@ -342,7 +342,7 @@ public class LineChart extends View {
     double[] ys;
     ArrayList<String> ysColors;
     public void handleMove(long pos,long x_px, int w) {
-        ys = new double[this.chart.columns.size()-1];
+        ys = new double[visiblePlots.size()];
 
         int xpos = (int) pos;//viewPort.findNearestFor(this.chart.columns.get("x"),pos);
         //drawManager.statsX = this.chart.columns.get("x").get((int)pos+start).intValue();
@@ -353,13 +353,12 @@ public class LineChart extends View {
         double pxPerUnitY = (double)mp.h/(mp.getyMaxLimit()-mp.getyMinLimit());
 
         ysColors = new ArrayList<>();
-        for (Map.Entry<String, List<Double>> entry : this.chart.columns.entrySet()) {
-            List<Double> ys1 = entry.getValue();
-            String key = entry.getKey();
-            if (!key.equals("x")){
-                ysColors.add(i, this.chart.colors.get(key));
-                ys[i++] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
-            }
+       // for (Map.Entry<String, List<Double>> entry : this.chart.columns.entrySet()) {
+        for (String plot : visiblePlots) {
+            List<Double> ys1 = chart.columns.get(plot);
+            String key = plot;
+            ysColors.add(i, this.chart.colors.get(key));
+            ys[i++] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
         }
         double pxPerUnit = (double)w/(xsEnd-xsStart);
         drawManager.statsX =(int)((xs-xsStart)*pxPerUnit);

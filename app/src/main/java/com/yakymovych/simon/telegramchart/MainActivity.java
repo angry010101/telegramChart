@@ -99,7 +99,7 @@ Chart chart;
 
 
         chbCreator =  new CheckBoxCreator(this,ll);
-        chbCreator.setData(c.names);
+        chbCreator.setData(c);
         chbCreator.generate(chbListener);
 
         xLabelsView.setDates(c.columns.get("x"));

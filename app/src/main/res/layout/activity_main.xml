@@ -16,6 +16,7 @@
         android:background="?attr/background"
         android:gravity="center_vertical"
         android:padding="16dp"
+        android:textSize="8pt"
         android:text="@string/followers"
         android:textColor="@android:color/holo_blue_dark" />
 
@@ -30,7 +31,7 @@
         <com.yakymovych.simon.telegramchart.custom.LineChart.LineChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="400dp"
             android:background="?attr/background" />
 
         <com.yakymovych.simon.telegramchart.custom.XLabelsView

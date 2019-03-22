@@ -7,6 +7,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
@@ -24,8 +25,10 @@ public class LineChartDrawManager {
     int w,h;
     int dividersCount=5;
     int statsX, statsY;
-    int statsW, statsH;
+    int statsXoffsetLeft=20;
+    int statsW = 220, statsH = 160;
 
+    float stats_radius = 20;
     int dateCount = 5;
 
     //remove some
@@ -63,7 +66,7 @@ public class LineChartDrawManager {
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         if (drawStats && ys != null){
-            this.drawIntersection(canvas,paint, ys,ysColors);
+            this.drawIntersection(canvas,graphPaint, ys,ysColors);
             this.drawStats(canvas,paint);
         }
     }
@@ -91,19 +94,24 @@ public class LineChartDrawManager {
 
     private void drawStats(Canvas canvas, Paint paint) {
         //COULD BE BETTER
-        canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
+        int statsX = this.statsX-statsXoffsetLeft;
+        statsY=80;
+        RectF rect = new RectF(statsX, statsY,statsX + statsW, statsY + statsH);
+
+        //canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
+        canvas.drawRoundRect(rect,stats_radius,stats_radius,paint);
         if (true){
-            canvas.drawLine(statsX,h, statsX, statsY + statsH,paint);
+            canvas.drawLine(statsX+statsXoffsetLeft,h,
+                    statsX+statsXoffsetLeft, statsY + statsH,paint);
         }
         else {
 
-            canvas.drawLine(statsX,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
-                    statsX,0,paint);
+            canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
+                    statsX+statsXoffsetLeft,0,paint);
         }
     }
 
     private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {
-
         for (int i =0;i<ys.length;i++){
             double y = ys[i];
             paint.setColor(Color.parseColor(ysColors.get(i)));
