@@ -66,7 +66,12 @@ public class GraphGenerator {
             return String.format("%06x", nextInt);
     }
 
-    static DateFormat dateFormat = new SimpleDateFormat("MMM/dd");
+    static DateFormat dateFormat = new SimpleDateFormat("MMM dd");
+    static DateFormat statsdateFormat = new SimpleDateFormat("E, MMM dd");
+    public static String getStringDateWithDay(long x){
+        return statsdateFormat.format(x);
+    }
+
 
     public static String getStringDate(long x){
         return dateFormat.format(x);
@@ -85,7 +90,7 @@ public class GraphGenerator {
         List<Double> y = new ArrayList<>();
         List<String> dates = new ArrayList<>();
 
-        DateFormat dateFormat = new SimpleDateFormat("MMM/dd");
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd");
 
 
         for (long i =0;i<112;i++){

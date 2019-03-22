@@ -3,5 +3,6 @@
     <attr name="mainBackground" format="reference"/>
     <attr name="background" format="reference"/>
     <attr name="chartStatsBackground" format="reference"/>
+    <attr name="chartStatsBorder" format="reference"/>
 
 </resources>

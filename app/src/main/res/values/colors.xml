@@ -23,5 +23,7 @@
     <color name="colorThemeForegroundGray">#8819232e</color>
     <color name="colorChartStatsWindow">#202b38</color>
 
+    <color name="colorBorderChart">#f0f0f0</color>
+    <color name="colorThemeBorderChart">#1a232d</color>
 
 </resources>

@@ -14,6 +14,8 @@
         <item name="background">@color/foregroundLight</item>
         <item name="mainBackground">@color/colorBackground</item>
         <item name="chartStatsBackground">@color/foregroundLight</item>
+
+        <item name="chartStatsBorder">@color/colorBorderChart</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -30,6 +32,8 @@
 
         <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
         <item name="background">@color/colorThemeDeepDark</item>
+
+        <item name="chartStatsBorder">@color/colorThemeBorderChart</item>
     </style>
 
     <style name="checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">

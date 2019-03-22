@@ -10,9 +10,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LineChartDrawManager {
 
@@ -23,15 +25,18 @@ public class LineChartDrawManager {
     Rect rect = new Rect();
     MathPlot mp;
     int w,h;
-    int dividersCount=5;
+    int dividersCount=4;
     int statsX, statsY;
     int statsXoffsetLeft=20;
-    int statsW = 220, statsH = 160;
+    int statsW = 160, statsH = 200;
+    float statsBorderWidth=3;
 
     int chartBackground ;
     float stats_radius = 20;
     int dateCount = 5;
 
+    int textPaddingLeft = 22;
+    int textPaddingTop = 10;
     //remove some
     int y_stats_offset = 20;
     int y_threshold=5;
@@ -46,12 +51,23 @@ public class LineChartDrawManager {
     public void setStatsY(int statsY) {
         this.statsY = statsY;
     }
+    Paint paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Paint paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+    int textColor;
 
-
-    public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor,int chartBackground){
+    public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor,int chartBackground,int colorChartBorder,int defaultTextColor){
         this.chartBackground = chartBackground;
         intersectionPaint.setColor(Color.WHITE);
         intersectionPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        intersectionPaint.setAntiAlias(true);
+
+        this.textColor = defaultTextColor;
+        paintText.setTextSize(24);
+        paintText.setAntiAlias(true);
+        this.paintBorder.setStrokeWidth(3);
+        this.paintBorder.setStyle(Paint.Style.STROKE);
+        this.paintBorder.setColor(colorChartBorder);
+        intersectionPaint.setColor(Color.WHITE);
         intersectionPaint.setAntiAlias(true);
         rect.left = 0;
         this.w = w;
@@ -60,16 +76,19 @@ public class LineChartDrawManager {
         rect.top = 0;
         rect.bottom = h;
         this.mp = mp;
+
+        statsW = w/5;
+        statsH = h/4;
         paint.setColor(paintColor);
         paint.setTextSize(30);
     }
 
-    public void draw(Canvas canvas, boolean drawStats, double[] ys, ArrayList<String> ysColors){
+    public void draw(Canvas canvas, boolean drawStats, double[] ys,int[] ys_real_data,  ArrayList<String> ysColors,Long currentX,List<String> ysLabels){
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         if (drawStats && ys != null){
             this.drawIntersection(canvas,graphPaint, ys,ysColors);
-            this.drawStats(canvas,paint);
+            this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
         }
     }
 
@@ -86,15 +105,17 @@ public class LineChartDrawManager {
 
 
     private void drawXDividers(Canvas canvas, Paint paint) {
-        double t = ((mp.getyMaxLimit()-mp.getyMinLimit()))/dividersCount;
-        for (int i=h/dividersCount,k=dividersCount;i<h || k>0;i+= h/dividersCount,k--){
-            canvas.drawLine(0,i,w,i,paint);
-            canvas.drawText(""+(int)Math.round(t*(k)),0,i,paint);
+        int  hc =(int)(h-mp.offsetTop-mp.offsetBottom)/(dividersCount);
+        double t = ((mp.getyMaxLimit()-mp.getyMinLimit()))/(dividersCount);
+
+        for (int i=0,k=dividersCount;k>0;i+= hc,k--){
+            canvas.drawLine(0,i+mp.offsetBottom,w,i+mp.offsetBottom,paint);
+            canvas.drawText(""+(int)Math.round(t*(k)),0,i+mp.offsetBottom,paint);
         }
 
     }
 
-    private void drawStats(Canvas canvas, Paint paint) {
+    private void drawStats(Canvas canvas, Paint paint, Long currentX, double[] ys, int[] ys_real_data, ArrayList<String> ysColors, List<String> ysLabels) {
         //COULD BE BETTER
         int statsX = this.statsX-statsXoffsetLeft;
         statsY=80;
@@ -103,16 +124,31 @@ public class LineChartDrawManager {
         paint.setColor(chartBackground);
         //canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
         canvas.drawRoundRect(rect,stats_radius,stats_radius,paint);
+        canvas.drawRoundRect(rect,stats_radius,stats_radius,paintBorder);
+        paint.setColor(lastColor);
+        paintText.setColor(textColor);
+
+
+        if (ys.length !=0){
+            canvas.drawText(GraphGenerator.getStringDateWithDay(currentX),statsX+textPaddingLeft,paint.getTextSize()+statsY+textPaddingTop,paintText);
+            int textOffset = (statsW-2*textPaddingLeft)/ys.length;
+            for (int i=0;i<ys.length;i++){
+                paintText.setColor(Color.parseColor(ysColors.get(i)));
+                double y = ys_real_data[i];
+                canvas.drawText(""+y,statsX+textPaddingLeft+i*textOffset,statsY+statsH-paint.getTextSize()-3*textPaddingTop,paintText);
+                canvas.drawText(ysLabels.get(i),statsX+textPaddingLeft+i*textOffset,statsY+statsH-3*textPaddingTop,paintText);
+            }
+        }
+
         if (true){
             canvas.drawLine(statsX+statsXoffsetLeft,h,
                     statsX+statsXoffsetLeft, statsY + statsH,paint);
         }
         else {
-
             canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
                     statsX+statsXoffsetLeft,0,paint);
         }
-        paint.setColor(lastColor);
+
     }
 
     private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {

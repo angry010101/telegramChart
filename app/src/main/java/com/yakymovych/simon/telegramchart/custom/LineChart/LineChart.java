@@ -48,7 +48,7 @@ public class LineChart extends View {
     ValueAnimator newGraphAnimator;
     ValueAnimator heightAnimator;
 
-
+    int chartBorder;
 
     public void startAnimShow(String pos){
         List<Double> p1 = chart.columns.get(pos);
@@ -229,13 +229,13 @@ public class LineChart extends View {
         init(context,attrs);
     }
 
-
+    int textColor;
     private void initSizes(int color){
         int width = this.getWidth();
         int height = this.getHeight();
         mp = new MathPlot(width,height,topMargin,bottomMargin);
         viewPort = new LineChartViewPort(this,width,height);
-        drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground);
+        drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground,chartBorder,textColor);
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
@@ -251,9 +251,13 @@ public class LineChart extends View {
                 context.obtainStyledAttributes(typedValue.data, new int[]{
                         android.R.attr.textColorPrimary,
                         android.R.attr.textColorSecondary,
-                    R.attr.chartStatsBackground});
+                        R.attr.chartStatsBackground,
+                        R.attr.chartStatsBorder});
+
+        textColor = arr.getColor(0, -1);
         final int primaryColor = arr.getColor(1, -1);
         chartBackground = arr.getColor(2, -1);
+        chartBorder = arr.getColor(3, -1);
 
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -281,7 +285,7 @@ public class LineChart extends View {
     }
     @Override
     protected void onDraw(Canvas canvas) {
-        drawManager.draw(canvas,viewPort.isFingerDown,ys,ysColors);
+        drawManager.draw(canvas,viewPort.isFingerDown,ys,ys_real_data,ysColors,currentX,ysLabels);
     }
 
 
@@ -342,25 +346,32 @@ public class LineChart extends View {
     private boolean drawToTop = false;
 
     double[] ys;
+    Long currentX;
     ArrayList<String> ysColors;
+    ArrayList<String> ysLabels;
+    int[] ys_real_data;
     public void handleMove(long pos,long x_px, int w) {
         ys = new double[visiblePlots.size()];
-
+        ys_real_data = new int[visiblePlots.size()];
         int xpos = (int) pos;//viewPort.findNearestFor(this.chart.columns.get("x"),pos);
         //drawManager.statsX = this.chart.columns.get("x").get((int)pos+start).intValue();
         Double xs = this.chart.columns.get("x").get((int) (pos+start));
+        currentX = xs.longValue();
         Double xsStart = this.chart.columns.get("x").get((int) (start));
         Double xsEnd = this.chart.columns.get("x").get((int) (end-1));
         int i=0;
         double pxPerUnitY = (double)mp.h/(mp.getyMaxLimit()-mp.getyMinLimit());
 
         ysColors = new ArrayList<>();
+        ysLabels = new ArrayList<>();
        // for (Map.Entry<String, List<Double>> entry : this.chart.columns.entrySet()) {
         for (String plot : visiblePlots) {
             List<Double> ys1 = chart.columns.get(plot);
             String key = plot;
             ysColors.add(i, this.chart.colors.get(key));
-            ys[i++] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
+            ysLabels.add(i,this.chart.names.get(key));
+            ys[i] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
+            ys_real_data[i++] = ys1.get((int) (pos+start)).intValue();
         }
         double pxPerUnit = (double)w/(xsEnd-xsStart);
         drawManager.statsX =(int)((xs-xsStart)*pxPerUnit);
