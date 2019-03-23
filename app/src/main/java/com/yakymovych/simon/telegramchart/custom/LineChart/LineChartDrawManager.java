@@ -41,7 +41,7 @@ public class LineChartDrawManager {
     int y_stats_offset = 20;
     int y_threshold=5;
     int stats_y_intersection = 20;
-    int intersection_radius = 10;
+    int intersection_radius = 6;
     Paint intersectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public void setStatsX(int statsX) {
@@ -146,31 +146,43 @@ public class LineChartDrawManager {
             }
         }
 
-        if (true){
-            canvas.drawLine(statsX+statsXoffsetLeft,h,
-                    statsX+statsXoffsetLeft, statsY + statsH,paint);
-        }
-        else {
-            canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
-                    statsX+statsXoffsetLeft,0,paint);
-        }
+//        if (true){
+//            canvas.drawLine(statsX+statsXoffsetLeft,h,
+//                    statsX+statsXoffsetLeft, statsY + statsH,paint);
+//        }
+//        else {
+//            canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
+//                    statsX+statsXoffsetLeft,0,paint);
+//        }
 
     }
 
     private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {
+        Paint.Style style = paint.getStyle();
+        float stroke = paint.getStrokeWidth();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(4);
         for (int i =0;i<ys.length;i++){
             double y = ys[i];
+
             paint.setColor(Color.parseColor(ysColors.get(i)));
             Log.d("INTERSECTION","Y: " + y);
             int ytodraw = mp.h-(int)y+mp.offsetTop;
-            canvas.drawCircle(statsX,
-                    ytodraw,
-                    intersection_radius,paint);
+           // canvas.save();
 //            Path smallPath = new Path();
 //            smallPath.addCircle(statsX,ytodraw,intersection_radius/2,Path.Direction.CW);
 //            canvas.clipPath(smallPath);
-            canvas.drawCircle(statsX,ytodraw,intersection_radius/2,intersectionPaint);
+            canvas.drawCircle(statsX,
+                    ytodraw,
+                    intersection_radius,paint);
+
+
+            //
+//            canvas.restore();
+            //canvas.drawCircle(statsX,ytodraw,intersection_radius/2,intersectionPaint);
         }
+        paint.setStrokeWidth(stroke);
+        paint.setStyle(style);
     }
 
 
