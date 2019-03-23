@@ -25,6 +25,7 @@
             android:background="?attr/background"
             android:gravity="center_vertical"
             android:padding="16dp"
+            android:paddingStart="4dp"
             android:textSize="8pt"
             android:text="@string/followers"
             android:textColor="@android:color/holo_blue_dark" />

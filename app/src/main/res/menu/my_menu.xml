@@ -6,5 +6,6 @@
             android:icon="@drawable/moon"
             android:orderInCategory="100"
             android:title="Switch theme"
+            app:iconTint="@android:color/white"
             app:showAsAction="always" />
 </menu>
