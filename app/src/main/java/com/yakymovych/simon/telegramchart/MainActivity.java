@@ -9,8 +9,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
@@ -22,7 +25,9 @@ import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
 import com.yakymovych.simon.telegramchart.custom.XLabelsView;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity{
@@ -30,6 +35,12 @@ public class MainActivity extends AppCompatActivity{
     LineChart lc;
     int plot_length;
     boolean theme=false;
+
+    Chart chart;
+    CheckBoxCreator chbCreator;
+    GraphGenerator graphGenerator = new GraphGenerator();
+    GraphProgressBar progressbar;
+    XLabelsView xLabelsView;
 
     private final String THEME_TAG = "theme_tag";
     @Override
@@ -50,11 +61,8 @@ public class MainActivity extends AppCompatActivity{
         finish();
     }
     static final int PAGE_COUNT = 10;
-
-    ViewPager pager;
-    PagerAdapter pagerAdapter;
-
-
+    List<ChartData> chartData;
+    LinearLayout ll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle b = getIntent().getExtras();
@@ -66,10 +74,71 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ll = this.findViewById(R.id.layout);
+        xLabelsView = this.findViewById(R.id.xLabelsView);
+        lc = this.findViewById(R.id.chart);
+        progressbar = this.findViewById(R.id.graphProgressBar);
 
-        pager = findViewById(R.id.pager);
-        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
-        pager.setAdapter(pagerAdapter);
+        List<Integer> data = new ArrayList<>();
+        chartData = graphGenerator.fromJson(this);
+        for (int i=0;i<chartData.size();i++){
+            data.add(i);
+        }
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, data);
+        Chart c = Chart.fromСhartData(chartData.get(0));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setAdapter(adapter);
+
+        this.chart = c;
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                setChart(position);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+
+
+        chbCreator =  new CheckBoxCreator(this,ll);
+        chbCreator.setData(c);
+        chbCreator.generate(chbListener);
+
+        xLabelsView.setDates(c.columns.get("x"));
+        this.progressbar.setPlots(c);
+        plot_length =  c.getAxisLength();
+        lc.setLineChartListener(new LineChart.LineChartListener() {
+            @Override
+            public void onDidInit() {
+                didInit();
+            }
+        });
+
+        progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
+            @Override
+            public void onStartProgressChanged(View v, int p1, int p2) {
+                lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
+                xLabelsView.moveTo(p1,p2);
+            }
+
+            @Override
+            public void onEndProgressChanged(View v, int p1, int p2) {
+                lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
+                xLabelsView.moveTo(p1,p2);
+            }
+
+            @Override
+            public void onOffsetProgressChanged(View v, int p1, int p2) {
+                lc.setStartAndEnd((int)(((double)(p1)/progressbar.progressMax) * (plot_length-1)),
+                        (int)(((double)(p2)/progressbar.progressMax) * plot_length));
+                xLabelsView.moveTo(p1,p2);
+            }
+        });
 
 //        plot_length = graphGenerator.plots.get(0).x.size();
     //    this.progressbar.setPlots(c);
@@ -80,11 +149,51 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            String tag = (String) (buttonView).getTag();
+            if (isChecked){
+                //graphGenerator.generate(0,18);
+                //lc.setPlots(graphGenerator.plots);
+                lc.setVisiblePlot(tag,true);
+                progressbar.setVisiblePlot(tag,true);
+                lc.startAnimShow(tag);
+                progressbar.invalidate();
+            }
+            else {
+                lc.startAnimHide(tag);
+                lc.setVisiblePlot(tag,false);
+                progressbar.setVisiblePlot(tag,false);
+                progressbar.invalidate();
+            }
+        }
+    };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my_menu, menu);
         return true;
+    }
+
+    public void setChart(int pos) {
+        this.chart = Chart.fromСhartData(chartData.get(pos));
+
+
+        chbCreator =  new CheckBoxCreator(this,ll);
+        chbCreator.setData(this.chart);
+        chbCreator.generate(chbListener);
+        xLabelsView.setDates(this.chart.columns.get("x"));
+        this.progressbar.setPlots(this.chart);
+        plot_length =  this.chart.getAxisLength();
+
+    }
+
+    void didInit() {
+        lc.setPlots(this.chart);
+        lc.setStartAndEnd(0,plot_length);
+
     }
 
 
