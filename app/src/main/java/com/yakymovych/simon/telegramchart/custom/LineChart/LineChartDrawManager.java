@@ -80,6 +80,8 @@ public class LineChartDrawManager {
 
         statsW = w/5;
         statsH = h/4;
+
+        this.pxPerUnit = (double)(w)/(mp.getYMax()-mp.getYMin());
         paint.setColor(paintColor);
         paint.setTextSize(30);
     }
@@ -106,12 +108,16 @@ public class LineChartDrawManager {
 
 
     private void drawXDividers(Canvas canvas, Paint paint) {
-        int  hc =(int)(h-mp.offsetTop-mp.offsetBottom)/(dividersCount);
-        double t = ((mp.getyMaxLimit()-mp.getyMinLimit()))/(dividersCount);
+
+        double ky = ((double)(h)/(mp.getyMaxLimit()-mp.getyMinLimit()));
+        int offsetUnits = (int)((mp.getYMax()-mp.getYMin())/6);  //25
+        int offsetTopPx = (int) (offsetUnits*ky);
+        int  hc =(int)(h-mp.offsetTop-mp.offsetBottom-offsetUnits*ky)/(dividersCount);
+        double t = ((mp.getyMaxLimit()-mp.getyMinLimit()-offsetUnits))/(dividersCount);
         double ymin = mp.getyMinLimit();
         for (int i=0,k=dividersCount;k>0;i+= hc,k--){
-            canvas.drawLine(0,i+mp.offsetBottom,w,i+mp.offsetBottom,paint);
-            canvas.drawText(""+(int)Math.round(t*(k)+ymin),0,i,paint);
+            canvas.drawLine(0,i+mp.offsetBottom+offsetTopPx,w,i+mp.offsetBottom+offsetTopPx,paint);
+            canvas.drawText(""+(int)Math.round(t*(k)+ymin),0,i+offsetTopPx,paint);
         }
 
     }
