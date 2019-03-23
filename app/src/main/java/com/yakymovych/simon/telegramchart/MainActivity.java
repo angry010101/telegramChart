@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity{
         this.chart = Chart.fromСhartData(chartData.get(pos));
 
 
-        chbCreator =  new CheckBoxCreator(this,ll);
         chbCreator.setData(this.chart);
         chbCreator.generate(chbListener);
         xLabelsView.setDates(this.chart.columns.get("x"));

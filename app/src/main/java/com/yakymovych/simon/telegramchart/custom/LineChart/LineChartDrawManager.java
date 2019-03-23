@@ -118,6 +118,9 @@ public class LineChartDrawManager {
     private void drawStats(Canvas canvas, Paint paint, Long currentX, double[] ys, int[] ys_real_data, ArrayList<String> ysColors, List<String> ysLabels) {
         //COULD BE BETTER
         int statsX = this.statsX-statsXoffsetLeft;
+        int minStatsW = 160;
+        statsW = minStatsW;
+        if (ys.length>2) statsW += (ys.length-2)*40;
         statsY=80;
         RectF rect = new RectF(statsX, statsY,statsX + statsW, statsY + statsH);
         int lastColor = paint.getColor();

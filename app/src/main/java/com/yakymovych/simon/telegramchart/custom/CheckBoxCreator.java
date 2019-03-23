@@ -54,14 +54,15 @@ public class CheckBoxCreator {
         Resources.Theme theme = context.getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         int color = typedValue.data;
+        removeViews();
         for (int i = 0;i<names.size();i++){
-            CheckBox ch = createCheckBox(names.get(i), tags.get(i), color);
+            createCheckBox(names.get(i), tags.get(i), color);
 
         }
 
     }
 
-
+    int count=0;
     private CheckBox createCheckBox(String text,String tag,int textcolor){
         String color = this.chart.colors.get(tag);
         AppCompatCheckBox ch = new AppCompatCheckBox(new ContextThemeWrapper(this.context, R.style.checkbox), null, 0);
@@ -70,8 +71,13 @@ public class CheckBoxCreator {
         ch.setOnCheckedChangeListener(chbListener);
         ch.setTextColor(textcolor);
         ch.setButtonTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        count++;
         ll.addView(ch);
         return ch;
     }
 
+    public void removeViews(){
+        ll.removeViews(ll.getChildCount()-count,count);
+        count =0;
+    }
 }
