@@ -89,6 +89,7 @@ public class LineChartDrawManager {
     public void draw(Canvas canvas, boolean drawStats, double[] ys,int[] ys_real_data,  ArrayList<String> ysColors,Long currentX,List<String> ysLabels){
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
+        this.drawXAsis(canvas,paint);
         if (drawStats && ys != null){
             this.drawIntersection(canvas,graphPaint, ys,ysColors);
             this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
@@ -98,6 +99,8 @@ public class LineChartDrawManager {
 
     private void drawXAsis(Canvas canvas,Paint paint) {
         canvas.drawLine(0,h,w,h,paint);
+        calcOffset();
+        canvas.drawText(String.valueOf((int)(mp.getYMin()-mp.offsetBottom/ky)),0,h-mp.offsetBottom,paint);
     }
 
     private void drawYAsis(Canvas canvas,Paint paint) {
@@ -105,13 +108,17 @@ public class LineChartDrawManager {
     }
 
 
-
+    double ky;
+    int offsetUnits;
+    int offsetTopPx;
+    void calcOffset(){
+        ky = ((double)(h)/(mp.getyMaxLimit()-mp.getyMinLimit()));
+        offsetUnits = (int)((mp.getYMax()-mp.getYMin())/6);  //25
+        offsetTopPx = (int) (offsetUnits*ky);
+    }
 
     private void drawXDividers(Canvas canvas, Paint paint) {
-
-        double ky = ((double)(h)/(mp.getyMaxLimit()-mp.getyMinLimit()));
-        int offsetUnits = (int)((mp.getYMax()-mp.getYMin())/6);  //25
-        int offsetTopPx = (int) (offsetUnits*ky);
+        calcOffset();
         int  hc =(int)(h-mp.offsetTop-mp.offsetBottom-offsetUnits*ky)/(dividersCount);
         double t = ((mp.getyMaxLimit()-mp.getyMinLimit()-offsetUnits))/(dividersCount);
         double ymin = mp.getyMinLimit();
