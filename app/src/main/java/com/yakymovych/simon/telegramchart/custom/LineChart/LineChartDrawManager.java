@@ -123,6 +123,8 @@ public class LineChartDrawManager {
         calcOffset();
         int  hc =(int)(h-mp.offsetTop-mp.offsetBottom-offsetUnits*ky)/(dividersCount);
         double t = ((mp.getyMaxLimit()-mp.getyMinLimit()-offsetUnits))/(dividersCount);
+
+        Log.d("MATHPLOT","draw: "+mp.getyMaxLimit()+" " + mp.getyMinLimit() + " hc: " + hc);
         double ymin = mp.getyMinLimit();
         for (int i=0,k=dividersCount;k>0;i+= hc,k--){
             canvas.drawLine(0,i+mp.offsetBottom+offsetTopPx,w,i+mp.offsetBottom+offsetTopPx,paint);
@@ -202,14 +204,12 @@ public class LineChartDrawManager {
                 canvas.drawLine(statsX,lh,statsX,ytodrawline-intersection_radius,this.paint);
             }
 
-            Log.d("INTERSECTION","Y: " + lh + " " + (ytodrawline));
             lh = (int)(ytodrawline+intersection_radius+stroke_width/2);
         }
         if (lh < this.h)
             canvas.drawLine(statsX,lh,
                 statsX, this.h,this.paint);
 
-        Log.d("INTERSECTION","Y: " + lh + " " + this.h);
         this.paint.setStrokeWidth(thizpaintstroke);
         paint.setStrokeWidth(stroke);
         paint.setStyle(style);

@@ -23,7 +23,6 @@ public class ProgressBarViewPort {
 
     public void setEndpos(int endpos) {
         this.endpos = this.getProgressEndPx(endpos);
-        Log.d("VIEWPORT","SET END POS:  " + endpos);
     }
 
     public void setMinOffsetPx(int minOffsetElements) {
@@ -45,8 +44,6 @@ public class ProgressBarViewPort {
         unitPerPx = (double)(progressMax)/w;
         pxPerUnit = ((double)(w)/progressMax);
         this.view = view;
-
-        Log.d("VIEWPORT","INIT WITH: " + this.endpos + "PROGRESS RIGHT : " + progressRight);
     }
 
 
@@ -55,7 +52,6 @@ public class ProgressBarViewPort {
 
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                Log.d("ACTIONDOWN","ACTION: " + x + " " + endpos + " " + delta);
                 if (Math.abs(x-startpos)<delta){
                     isChangingStart = true;
                 }

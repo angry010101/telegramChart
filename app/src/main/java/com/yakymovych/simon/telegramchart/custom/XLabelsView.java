@@ -183,7 +183,6 @@ public class XLabelsView  extends View {
     }
 
     private void drawDates(Canvas canvas,Paint paint) {
-        Log.d("XLABELSIEW"," " + pxPerDate + " " + this.width + " datesstep " + datesStep);
         paint.setAlpha(this.animAlfa);
         for (int i =0;i<visibleDatesCount;i++){
             canvas.drawText(this.datesStr.get(start+(i*datesStep)),(int)(i*pxPerDate)+ animOffsetDates,height/2,paint);

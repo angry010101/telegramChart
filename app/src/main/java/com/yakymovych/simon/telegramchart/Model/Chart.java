@@ -34,7 +34,6 @@ public class Chart {
             l = chartData.columns.get(i);
             label = (String)l.get(0);
             x_d = (List<Double>)(Object)l.subList(1,l.size());
-            Log.d("DEBUG","LABEL ++" + x_d.toString());
             c.columns.put(label,x_d);
         }
         return c;

@@ -165,7 +165,6 @@ public class LineChart extends View {
         if (Math.abs(mp.getYMin() - lcminy)>mp.e){
             pvhY = PropertyValuesHolder.ofFloat("TRANSLATION_YMIN", lcminy,mp.getYMin());
         }
-        Log.d("HEIGHT","STARTED" + mp.getYMax() + " " + lcmaxy);
 
 
 
@@ -193,7 +192,6 @@ public class LineChart extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Float ymaxscale = (Float) animation.getAnimatedValue("TRANSLATION_YMAX");
                 Float yminscale = (Float) animation.getAnimatedValue("TRANSLATION_YMIN");
-                Log.d("HEIGHT ANIMATION","UPDATE: " + ymaxscale + " " + yminscale);
                 if (ymaxscale != null){
                     if (yminscale !=null){
                         mp.rescale(yminscale,ymaxscale);
@@ -277,9 +275,16 @@ public class LineChart extends View {
     }
 
     public void showPlots(){
+        if (newGraphAnimator != null && newGraphAnimator.isRunning()) {
+            newGraphAnimator.pause();
+        }
+        if (heightAnimator != null && heightAnimator.isRunning()) {
+            heightAnimator.pause();
+        }
+
         mp.calcGlobals();
-        this.mp.setyMaxLimit(this.mp.getYMax());
-        this.mp.setyMinLimit(this.mp.getYMin());
+        mp.setyMaxLimit(mp.getYMax());
+        mp.setyMinLimit(mp.getYMin());
         this.invalidate();
     }
     private void beginAnimation(ValueAnimator animation) {

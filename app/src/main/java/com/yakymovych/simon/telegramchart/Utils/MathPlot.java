@@ -28,8 +28,8 @@ public class MathPlot {
     private double ymax,ymin;
     //private List<Plot> plots = new ArrayList<>();
     public int w,h;
-    private double yMaxLimit;
-    private double yMinLimit;
+    private volatile double yMaxLimit;
+    private volatile double yMinLimit;
 
     Paint alphaPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Set<String> visiblePlots = new HashSet<>();
@@ -52,7 +52,6 @@ public class MathPlot {
     };
 
     private void beginAnimation(ValueAnimator animation) {
-        Log.d("ANIMATION","ANIM " +  (Integer) animation.getAnimatedValue());
         this.alphaPaint.setAlpha((Integer) animation.getAnimatedValue());
         if (view!=null) view.invalidate();
     }
@@ -75,7 +74,6 @@ public class MathPlot {
         alphaAnimatorShow.start();
     }
     public void setyMaxLimit(double yMaxLimit) {
-        Log.d("MATHPLOT","set y limit: " + yMaxLimit);
         this.yMaxLimit = yMaxLimit;
     }
 //
@@ -116,7 +114,6 @@ public class MathPlot {
         xmax = 0;
             List<Double> ys = chart.columns.get("x");
             xmax = Math.max(xmax,Collections.max(ys.subList(start,end)));
-        Log.d("CALCMAX","MAXIMUM: " + xmax);
 
     }
     void calcMinGlobalX(){
@@ -247,7 +244,6 @@ public class MathPlot {
             y_charts.add(p);
             colors.add(chart.colors.get(i));
         }
-        Log.d("MATHPLOT","VISIBLE : " + y_charts.size());
         int y_size = y_charts.size(),g;
         if (y_size == 0) return;
 
@@ -287,7 +283,6 @@ public class MathPlot {
     }
 
     private void drawValues(Canvas canvas, Paint paint,List<Double> xs, float[] combined) {
-        Log.d("MATHPLOT","LEN: " + combined.length + " xs "  + xs.size() + " start "+ start);
 
         //8 = visible views
         int v = (end-start)/8;
