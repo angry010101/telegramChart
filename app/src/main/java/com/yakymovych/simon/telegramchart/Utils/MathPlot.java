@@ -1,10 +1,12 @@
 package com.yakymovych.simon.telegramchart.Utils;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.View;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
@@ -19,8 +21,9 @@ public class MathPlot {
     public final int offsetTop;
     public static Long inf = Long.MAX_VALUE;
     public final int offsetBottom;
+    private final boolean drawDates;
     public float e = 0.0001F ;
-    private double xmax,xmin;
+    public double xmax,xmin;
     public int start,end;
     private double ymax,ymin;
     //private List<Plot> plots = new ArrayList<>();
@@ -28,13 +31,49 @@ public class MathPlot {
     private double yMaxLimit;
     private double yMinLimit;
 
+    Paint alphaPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Set<String> visiblePlots = new HashSet<>();
     private Chart chart;
+    private int alphaValue = 100;
+    private View view;
 
     public void setVisiblePlots(Set<String> visiblePlots) {
         this.visiblePlots = visiblePlots;
     }
 
+
+    ValueAnimator alphaAnimatorShow;
+
+    ValueAnimator.AnimatorUpdateListener ll = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            beginAnimation(animation);
+        }
+    };
+
+    private void beginAnimation(ValueAnimator animation) {
+        Log.d("ANIMATION","ANIM " +  (Integer) animation.getAnimatedValue());
+        this.alphaPaint.setAlpha((Integer) animation.getAnimatedValue());
+        if (view!=null) view.invalidate();
+    }
+
+    public void startAnimShow(){
+        //if (alphaAnimatorShow != null && alphaAnimatorShow.isRunning())
+        //    alphaAnimatorShow.pause();
+        alphaAnimatorShow = ValueAnimator.ofInt(0,100);
+        alphaAnimatorShow.setDuration(500);
+        alphaAnimatorShow.addUpdateListener(ll);
+        alphaAnimatorShow.start();
+    }
+
+    public void startAnimHide(){
+        //if (alphaAnimatorShow != null && alphaAnimatorShow.isRunning())
+        //    alphaAnimatorShow.pause();
+        alphaAnimatorShow = ValueAnimator.ofInt(100,0);
+        alphaAnimatorShow.setDuration(500);
+        alphaAnimatorShow.addUpdateListener(ll);
+        alphaAnimatorShow.start();
+    }
     public void setyMaxLimit(double yMaxLimit) {
         Log.d("MATHPLOT","set y limit: " + yMaxLimit);
         this.yMaxLimit = yMaxLimit;
@@ -54,6 +93,9 @@ public class MathPlot {
 //        //this.calcMaxGlobalY();
 //    }
 
+    public void  setView(View v){
+        this.view = v;
+    }
 
     public void setPlots(Chart chart) {
         if (yMaxLimit ==0) yMaxLimit = ymax;
@@ -63,11 +105,12 @@ public class MathPlot {
         //this.calcMaxGlobalY();
     }
 
-    public MathPlot(int w, int h, int offsetTop,int offsetBotton){
+    public MathPlot(int w, int h, int offsetTop,int offsetBotton,boolean drawDates){
         this.w = w;
         this.offsetTop = offsetTop;
         this.offsetBottom = offsetBotton;
         this.h = h-offsetTop-offsetBotton;
+        this.drawDates = drawDates;
     }
     void calcMaxGlobalX(){
         xmax = 0;
@@ -108,14 +151,30 @@ public class MathPlot {
     }
 
     public void setStart(int start) {
+        int dstart = this.start - start;
         this.start = start;
         calcGlobals();
+        if (dstart > 0){
+            startAnimShow();
+        }
+        else {
+            startAnimHide();
+        }
     }
 
     public void setEnd(int end) {
+        int dend = this.end - end;
         this.end = end;
         calcGlobals();
+        if (dend<0){
+            startAnimShow();
+        }
+        else {
+            startAnimHide();
+        }
     }
+
+
 
     public void setStartAndEnd(int start,int end){
         this.start = start;
@@ -188,6 +247,7 @@ public class MathPlot {
             y_charts.add(p);
             colors.add(chart.colors.get(i));
         }
+        Log.d("MATHPLOT","VISIBLE : " + y_charts.size());
         int y_size = y_charts.size(),g;
         if (y_size == 0) return;
 
@@ -221,6 +281,30 @@ public class MathPlot {
         for (g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
+            if (drawDates)
+                this.drawValues(canvas,paint,xs,combined[g-1]);
+        }
+    }
+
+    private void drawValues(Canvas canvas, Paint paint,List<Double> xs, float[] combined) {
+        Log.d("MATHPLOT","LEN: " + combined.length + " xs "  + xs.size() + " start "+ start);
+
+        //8 = visible views
+        int v = (end-start)/8;
+        boolean b =false;
+        for (int k=start; k<end;k+=v){
+
+            if (k%2 != 0){
+                if (b)
+                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
+                else
+                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,alphaPaint);
+                b = !b;
+            }
+            else {
+                //canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
+
+            }
         }
     }
 

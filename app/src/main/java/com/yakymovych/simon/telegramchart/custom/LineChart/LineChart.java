@@ -28,7 +28,7 @@ import java.util.Set;
 
 public class LineChart extends View {
     private int start,end;
-    private MathPlot mp;
+    public MathPlot mp;
     //private List<Plot> plots;
     int chartBackground;
 
@@ -115,25 +115,28 @@ public class LineChart extends View {
 
     public void setStart(int start) {
         this.start = start;
-        removeStartEnd();
-        this.invalidate();
+        mp.setStart(start);
+        viewPort.setStart(start);
+        this.animateHeight();
     }
 
     public void setStartAndEnd(int start,int end) {
         this.start = start;
         this.end = end;
         removeStartEnd();
+
     }
 
     public void setEnd(int end) {
         this.end = end;
-        removeStartEnd();
+
+        mp.setEnd(end);
+        viewPort.setEnd(end);
+        this.animateHeight();
     }
 
 
     private void removeStartEnd(){
-        int start = this.start;
-        int end = this.end;
         mp.setStartAndEnd(start,end);
         viewPort.setStartAndEnd(start,end);
         this.animateHeight();
@@ -233,7 +236,8 @@ public class LineChart extends View {
     private void initSizes(int color){
         int width = this.getWidth();
         int height = this.getHeight();
-        mp = new MathPlot(width,height,topMargin,bottomMargin);
+        mp = new MathPlot(width,height,topMargin,bottomMargin,true);
+        mp.setView(this);
         viewPort = new LineChartViewPort(this,width,height);
         drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground,chartBorder,textColor);
         if (lineChartListener != null){
@@ -268,6 +272,16 @@ public class LineChart extends View {
 
     }
 
+    public Set<String> getVisiblePlots() {
+        return visiblePlots;
+    }
+
+    public void showPlots(){
+        mp.calcGlobals();
+        this.mp.setyMaxLimit(this.mp.getYMax());
+        this.mp.setyMinLimit(this.mp.getYMin());
+        this.invalidate();
+    }
     private void beginAnimation(ValueAnimator animation) {
         Float ymx = (Float) animation.getAnimatedValue("TRANSLATION_YMAX");
         Float ymn = (Float) animation.getAnimatedValue("TRANSLATION_YMIN");

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+
     private void changeTheme() {
         Intent i = new Intent(this,MainActivity.class);
         i.putExtra(THEME_TAG,!this.theme);
@@ -123,13 +124,13 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onStartProgressChanged(View v, int p1, int p2) {
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
+                xLabelsView.setStart(p1);
             }
 
             @Override
             public void onEndProgressChanged(View v, int p1, int p2) {
                 lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
+                xLabelsView.setEnd(p2);
             }
 
             @Override
@@ -158,7 +159,12 @@ public class MainActivity extends AppCompatActivity{
                 //lc.setPlots(graphGenerator.plots);
                 lc.setVisiblePlot(tag,true);
                 progressbar.setVisiblePlot(tag,true);
-                lc.startAnimShow(tag);
+                if (lc.getVisiblePlots().size() == 1) {
+                    lc.showPlots();
+                }
+                else {
+                    lc.startAnimShow(tag);
+                }
                 progressbar.invalidate();
             }
             else {

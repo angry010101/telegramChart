@@ -87,6 +87,8 @@ public class LineChartDrawManager {
     }
 
     public void draw(Canvas canvas, boolean drawStats, double[] ys,int[] ys_real_data,  ArrayList<String> ysColors,Long currentX,List<String> ysLabels){
+        if (mp.getVisiblePlots() == null || mp.getVisiblePlots().size() == 0)return;
+        mp.calcGlobals();
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         this.drawXAsis(canvas,paint);

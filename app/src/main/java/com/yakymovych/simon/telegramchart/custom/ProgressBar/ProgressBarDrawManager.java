@@ -3,6 +3,7 @@ package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
@@ -58,11 +59,12 @@ public class ProgressBarDrawManager {
 
     public void draw(Canvas canvas, Chart chart, Set<String> visiblePlots, int p, int e) {
         mp.setPlots(chart);
+        mp.setVisiblePlots(visiblePlots);
+        if (mp.getVisiblePlots() == null || mp.getVisiblePlots().size() == 0) return;
         mp.setStartAndEnd(0,chart.getAxisLength());
+        mp.calcGlobals();
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
-        mp.setVisiblePlots(visiblePlots);
-        mp.calcGlobals();
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,p,e);
     }

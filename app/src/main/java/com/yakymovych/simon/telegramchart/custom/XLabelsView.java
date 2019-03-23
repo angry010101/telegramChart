@@ -1,5 +1,7 @@
 package com.yakymovych.simon.telegramchart.custom;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -13,12 +15,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
-import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
-
-import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +31,58 @@ public class XLabelsView  extends View {
     int start,end;
     List<Long> dates;
     List<String> datesStr;
+    private double pxPerAllDates;
+    private float animOffsetDates =0;
+    private int animAlfa=100;
+    boolean draggingStart  =false;
 
+    ValueAnimator alphaAnimatorHide;
+    ValueAnimator alphaAnimatorShow;
+    ValueAnimator heightAnimator;
+
+    ValueAnimator.AnimatorUpdateListener ll = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            beginAnimation(animation);
+        }
+    };
+    public void startAnimShow(){
+        if (alphaAnimatorHide != null && alphaAnimatorHide.isRunning())
+            alphaAnimatorHide.pause();
+        alphaAnimatorHide = ValueAnimator.ofInt(100,0);
+        alphaAnimatorHide.setDuration(500);
+        alphaAnimatorHide.addUpdateListener(ll);
+        alphaAnimatorHide.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                alphaAnimatorShow = ValueAnimator.ofInt(0,100);
+                alphaAnimatorShow.setDuration(200);
+                alphaAnimatorShow.addUpdateListener(ll);
+                alphaAnimatorShow.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        alphaAnimatorHide.start();
+    }
+
+    private void beginAnimation(ValueAnimator animation) {
+        this.animAlfa = (Integer)animation.getAnimatedValue();
+        this.invalidate();
+    }
 
     public void setDates(List<Double> dates) {
         List<Long> integers = new ArrayList<>();
@@ -75,12 +124,14 @@ public class XLabelsView  extends View {
 
 
     public void setStart(int start) {
-
         this.start = start;
+        draggingStart = true;
         this.setDatesStep();
+        this.startAnimShow();
     }
     public void setEnd(int end) {
         this.end = end;
+        draggingStart = false;
         this.setDatesStep();
     }
     private void setDatesStep(){
@@ -93,6 +144,7 @@ public class XLabelsView  extends View {
         width = this.getWidth();
         height = this.getHeight();
         pxPerDate = (double)width/visibleDatesCount;
+        pxPerAllDates = (double)width/datesCount;
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
@@ -132,8 +184,9 @@ public class XLabelsView  extends View {
 
     private void drawDates(Canvas canvas,Paint paint) {
         Log.d("XLABELSIEW"," " + pxPerDate + " " + this.width + " datesstep " + datesStep);
+        paint.setAlpha(this.animAlfa);
         for (int i =0;i<visibleDatesCount;i++){
-            canvas.drawText(this.datesStr.get(start+(i*datesStep)),(int)(i*pxPerDate),height/2,paint);
+            canvas.drawText(this.datesStr.get(start+(i*datesStep)),(int)(i*pxPerDate)+ animOffsetDates,height/2,paint);
         }
     }
 

@@ -67,7 +67,7 @@ public class GraphProgressBar extends View {
         int height= this.getHeight();
         Log.d("GPB","SETTING PROGRESS " + progressEnd);
         this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,progressMax,minOffsetElems);
-        this.mp = new MathPlot(width,height,topMargin,topMargin);
+        this.mp = new MathPlot(width,height,topMargin,topMargin,false);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
 
         Log.d("GPB","PROGRES BAR INIT: " + progressStart + " " + progressEnd);
@@ -160,6 +160,7 @@ public class GraphProgressBar extends View {
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
+
         progressBarDrawManager.draw(canvas,chart,visiblePlots,
                 viewPort.getProgressStartPx(progressStart)
                 ,viewPort.getProgressEndPx(progressEnd));
