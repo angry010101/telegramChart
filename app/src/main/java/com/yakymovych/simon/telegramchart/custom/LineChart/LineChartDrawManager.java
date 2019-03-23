@@ -28,6 +28,7 @@ public class LineChartDrawManager {
     int w,h;
     int dividersCount=5;
     int statsX, statsY;
+    int statsXBox;
     int statsXoffsetLeft=20;
     int statsW = 160, statsH = 200;
     float statsBorderWidth=3;
@@ -93,8 +94,8 @@ public class LineChartDrawManager {
         this.drawXDividers(canvas,paint);
         this.drawXAsis(canvas,paint);
         if (drawStats && ys != null){
-            this.drawIntersection(canvas,graphPaint, ys,ysColors);
             this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
+            this.drawIntersection(canvas,graphPaint, ys,ysColors);
         }
     }
 
@@ -136,14 +137,20 @@ public class LineChartDrawManager {
     private void drawStats(Canvas canvas, Paint paint, Long currentX, double[] ys, int[] ys_real_data, ArrayList<String> ysColors, List<String> ysLabels) {
         //COULD BE BETTER
         int statsX = this.statsX-statsXoffsetLeft;
-        int minStatsW = 180;
+        int minStatsW = 200;
 
         double ymax = mp.getYMax();
 
+        statsXBox= statsX;
+
         statsW = minStatsW + (int)(Math.log10(ymax) + 1)*6*ys.length;
         if (ys.length>2) statsW += (ys.length-2)*40;
+        //20 - threshold right
+        if (statsXBox+statsW > w){
+            statsXBox = w-statsW;
+        }
         statsY=80;
-        RectF rect = new RectF(statsX, statsY,statsX + statsW, statsY + statsH);
+        RectF rect = new RectF(statsXBox, statsY,statsXBox + statsW, statsY + statsH);
         int lastColor = paint.getColor();
         paint.setColor(chartBackground);
         //canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
@@ -154,13 +161,13 @@ public class LineChartDrawManager {
 
 
         if (ys.length !=0){
-            canvas.drawText(GraphGenerator.getStringDateWithDay(currentX),statsX+textPaddingLeft,paint.getTextSize()+statsY+textPaddingTop,paintText);
+            canvas.drawText(GraphGenerator.getStringDateWithDay(currentX),statsXBox+textPaddingLeft,paint.getTextSize()+statsY+textPaddingTop,paintText);
             int textOffset = (statsW-2*textPaddingLeft)/ys.length;
             for (int i=0;i<ys.length;i++){
                 paintText.setColor(Color.parseColor(ysColors.get(i)));
                 double y = ys_real_data[i];
-                canvas.drawText(GraphGenerator.formatDecimal(y),statsX+textPaddingLeft+i*textOffset,statsY+statsH-paint.getTextSize()-3*textPaddingTop,paintText);
-                canvas.drawText(ysLabels.get(i),statsX+textPaddingLeft+i*textOffset,statsY+statsH-3*textPaddingTop,paintText);
+                canvas.drawText(GraphGenerator.formatDecimal(y),statsXBox+textPaddingLeft+i*textOffset,statsY+statsH-paint.getTextSize()-3*textPaddingTop,paintText);
+                canvas.drawText(ysLabels.get(i),statsXBox+textPaddingLeft+i*textOffset,statsY+statsH-3*textPaddingTop,paintText);
             }
         }
 

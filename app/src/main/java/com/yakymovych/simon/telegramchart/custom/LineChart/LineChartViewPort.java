@@ -58,7 +58,7 @@ public class LineChartViewPort {
     }
 
     public boolean isFingerDown = false;
-    private final int stats_draw_left_threshold = 20;
+    private final int stats_draw_left_threshold = 0;
     private int stats_draw_right_threshold;
 
 
