@@ -1,54 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-
+<android.support.v4.view.ViewPager
+    android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/mainBackground"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/background"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:textSize="8pt"
-        android:text="@string/followers"
-        android:textColor="@android:color/holo_blue_dark" />
-
-    <LinearLayout
-        android:id="@+id/layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/background"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <com.yakymovych.simon.telegramchart.custom.LineChart.LineChart
-            android:id="@+id/chart"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="?attr/background" />
-
-        <com.yakymovych.simon.telegramchart.custom.XLabelsView
-            android:id="@+id/xLabelsView"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
-            android:background="?attr/background" />
-
-        <com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar
-            android:id="@+id/graphProgressBar"
-            android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:layout_marginBottom="8dp"
-            android:background="?attr/background"
-            android:padding="16dp" />
-    </LinearLayout>
-
-
-</LinearLayout>
+    xmlns:android="http://schemas.android.com/apk/res/android">
+</android.support.v4.view.ViewPager>

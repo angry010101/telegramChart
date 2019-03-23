@@ -1,6 +1,7 @@
 package com.yakymovych.simon.telegramchart;
 
 import android.content.Intent;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,11 +30,7 @@ public class MainActivity extends AppCompatActivity{
     LineChart lc;
     int plot_length;
     boolean theme=false;
-    CheckBoxCreator chbCreator;
-    GraphGenerator graphGenerator = new GraphGenerator();
-    GraphProgressBar progressbar;
-    XLabelsView xLabelsView;
-    Plot p1;
+
     private final String THEME_TAG = "theme_tag";
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -52,29 +49,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(i);
         finish();
     }
+    static final int PAGE_COUNT = 10;
 
-    CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            String tag = (String) (buttonView).getTag();
-            Log.d("TAG:",tag);
-            if (isChecked){
-                //graphGenerator.generate(0,18);
-                //lc.setPlots(graphGenerator.plots);
-                lc.setVisiblePlot(tag,true);
-                progressbar.setVisiblePlot(tag,true);
-                lc.startAnimShow(tag);
-                progressbar.invalidate();
-            }
-            else {
-                lc.startAnimHide(tag);
-                lc.setVisiblePlot(tag,false);
-                progressbar.setVisiblePlot(tag,false);
-                progressbar.invalidate();
-            }
-        }
-    };
-Chart chart;
+    ViewPager pager;
+    PagerAdapter pagerAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,59 +66,17 @@ Chart chart;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LinearLayout ll = this.findViewById(R.id.layout);
-        xLabelsView = this.findViewById(R.id.xLabelsView);
-        lc = this.findViewById(R.id.chart);
-        progressbar = this.findViewById(R.id.graphProgressBar);
 
-        ChartData chartData = graphGenerator.fromJson(this).get(0);
-        Chart c = Chart.fromСhartData(chartData);
-        this.chart = c;
-
-
-
-        chbCreator =  new CheckBoxCreator(this,ll);
-        chbCreator.setData(c);
-        chbCreator.generate(chbListener);
-
-        xLabelsView.setDates(c.columns.get("x"));
-        this.progressbar.setPlots(c);
-        plot_length =  c.getAxisLength();
+        pager = findViewById(R.id.pager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(pagerAdapter);
 
 //        plot_length = graphGenerator.plots.get(0).x.size();
     //    this.progressbar.setPlots(c);
         //TODO
         //plot_length = c.columns.get().size();
 
-        lc.setLineChartListener(new LineChart.LineChartListener() {
-            @Override
-            public void onDidInit() {
-                didInit();
-            }
-        });
 
-        progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
-            @Override
-            public void onStartProgressChanged(View v, int p1, int p2) {
-                Log.d("MAIN","PROGRESS START CHANGED: " + p1 + " " + p2 );
-                lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
-            }
-
-            @Override
-            public void onEndProgressChanged(View v, int p1, int p2) {
-                Log.d("MAIN","PROGRESS END CHANGED: " + p1 + " " + p2 );
-                lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
-            }
-
-            @Override
-            public void onOffsetProgressChanged(View v, int p1, int p2) {
-                lc.setStartAndEnd((int)(((double)(p1)/progressbar.progressMax) * (plot_length-1)),
-                            (int)(((double)(p2)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
-            }
-        });
 
     }
 
@@ -150,10 +87,6 @@ Chart chart;
         return true;
     }
 
-    void didInit() {
-        lc.setPlots(this.chart);
-        lc.setStartAndEnd(0,plot_length);
-    }
 
 
 }
