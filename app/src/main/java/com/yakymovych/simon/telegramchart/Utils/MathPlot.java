@@ -87,6 +87,7 @@ public class MathPlot {
 
         for (String i : visiblePlots){
             List<Double> ys = chart.columns.get(i);
+            //TODO
             ymax = Math.max(ymax,Collections.max(ys.subList(start,end)));
         }
     }

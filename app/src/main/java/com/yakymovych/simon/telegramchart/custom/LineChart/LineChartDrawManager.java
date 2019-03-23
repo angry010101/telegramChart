@@ -107,10 +107,10 @@ public class LineChartDrawManager {
     private void drawXDividers(Canvas canvas, Paint paint) {
         int  hc =(int)(h-mp.offsetTop-mp.offsetBottom)/(dividersCount);
         double t = ((mp.getyMaxLimit()-mp.getyMinLimit()))/(dividersCount);
-
+        double ymin = mp.getyMinLimit();
         for (int i=0,k=dividersCount;k>0;i+= hc,k--){
             canvas.drawLine(0,i+mp.offsetBottom,w,i+mp.offsetBottom,paint);
-            canvas.drawText(""+(int)Math.round(t*(k)),0,i+mp.offsetBottom,paint);
+            canvas.drawText(""+(int)Math.round(t*(k)+ymin),0,i+mp.offsetBottom,paint);
         }
 
     }
@@ -118,8 +118,11 @@ public class LineChartDrawManager {
     private void drawStats(Canvas canvas, Paint paint, Long currentX, double[] ys, int[] ys_real_data, ArrayList<String> ysColors, List<String> ysLabels) {
         //COULD BE BETTER
         int statsX = this.statsX-statsXoffsetLeft;
-        int minStatsW = 160;
-        statsW = minStatsW;
+        int minStatsW = 180;
+
+        double ymax = mp.getYMax();
+
+        statsW = minStatsW + (int)(Math.log10(ymax) + 1)*6*ys.length;
         if (ys.length>2) statsW += (ys.length-2)*40;
         statsY=80;
         RectF rect = new RectF(statsX, statsY,statsX + statsW, statsY + statsH);
@@ -138,7 +141,7 @@ public class LineChartDrawManager {
             for (int i=0;i<ys.length;i++){
                 paintText.setColor(Color.parseColor(ysColors.get(i)));
                 double y = ys_real_data[i];
-                canvas.drawText(""+y,statsX+textPaddingLeft+i*textOffset,statsY+statsH-paint.getTextSize()-3*textPaddingTop,paintText);
+                canvas.drawText(GraphGenerator.formatDecimal(y),statsX+textPaddingLeft+i*textOffset,statsY+statsH-paint.getTextSize()-3*textPaddingTop,paintText);
                 canvas.drawText(ysLabels.get(i),statsX+textPaddingLeft+i*textOffset,statsY+statsH-3*textPaddingTop,paintText);
             }
         }

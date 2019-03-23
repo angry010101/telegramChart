@@ -11,7 +11,9 @@ import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,10 +28,18 @@ public class GraphGenerator {
     }
 
 
+    static DecimalFormat formatter = new DecimalFormat("0.00");
     public void add(Plot p){
         plots.add(p);
     }
 
+    static {
+        formatter.setRoundingMode(RoundingMode.FLOOR);
+        formatter.setMinimumFractionDigits(0);
+        formatter.setMaximumFractionDigits(0);
+//        formatter.setMaximumIntegerDigits(4);
+//        formatter.setMinimumIntegerDigits(0);
+    }
 
 
     public List<ChartData> fromJson(Context context){
@@ -84,6 +94,11 @@ public class GraphGenerator {
         }
         return d;
     }
+
+    public static String formatDecimal(Double d){
+        return formatter.format(d);
+    }
+
     public void generate(int p1, int i1){
         Plot p = new Plot();
         List<Long> x = new ArrayList<Long>();
