@@ -14,6 +14,7 @@ import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LineChartDrawManager {
@@ -25,7 +26,7 @@ public class LineChartDrawManager {
     Rect rect = new Rect();
     MathPlot mp;
     int w,h;
-    int dividersCount=4;
+    int dividersCount=5;
     int statsX, statsY;
     int statsXoffsetLeft=20;
     int statsW = 160, statsH = 200;
@@ -110,7 +111,7 @@ public class LineChartDrawManager {
         double ymin = mp.getyMinLimit();
         for (int i=0,k=dividersCount;k>0;i+= hc,k--){
             canvas.drawLine(0,i+mp.offsetBottom,w,i+mp.offsetBottom,paint);
-            canvas.drawText(""+(int)Math.round(t*(k)+ymin),0,i+mp.offsetBottom,paint);
+            canvas.drawText(""+(int)Math.round(t*(k)+ymin),0,i,paint);
         }
 
     }
@@ -161,26 +162,40 @@ public class LineChartDrawManager {
         Paint.Style style = paint.getStyle();
         float stroke = paint.getStrokeWidth();
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(4);
+        float thizpaintstroke = this.paint.getStrokeWidth();
+        int stroke_width = 4;
+        paint.setStrokeWidth(stroke_width);
+        int lh = statsY+statsH;
+        this.paint.setStrokeWidth(2);
+        double[] ys_sorted = new double[ys.length];
+        System.arraycopy( ys, 0, ys_sorted, 0, ys.length );
+        for (int i=0;i<ys_sorted.length;i++){
+            ys_sorted[i] = mp.h-ys_sorted[i]+mp.offsetTop;
+        }
+        Arrays.sort(ys_sorted);
         for (int i =0;i<ys.length;i++){
             double y = ys[i];
 
             paint.setColor(Color.parseColor(ysColors.get(i)));
-            Log.d("INTERSECTION","Y: " + y);
             int ytodraw = mp.h-(int)y+mp.offsetTop;
-           // canvas.save();
-//            Path smallPath = new Path();
-//            smallPath.addCircle(statsX,ytodraw,intersection_radius/2,Path.Direction.CW);
-//            canvas.clipPath(smallPath);
             canvas.drawCircle(statsX,
                     ytodraw,
                     intersection_radius,paint);
 
+            int ytodrawline =  (int) ys_sorted[i];
+            if (lh<ytodrawline-intersection_radius){
+                canvas.drawLine(statsX,lh,statsX,ytodrawline-intersection_radius,this.paint);
+            }
 
-            //
-//            canvas.restore();
-            //canvas.drawCircle(statsX,ytodraw,intersection_radius/2,intersectionPaint);
+            Log.d("INTERSECTION","Y: " + lh + " " + (ytodrawline));
+            lh = (int)(ytodrawline+intersection_radius+stroke_width/2);
         }
+        if (lh < this.h)
+            canvas.drawLine(statsX,lh,
+                statsX, this.h,this.paint);
+
+        Log.d("INTERSECTION","Y: " + lh + " " + this.h);
+        this.paint.setStrokeWidth(thizpaintstroke);
         paint.setStrokeWidth(stroke);
         paint.setStyle(style);
     }
