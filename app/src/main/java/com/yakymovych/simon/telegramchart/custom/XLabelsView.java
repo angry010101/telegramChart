@@ -133,6 +133,7 @@ public class XLabelsView  extends View {
         this.end = end;
         draggingStart = false;
         this.setDatesStep();
+        this.startAnimShow();
     }
     private void setDatesStep(){
         this.datesStep = (this.end - this.start)/visibleDatesCount;

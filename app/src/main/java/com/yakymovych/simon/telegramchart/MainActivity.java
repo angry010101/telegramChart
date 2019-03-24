@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity{
         chbCreator.generate(chbListener);
 
         xLabelsView.setDates(c.columns.get("x"));
+
         this.progressbar.setPlots(c);
         plot_length =  c.getAxisLength();
         lc.setLineChartListener(new LineChart.LineChartListener() {
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity{
         progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
             @Override
             public void onStartProgressChanged(View v, int p1, int p2) {
+                Log.d("MAIN","CHANGED");
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
                 xLabelsView.setStart(p1);
             }
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity{
                 //graphGenerator.generate(0,18);
                 //lc.setPlots(graphGenerator.plots);
                 lc.setVisiblePlot(tag,true);
+
                 progressbar.setVisiblePlot(tag,true);
                 if (lc.getVisiblePlots().size() == 1) {
                     lc.showPlots();

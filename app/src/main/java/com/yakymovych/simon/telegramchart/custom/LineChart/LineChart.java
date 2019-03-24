@@ -298,7 +298,7 @@ public class LineChart extends View {
             this.mp.setyMaxLimit(ymx);
         if (ymn!=null)
             this.mp.setyMinLimit(ymn);
-        //mp.calculateCharts();
+        mp.calculateCharts();
         this.invalidate();
     }
 

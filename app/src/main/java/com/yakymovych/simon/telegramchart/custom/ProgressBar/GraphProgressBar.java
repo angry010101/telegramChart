@@ -60,7 +60,7 @@ public class GraphProgressBar extends View {
 
     public void setPlots(Chart c) {
         this.chart = c;
-    }
+     }
 
     private void initSizes(int colorBorders, int colorShadow){
         int width = this.getWidth();
@@ -68,6 +68,8 @@ public class GraphProgressBar extends View {
         this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,progressMax,minOffsetElems);
         this.mp = new MathPlot(width,height,topMargin,topMargin,false);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
+        //setPlots is called before
+        progressBarDrawManager.setChart(this.chart);
 
         mp.calculateCharts();
         this.invalidate();
@@ -96,8 +98,10 @@ public class GraphProgressBar extends View {
 
 
     @Override
-    public synchronized boolean onTouchEvent(MotionEvent event) {
-        return viewPort.onTouchEvent(event);
+    public synchronized boolean onTouchEvent(final MotionEvent event) {
+        viewPort.onTouchEvent(event);
+
+        return true;
     }
 
     public void handleStartMovement(int moveTo){
@@ -132,13 +136,7 @@ public class GraphProgressBar extends View {
         progressEnd += d;
         viewPort.setStartpos(progressStart);
         viewPort.setEndpos(progressEnd);
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //mp.calculateCharts();
-            }
-        });
-        t.start();
+
         if (progressChangedListener != null){
             progressChangedListener.onOffsetProgressChanged(
                     this, progressStart, progressEnd);
@@ -165,7 +163,7 @@ public class GraphProgressBar extends View {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
 
-        progressBarDrawManager.draw(canvas,chart,visiblePlots,
+        progressBarDrawManager.draw(canvas,visiblePlots,
                 viewPort.getProgressStartPx(progressStart)
                 ,viewPort.getProgressEndPx(progressEnd));
     }
@@ -173,6 +171,12 @@ public class GraphProgressBar extends View {
     public void setVisiblePlot(String vp, boolean b) {
         if (b)  visiblePlots.add(vp);
         else visiblePlots.remove(vp);
+
+
+        mp.calcGlobals();
+        mp.setyMaxLimit(mp.getYMax());
+        mp.setyMinLimit(mp.getYMin());
+        mp.calculateCharts();
     }
 
 

@@ -43,11 +43,20 @@ public class ProgressBarDrawManager {
         bluePaint.setColor(colorShadow);
         bluePaint.setAntiAlias(true);
 
-
     }
 
+    Chart chart;
 
-    private void drawSlider(Canvas canvas,int p,int e) {
+    public void setChart(Chart chart) {
+        this.chart = chart;
+        mp.setPlots(chart);
+        mp.setStartAndEnd(0,chart.getAxisLength());
+        mp.calcGlobals();
+        mp.setyMaxLimit(mp.getYMax());
+        mp.setyMinLimit(mp.getYMin());
+    }
+
+    private void drawSlider(Canvas canvas, int p, int e) {
         canvas.drawRect(0,0,p,height,grayPaint);
         canvas.drawRect(e+borderWidth,0,width,height,grayPaint);
         canvas.drawRect(p+borderWidth,0,e,sliderTopBorder,bluePaint);
@@ -57,16 +66,12 @@ public class ProgressBarDrawManager {
     }
 
 
-    public void draw(Canvas canvas, Chart chart, Set<String> visiblePlots, int p, int e) {
-        mp.setPlots(chart);
+    public void draw(Canvas canvas, Set<String> visiblePlots, int p, int e) {
         mp.setVisiblePlots(visiblePlots);
         if (mp.getVisiblePlots() == null || mp.getVisiblePlots().size() == 0) return;
-        mp.setStartAndEnd(0,chart.getAxisLength());
-        mp.calcGlobals();
-        mp.setyMaxLimit(mp.getYMax());
-        mp.setyMinLimit(mp.getYMin());
         //TODO
         //remove
+
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,p,e);
     }

@@ -294,8 +294,8 @@ public class MathPlot {
         for (int g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
-            if (drawDates)
-                this.drawValues(canvas,paint,xs,combined[g-1]);
+           // if (false)
+            //    this.drawValues(canvas,paint,xs,combined[g-1]);
         }
     }
 
