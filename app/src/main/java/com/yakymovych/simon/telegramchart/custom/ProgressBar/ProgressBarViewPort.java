@@ -80,9 +80,7 @@ public class ProgressBarViewPort {
 
                 }
                 else if (isChangingOffset){
-
                             handleOffsetMovement(event);
-
                 }
                 break;
             default:

@@ -155,7 +155,7 @@ public class LineChart extends View {
         float lcmaxy = (float) mp.getyMaxLimit();
         float lcminy = (float) mp.getyMinLimit();
 
-        mp.calcGlobals();
+        //mp.calcGlobals();
         PropertyValuesHolder pvhX = null;
         PropertyValuesHolder pvhY = null;
         if (Math.abs(mp.getYMax() - lcmaxy)>mp.e){
@@ -208,8 +208,7 @@ public class LineChart extends View {
                 startRescaling();
             }
         });
-        //if (pvhX != null || pvhY != null )
-            heightAnimator.start();
+        heightAnimator.start();
     }
     public void startRescaling(){
 
