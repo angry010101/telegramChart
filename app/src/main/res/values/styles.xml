@@ -15,6 +15,7 @@
         <item name="mainBackground">@color/colorBackground</item>
         <item name="chartStatsBackground">@color/foregroundLight</item>
 
+        <item name="chartDividersColor">@color/colorDividers</item>
         <item name="chartStatsBorder">@color/colorBorderChart</item>
     </style>
 
@@ -32,7 +33,7 @@
 
         <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
         <item name="background">@color/colorThemeDeepDark</item>
-
+        <item name="chartDividersColor">@color/colorThemeDividers</item>
         <item name="chartStatsBorder">@color/colorThemeBorderChart</item>
     </style>
 

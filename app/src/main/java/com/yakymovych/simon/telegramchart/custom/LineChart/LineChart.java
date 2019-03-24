@@ -266,7 +266,6 @@ public class LineChart extends View {
         final int primaryColor = arr.getColor(1, -1);
         chartBackground = arr.getColor(2, -1);
         chartBorder = arr.getColor(3, -1);
-
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {

@@ -29,8 +29,8 @@ public class ProgressBarViewPort {
         this.minOffsetPx = (int) (minOffsetElements * ((double)endpos-startpos)/w);
     }
 
-    int delta = 25;
-    int delta_o=50;
+    int delta = 40;
+    int delta_o=60;
     int borderWidth = 16;
 
     public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int progressMax, int minOffsetElements) {
@@ -43,11 +43,16 @@ public class ProgressBarViewPort {
         setMinOffsetPx(minOffsetElements);
         unitPerPx = (double)(progressMax)/w;
         pxPerUnit = ((double)(w)/progressMax);
+//
+//        this.delta = w/6;
+//        this.delta_o = w/5;
+
         this.view = view;
     }
 
 
-    public synchronized boolean onTouchEvent(final MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
+        Log.d("PROGRESSBAR","TOUCH EVENT");
         int x = (int) event.getX();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:

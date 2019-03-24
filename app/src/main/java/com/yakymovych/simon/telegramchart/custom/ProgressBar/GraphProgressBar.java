@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GraphProgressBar extends View {
-    private MathPlot mp ;
+    public MathPlot mp ;
     //private List<Plot> plots = new ArrayList<>();
     ProgressBarViewPort viewPort;
     ProgressBarDrawManager progressBarDrawManager;
@@ -77,6 +77,7 @@ public class GraphProgressBar extends View {
 
 
     public void setStartAndEnd(int s,int e){
+        this.setProgressStartEnd(s,e);
         this.mp.setStartAndEnd(s,e);
         this.invalidate();
     }
@@ -191,6 +192,19 @@ public class GraphProgressBar extends View {
         mp.calculateCharts();
     }
 
+
+    public void setProgressStart(int progressStart) {
+        this.progressStart = progressStart;
+    }
+
+    public void setProgressEnd(int progressEnd) {
+        this.progressEnd = progressEnd;
+    }
+
+    public void setProgressStartEnd(int s,int e) {
+        this.progressStart = s;
+        this.progressEnd = e;
+    }
 
     public interface ProgressChangedListener{
         public void onStartProgressChanged(View v,int p1,int p2);

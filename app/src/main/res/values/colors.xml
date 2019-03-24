@@ -12,6 +12,7 @@
     <color name="foregroundLight">#ffffff</color>
     <color name="colorTextGray">#96a2aa</color>
 
+    <color name="colorDividers">#e6ecf0</color>
 
     <color name="colorThemeDeepDark">#1d2733</color>
     <color name="colorThemeDark">#212d3b</color>
@@ -25,5 +26,7 @@
 
     <color name="colorBorderChart">#f0f0f0</color>
     <color name="colorThemeBorderChart">#1a232d</color>
+
+    <color name="colorThemeDividers">#101924</color>
 
 </resources>

@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity{
 
         chbCreator =  new CheckBoxCreator(this,ll);
         chbCreator.setData(c);
-        chbCreator.generate(chbListener);
+        //chbCreator.generate(chbListener);
 
         xLabelsView.setDates(c.columns.get("x"));
 
@@ -217,6 +217,8 @@ public class MainActivity extends AppCompatActivity{
         progressbar.setVisiblePlots(new HashSet<String>());
 
         progressbar.setStartAndEnd(0,100);
+        progressbar.mp.calculateCharts();
+        progressbar.invalidate();
         plot_length =  this.chart.getAxisLength();
 
     }

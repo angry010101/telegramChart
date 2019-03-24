@@ -6,8 +6,11 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -49,20 +52,42 @@ public class CheckBoxCreator {
     }
 
     public void generate(CompoundButton.OnCheckedChangeListener chbListener){
+        Log.d("CHECKBOXCREATOR","GENERATING");
         this.chbListener = chbListener;
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         int color = typedValue.data;
+        theme.resolveAttribute(R.attr.chartDividersColor, typedValue, true);
+
+        int dividercolor = typedValue.data;
+
         removeViews();
-        for (int i = 0;i<names.size();i++){
+
+        //int dividerHeight = (int) (context.getResources().getDisplayMetrics().density * 1); // 1dp to pixels
+        int dividerHeight = (int) 1; // 1dp to pixels
+
+        createCheckBox(names.get(0), tags.get(0), color);
+        for (int i = 1;i<names.size();i++){
+            //add divider
+            View v = new View(context);
+            LinearLayout.LayoutParams lp =new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dividerHeight);
+            lp.setMarginStart(68);
+
+            v.setLayoutParams(lp);
+            v.setBackgroundColor(dividercolor);
+
+            ll.addView(v);
+            countDividers++;
             createCheckBox(names.get(i), tags.get(i), color);
+
 
         }
 
     }
 
     int count=0;
+    int countDividers = 0;
     private CheckBox createCheckBox(String text,String tag,int textcolor){
         String color = this.chart.colors.get(tag);
         AppCompatCheckBox ch = new AppCompatCheckBox(new ContextThemeWrapper(this.context, R.style.checkbox), null, 0);
@@ -77,7 +102,8 @@ public class CheckBoxCreator {
     }
 
     public void removeViews(){
-        ll.removeViews(ll.getChildCount()-count,count);
+        ll.removeViews(ll.getChildCount()-count-countDividers,count+countDividers);
         count =0;
+        countDividers = 0;
     }
 }
