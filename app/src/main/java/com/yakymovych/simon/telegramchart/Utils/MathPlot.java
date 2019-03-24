@@ -62,7 +62,7 @@ public class MathPlot {
         this.yMaxLimit = yMaxLimit;
     }
 
-    private int minimumDateDistance = 120;
+    private int minimumDateDistance = 50;
     private int minimumDateThreshold = 120;
     public void  setView(View v){
         this.view = v;
@@ -258,28 +258,7 @@ public class MathPlot {
     private final int visibleDates = 5;
     private void drawValues(Canvas canvas) {
 
-
-        int datesToShow = (end-start)/visibleDates;
-        double v = ((double)(end-start)/visibleDates);
-
-        int st = start;
-        int ed = end;
-
-        alphaPaint.setAlpha(100);
-        if (isStartDragging){
-            ed -= v;
-
-            Double val  = chartDates.get((int) Math.round((end-v)/visibleDates));
-            canvas.drawText(GraphGenerator.getStringDate(val.longValue()),(int)((val-xmin)*kx),this.h+offsetBottom+offsetTop,alphaPaint);
-        }
-        else {
-            st += v;
-
-            Double val  = chartDates.get((int) Math.round(start/visibleDates));
-            canvas.drawText(GraphGenerator.getStringDate(val.longValue()),(int)((val-xmin)*kx),this.h+offsetBottom+offsetTop,alphaPaint);
-
-        }
-        boolean b= false,chlx=true;
+        boolean b= false,chlx;
         float lx=-999;
         for (int k=start/visibleDates; k<(end/visibleDates);k++){
 
@@ -289,15 +268,13 @@ public class MathPlot {
                 alphaPaint.getTextBounds(s, 0, s.length(), bounds);
 
                 int x = (int)((val-xmin)*kx);
-                float da =Math.abs(lx -x);
                 if (x-lx < minimumDateDistance){
 
-                    int da1 = (int) Math.abs(100-(double)Math.abs(lx-x)/minimumDateDistance *100);
+                    int da1 = (int) Math.abs(80-(double)Math.abs(lx-x)/(minimumDateDistance) *50);
                     if (lx>x){
                         //lx = x+bounds.width()+minimumDateThreshold;
                         continue;
                     }
-                    Log.d("ALFA","ALPHA: " + da1);
                     alphaPaint.setAlpha(da1);
                     chlx = true;
                 }
