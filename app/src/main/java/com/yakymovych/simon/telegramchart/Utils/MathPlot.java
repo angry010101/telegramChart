@@ -61,8 +61,8 @@ public class MathPlot {
         this.yMaxLimit = yMaxLimit;
     }
 
-    private int minimumDateWidth= 20;
-    private int minimumDateThreshold = 22;
+    private int minimumDateDistance = 100;
+    private int minimumDateThreshold = 40;
     public void  setView(View v){
         this.view = v;
     }
@@ -289,15 +289,15 @@ public class MathPlot {
 
                 int x = (int)((val-xmin)*kx);
                 float da =Math.abs(lx -x);
-                if (da < minimumDateWidth){
+                if (da < minimumDateDistance){
 
-                    int da1 = (int) Math.abs(100-(double)(lx-x)/minimumDateWidth*100);
-                    if (lx+minimumDateThreshold>x){
-                        lx = x+bounds.width()+minimumDateThreshold;
+                    int da1 = (int) Math.abs(100-(double)(lx-x)/ minimumDateDistance *100);
+                    if (lx>x){
+                        //lx = x+bounds.width()+minimumDateThreshold;
                         continue;
                     }
                     alphaPaint.setAlpha(da1);
-                    chlx = false;
+                    chlx = true;
                 }
                 else {
                     alphaPaint.setAlpha(100);
