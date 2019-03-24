@@ -62,7 +62,7 @@ public class MathPlot {
         alphaAnimatorShow = ValueAnimator.ofInt(0,100);
         alphaAnimatorShow.setDuration(500);
         alphaAnimatorShow.addUpdateListener(ll);
-        alphaAnimatorShow.start();
+        //alphaAnimatorShow.start();
     }
 
     public void startAnimHide(){
@@ -71,7 +71,7 @@ public class MathPlot {
         alphaAnimatorShow = ValueAnimator.ofInt(100,0);
         alphaAnimatorShow.setDuration(500);
         alphaAnimatorShow.addUpdateListener(ll);
-        alphaAnimatorShow.start();
+        //alphaAnimatorShow.start();
     }
     public void setyMaxLimit(double yMaxLimit) {
         this.yMaxLimit = yMaxLimit;
@@ -294,30 +294,37 @@ public class MathPlot {
         for (int g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
-           // if (false)
-            //    this.drawValues(canvas,paint,xs,combined[g-1]);
+            if (drawDates)
+                this.drawValues(canvas,paint,xs,combined[g-1]);
         }
     }
 
+    private int lv = 0,ls=0,le=0,lc,c;
     private void drawValues(Canvas canvas, Paint paint,List<Double> xs, float[] combined) {
 
         //8 = visible views
         int v = (end-start)/8;
-        boolean b =false;
-        for (int k=start; k<end;k+=v){
-
-            if (k%2 != 0){
-                if (b)
-                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
-                else
-                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,alphaPaint);
-                b = !b;
-            }
-            else {
-                //canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
-
-            }
+        Log.d("DRAWVALUES","END: " + end + " start " + start + " " + v);
+        if (lv != v){
+            this.alphaValue = 100;
         }
+        alphaPaint.setAlpha(this.alphaValue);
+        boolean b =false;
+        if (v == 0) return;
+        c=0;
+        for (int k=start; k<end;k+=v){
+                if (b)
+                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,alphaPaint);
+                else
+                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
+                b = !b;
+                c++;
+        }
+        //alphaValue -= 5;
+        lv =v ;
+        ls = start;
+        le = end;
+        lc = c;
     }
 
     public Set<String> getVisiblePlots() {
