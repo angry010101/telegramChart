@@ -72,11 +72,13 @@ public class LineChartViewPort {
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 isFingerDown = true;
+                view.handleFingerDown();
                 view.invalidate();
                 break;
             case MotionEvent.ACTION_UP: // отпускание
             case MotionEvent.ACTION_CANCEL:
                 isFingerDown = false;
+                view.handleFingerUp();
                 view.invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:

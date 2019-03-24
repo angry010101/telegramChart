@@ -11,9 +11,11 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
+import com.yakymovych.simon.telegramchart.custom.MyScrollView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -111,6 +113,7 @@ public class GraphProgressBar extends View {
     }
 
     public void handleStartMovement(int moveTo){
+
         if (moveTo <= 0) {
             progressStart = 0;
         }
@@ -149,13 +152,19 @@ public class GraphProgressBar extends View {
         }
     }
 
+    public void handleStartChanging(){
+        this.scrollView.setLocked(true);
+    }
     public void handleStopChanging(){
+        scrollView.setLocked(false);
+
         if (progressChangedListener != null){
             progressChangedListener.onStopChanging(
                     this, progressStart, progressEnd);
         }
     }
     public void handleEndMovement(int moveToProgress){
+
         if (progressEnd+moveToProgress > progressMax) {
             progressEnd = progressMax;
         }
@@ -203,6 +212,11 @@ public class GraphProgressBar extends View {
     public void setProgressStartEnd(int s,int e) {
         this.progressStart = s;
         this.progressEnd = e;
+    }
+
+    MyScrollView scrollView;
+    public void setScrollView(MyScrollView scrollView) {
+        this.scrollView = scrollView;
     }
 
     public interface ProgressChangedListener{

@@ -58,15 +58,17 @@ public class ProgressBarViewPort {
             case MotionEvent.ACTION_DOWN:
                 if (Math.abs(x-startpos)<delta){
                     isChangingStart = true;
+                    view.handleStartChanging();
                 }
                 else if (Math.abs(x-endpos)<delta){
                     isChangingEnd = true;
+                    view.handleStartChanging();
                 }
                 else
                 if (Math.abs(x-(startpos+endpos)/2)<delta_o && !isChangingEnd && !isChangingStart){
                     isChangingOffset = true;
+                    view.handleStartChanging();
                 }
-
                 break;
             case MotionEvent.ACTION_UP: // отпускание
             //case MotionEvent.ACTION_CANCEL:
@@ -98,7 +100,6 @@ public class ProgressBarViewPort {
     }
 
     private void onStopChanging() {
-        Log.d("PROGRESSBAR","ACTION UP");
         view.handleStopChanging();
     }
 

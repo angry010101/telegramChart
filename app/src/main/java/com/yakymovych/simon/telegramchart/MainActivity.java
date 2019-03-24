@@ -23,6 +23,7 @@ import com.yakymovych.simon.telegramchart.Model.ChartData;
 import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.CheckBoxCreator;
+import com.yakymovych.simon.telegramchart.custom.MyScrollView;
 import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
 import com.yakymovych.simon.telegramchart.custom.XLabelsView;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity{
     LinearLayout ll;
 
 
-    ScrollView scrollView;
+    MyScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle b = getIntent().getExtras();
@@ -89,24 +90,11 @@ public class MainActivity extends AppCompatActivity{
         ll = this.findViewById(R.id.layout);
         xLabelsView = this.findViewById(R.id.xLabelsView);
         scrollView = this.findViewById(R.id.scrollv);
-        scrollView.setOnTouchListener(new View.OnTouchListener() {
-                                          @Override
-                                          public boolean onTouch(View v, MotionEvent event) {
-                                              return false;
-                                          }
-                                      }
-        );
         lc = this.findViewById(R.id.chart);
 
-        ll.setOnTouchListener(new View.OnTouchListener() {
-                                  @Override
-                                  public boolean onTouch(View v, MotionEvent event) {
-                                      return false;
-                                  }
-                              }
-        );
         progressbar = this.findViewById(R.id.graphProgressBar);
-
+        progressbar.setScrollView(scrollView);
+        lc.setScrollView(scrollView);
         List<Integer> data = new ArrayList<>();
         chartData = graphGenerator.fromJson(this);
         for (int i=0;i<chartData.size();i++){

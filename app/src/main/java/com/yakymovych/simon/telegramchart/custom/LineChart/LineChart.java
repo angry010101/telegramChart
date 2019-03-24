@@ -18,6 +18,7 @@ import android.view.ViewTreeObserver;
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.R;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
+import com.yakymovych.simon.telegramchart.custom.MyScrollView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -250,7 +251,13 @@ public class LineChart extends View {
         this.invalidate();
     }
 
-    private void init(Context context,AttributeSet attrs){
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    private void init(Context context, AttributeSet attrs){
 
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
@@ -307,6 +314,7 @@ public class LineChart extends View {
 
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
+        if (this.getVisiblePlots().size() == 0) return true;
         return viewPort.onTouchEvent(event);
     }
     @Override
@@ -406,6 +414,20 @@ public class LineChart extends View {
         //mp.calculateCharts();
         this.postInvalidate();
     }
+
+    MyScrollView scrollView;
+    public void setScrollView(MyScrollView scrollView) {
+    this.scrollView = scrollView;
+    }
+
+    public void handleFingerDown() {
+        this.scrollView.setLocked(true);
+    }
+
+    public void handleFingerUp() {
+        this.scrollView.setLocked(false);
+    }
+
 
     public interface LineChartListener{
         void onDidInit();
