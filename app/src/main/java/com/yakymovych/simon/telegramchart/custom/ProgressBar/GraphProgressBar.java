@@ -106,9 +106,8 @@ public class GraphProgressBar extends View {
 
     @Override
     public synchronized boolean onTouchEvent(final MotionEvent event) {
-        viewPort.onTouchEvent(event);
+        return viewPort.onTouchEvent(event);
 
-        return true;
     }
 
     public void handleStartMovement(int moveTo){

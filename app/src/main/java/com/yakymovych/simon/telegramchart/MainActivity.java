@@ -8,11 +8,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity{
     int plot_length;
     boolean theme=false;
 
+
+
     Chart chart;
     CheckBoxCreator chbCreator;
     GraphGenerator graphGenerator = new GraphGenerator();
@@ -54,6 +58,10 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
+    }
 
     private void changeTheme() {
         Intent i = new Intent(this,MainActivity.class);
@@ -66,7 +74,7 @@ public class MainActivity extends AppCompatActivity{
     LinearLayout ll;
 
 
-
+    ScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle b = getIntent().getExtras();
@@ -80,7 +88,23 @@ public class MainActivity extends AppCompatActivity{
 
         ll = this.findViewById(R.id.layout);
         xLabelsView = this.findViewById(R.id.xLabelsView);
+        scrollView = this.findViewById(R.id.scrollv);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+                                          @Override
+                                          public boolean onTouch(View v, MotionEvent event) {
+                                              return false;
+                                          }
+                                      }
+        );
         lc = this.findViewById(R.id.chart);
+
+        ll.setOnTouchListener(new View.OnTouchListener() {
+                                  @Override
+                                  public boolean onTouch(View v, MotionEvent event) {
+                                      return false;
+                                  }
+                              }
+        );
         progressbar = this.findViewById(R.id.graphProgressBar);
 
         List<Integer> data = new ArrayList<>();

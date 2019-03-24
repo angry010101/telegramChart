@@ -29,8 +29,8 @@ public class ProgressBarViewPort {
         this.minOffsetPx = (int) (minOffsetElements * ((double)endpos-startpos)/w);
     }
 
-    int delta = 40;
-    int delta_o=60;
+    int delta = 30;
+    int delta_o=40;
     int borderWidth = 16;
 
     public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int progressMax, int minOffsetElements) {
@@ -66,9 +66,10 @@ public class ProgressBarViewPort {
                 if (Math.abs(x-(startpos+endpos)/2)<delta_o && !isChangingEnd && !isChangingStart){
                     isChangingOffset = true;
                 }
+
                 break;
             case MotionEvent.ACTION_UP: // отпускание
-            case MotionEvent.ACTION_CANCEL:
+            //case MotionEvent.ACTION_CANCEL:
                 isChangingStart = false;
                 isChangingEnd = false;
                 isChangingOffset = false;
@@ -97,6 +98,7 @@ public class ProgressBarViewPort {
     }
 
     private void onStopChanging() {
+        Log.d("PROGRESSBAR","ACTION UP");
         view.handleStopChanging();
     }
 
