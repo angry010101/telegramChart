@@ -1,6 +1,7 @@
 package com.yakymovych.simon.telegramchart;
 
 import android.content.Intent;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity{
         ll = this.findViewById(R.id.layout);
         xLabelsView = this.findViewById(R.id.xLabelsView);
         scrollView = this.findViewById(R.id.scrollv);
+
         lc = this.findViewById(R.id.chart);
 
         progressbar = this.findViewById(R.id.graphProgressBar);

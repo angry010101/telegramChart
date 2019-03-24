@@ -421,7 +421,7 @@ public class LineChart extends View {
     }
 
     public void handleFingerDown() {
-        this.scrollView.setLocked(true);
+       // this.scrollView.setLocked(true);
     }
 
     public void handleFingerUp() {

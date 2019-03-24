@@ -107,6 +107,7 @@ public class LineChartDrawManager {
                 statsXBox = w-statsW;
             }
 
+            if (ys.length == 0 || ysColors.size() == 0 || ys.length > ysColors.size())return;
             this.drawIntersection(canvas,graphPaint, ys,ysColors);
             this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
         }

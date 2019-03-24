@@ -153,6 +153,7 @@ public class GraphProgressBar extends View {
     }
 
     public void handleStartChanging(){
+
         this.scrollView.setLocked(true);
     }
     public void handleStopChanging(){
