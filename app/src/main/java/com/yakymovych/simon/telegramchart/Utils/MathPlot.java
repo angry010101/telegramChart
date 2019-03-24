@@ -36,6 +36,7 @@ public class MathPlot {
     private Chart chart;
     private int alphaValue = 100;
     private View view;
+    private List<Double> chartDates;
 
     public void setVisiblePlots(Set<String> visiblePlots) {
         this.visiblePlots = visiblePlots;
@@ -56,40 +57,11 @@ public class MathPlot {
         if (view!=null) view.invalidate();
     }
 
-    public void startAnimShow(){
-        //if (alphaAnimatorShow != null && alphaAnimatorShow.isRunning())
-        //    alphaAnimatorShow.pause();
-        alphaAnimatorShow = ValueAnimator.ofInt(0,100);
-        alphaAnimatorShow.setDuration(500);
-        alphaAnimatorShow.addUpdateListener(ll);
-        //alphaAnimatorShow.start();
-    }
 
-    public void startAnimHide(){
-        //if (alphaAnimatorShow != null && alphaAnimatorShow.isRunning())
-        //    alphaAnimatorShow.pause();
-        alphaAnimatorShow = ValueAnimator.ofInt(100,0);
-        alphaAnimatorShow.setDuration(500);
-        alphaAnimatorShow.addUpdateListener(ll);
-        //alphaAnimatorShow.start();
-    }
     public void setyMaxLimit(double yMaxLimit) {
         this.yMaxLimit = yMaxLimit;
     }
-//
-//    public int findNearestFor(Plot p, long x) {
-//        List<Long> prcx = p.x.subList(start,end);
-//        Log.d("SEARCH", "prcx " + prcx.toString() + " \nx = " + x + " zero: " + prcx.get(0));
-//        return prcx.indexOf(x+prcx.get(0));
-//    }
-//
-//
-//    public void setPlots(List<Plot> plots) {
-//        if (yMaxLimit ==0) yMaxLimit = ymax;
-//        if (yMinLimit ==0) yMinLimit= ymin;
-//        this.plots = plots;
-//        //this.calcMaxGlobalY();
-//    }
+
 
     public void  setView(View v){
         this.view = v;
@@ -100,15 +72,22 @@ public class MathPlot {
         if (yMinLimit ==0) yMinLimit= ymin;
         //this.plots = plots;
         this.chart = chart;
+        List<Double> xs = chart.columns.get("x");
+        this.chartDates =  new ArrayList<>();
+        for (int i=0;i<chart.getAxisLength();i+= visibleDates){
+            chartDates.add(xs.get(i));
+        }
         //this.calcMaxGlobalY();
     }
 
-    public MathPlot(int w, int h, int offsetTop,int offsetBotton,boolean drawDates){
+    int paddingDates;
+    public MathPlot(int w, int h, int offsetTop,int offsetBotton,boolean drawDates,int paddingDates){
         this.w = w;
         this.offsetTop = offsetTop;
         this.offsetBottom = offsetBotton;
-        this.h = h-offsetTop-offsetBotton;
+        this.h = h-offsetTop-offsetBotton-paddingDates;
         this.drawDates = drawDates;
+        this.paddingDates = paddingDates;
     }
     void calcMaxGlobalX(){
         xmax = 0;
@@ -252,6 +231,7 @@ public class MathPlot {
         }
         y_size = y_charts.size();
     }
+    double kx;
     public void calculateCharts(){
         //List<List<Double>> y_charts = new ArrayList<>();
         //colors = new ArrayList<>();
@@ -260,7 +240,7 @@ public class MathPlot {
         int g;
         if (y_size == 0) return;
 
-        double kx = ((double)(w))/(xmax-xmin);
+        kx = ((double)(w))/(xmax-xmin);
         double ky = ((double)(h)/(yMaxLimit-yMinLimit));
         xs = chart.columns.get("x");
         long x = (long)((xs.get(start) -xmin)*kx);
@@ -295,33 +275,47 @@ public class MathPlot {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
             if (drawDates)
-                this.drawValues(canvas,paint,xs,combined[g-1]);
+                this.drawValues(canvas,paint,combined[g-1]);
         }
     }
 
     private int lv = 0,ls=0,le=0,lc,c;
-    private void drawValues(Canvas canvas, Paint paint,List<Double> xs, float[] combined) {
-
-        //8 = visible views
-        int v = (end-start)/8;
-        Log.d("DRAWVALUES","END: " + end + " start " + start + " " + v);
-        if (lv != v){
-            this.alphaValue = 100;
-        }
-        alphaPaint.setAlpha(this.alphaValue);
+    private int visibleDates = 5;
+    private void drawValues(Canvas canvas, Paint paint, float[] combined) {
         boolean b =false;
-        if (v == 0) return;
-        c=0;
-        for (int k=start; k<end;k+=v){
-                if (b)
-                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,alphaPaint);
-                else
-                    canvas.drawText(GraphGenerator.getStringDate(xs.get(k).longValue()),combined[4*(k-start)],this.h-40,paint);
+        double v = ((double)(end-start)/visibleDates);
+        paint.setTextSize(20);
+        for (double k=start; k<end;k+=v){
+                //if (b)
+                //    canvas.drawText(GraphGenerator.getStringDate(chartDates.get(k/visibleDates).longValue()),combined[4*(k-start)],this.h+offsetBottom,alphaPaint);
+                //else
+                double dlta = Math.abs(Math.round(k/visibleDates)-k/visibleDates);
+                Double val  = chartDates.get((int) Math.round(k/visibleDates));
+                Log.d("DELTA","DELTA: " + dlta);
+                int x = (int)((val-xmin)*kx);
+                paint.setAlpha((100-(int)(dlta*100*2)));
+                    canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop/2,paint);
                 b = !b;
                 c++;
         }
+        paint.setAlpha(100);
+        //        if (lv != v){
+//            this.alphaValue = 50;
+//        }
+//        alphaPaint.setAlpha(this.alphaValue);
+//        boolean b =false;
+//        if (v == 0) return;
+//        c=0;
+//        for (int k=start; k<end;k+=v){
+//                if (b)
+//                    canvas.drawText(GraphGenerator.getStringDate(xs.get(visibleDates).longValue()),combined[4*(k-start)],this.h,alphaPaint);
+//                else
+//                    canvas.drawText(GraphGenerator.getStringDate(xs.get(visibleDates).longValue()),combined[4*(k-start)],this.h,paint);
+//                b = !b;
+//                c++;
+//        }
         //alphaValue -= 5;
-        lv =v ;
+       // lv =v ;
         ls = start;
         le = end;
         lc = c;

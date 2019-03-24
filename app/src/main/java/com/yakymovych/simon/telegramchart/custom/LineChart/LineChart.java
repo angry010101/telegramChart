@@ -240,7 +240,7 @@ public class LineChart extends View {
     private void initSizes(int color){
         int width = this.getWidth();
         int height = this.getHeight();
-        mp = new MathPlot(width,height,topMargin,bottomMargin,true);
+        mp = new MathPlot(width,height,topMargin,bottomMargin,true,20);
         mp.setView(this);
         viewPort = new LineChartViewPort(this,width,height);
         drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground,chartBorder,textColor);

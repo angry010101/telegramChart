@@ -43,13 +43,6 @@
             android:layout_height="400dp"
             android:background="?attr/background" />
 
-        <com.yakymovych.simon.telegramchart.custom.XLabelsView
-            android:id="@+id/xLabelsView"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
-            android:background="?attr/background" />
-
         <com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar
             android:id="@+id/graphProgressBar"
             android:layout_width="match_parent"

@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity{
     CheckBoxCreator chbCreator;
     GraphGenerator graphGenerator = new GraphGenerator();
     GraphProgressBar progressbar;
-    XLabelsView xLabelsView;
 
     private final String THEME_TAG = "theme_tag";
     @Override
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         ll = this.findViewById(R.id.layout);
-        xLabelsView = this.findViewById(R.id.xLabelsView);
         scrollView = this.findViewById(R.id.scrollv);
 
         lc = this.findViewById(R.id.chart);
@@ -127,8 +125,6 @@ public class MainActivity extends AppCompatActivity{
         chbCreator.setData(c);
         //chbCreator.generate(chbListener);
 
-        xLabelsView.setDates(c.columns.get("x"));
-
         this.progressbar.setPlots(c);
         plot_length =  c.getAxisLength();
         lc.setLineChartListener(new LineChart.LineChartListener() {
@@ -143,7 +139,6 @@ public class MainActivity extends AppCompatActivity{
             public void onStartProgressChanged(View v, int p1, int p2) {
                 Log.d("MAIN","CHANGED");
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
-                xLabelsView.setStart(p1);
 
                 lc.mp.calculateCharts();
                 lc.invalidate();
@@ -152,8 +147,6 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onEndProgressChanged(View v, int p1, int p2) {
                 lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
-                xLabelsView.setEnd(p2);
-
                 lc.mp.calculateCharts();
                 lc.invalidate();
             }
@@ -162,7 +155,6 @@ public class MainActivity extends AppCompatActivity{
             public void onOffsetProgressChanged(View v, int p1, int p2) {
                 lc.setStartAndEnd((int)(((double)(p1)/progressbar.progressMax) * (plot_length-1)),
                         (int)(((double)(p2)/progressbar.progressMax) * plot_length));
-                xLabelsView.moveTo(p1,p2);
 
                 lc.mp.calculateCharts();
                 lc.invalidate();
@@ -222,7 +214,6 @@ public class MainActivity extends AppCompatActivity{
 
         chbCreator.setData(this.chart);
         chbCreator.generate(chbListener);
-        xLabelsView.setDates(this.chart.columns.get("x"));
         lc.setPlots(this.chart);
 
         lc.setStartAndEnd(0,plot_length);

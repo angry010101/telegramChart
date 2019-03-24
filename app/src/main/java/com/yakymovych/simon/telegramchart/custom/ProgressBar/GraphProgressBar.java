@@ -69,7 +69,7 @@ public class GraphProgressBar extends View {
         int width = this.getWidth();
         int height= this.getHeight();
         this.viewPort = new ProgressBarViewPort(this,width,height, progressStart,progressEnd,progressMax,minOffsetElems);
-        this.mp = new MathPlot(width,height,topMargin,topMargin,false);
+        this.mp = new MathPlot(width,height,topMargin,topMargin,false,0);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
         //setPlots is called before
         progressBarDrawManager.setChart(this.chart);

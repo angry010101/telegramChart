@@ -116,8 +116,8 @@ public class LineChartDrawManager {
 
     private void drawXAsis(Canvas canvas,Paint paint) {
         canvas.drawLine(0,h,w,h,paint);
-        calcOffset();
-        canvas.drawText(String.valueOf((int)(mp.getYMin()-mp.offsetBottom/ky)),0,h-mp.offsetBottom,paint);
+        //calcOffset();
+        //canvas.drawText(String.valueOf((int)(mp.getYMin()-mp.offsetBottom/ky)),0,h-mp.offsetBottom,paint);
     }
 
     private void drawYAsis(Canvas canvas,Paint paint) {
