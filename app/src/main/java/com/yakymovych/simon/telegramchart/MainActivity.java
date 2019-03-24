@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity{
     static final int PAGE_COUNT = 10;
     List<ChartData> chartData;
     LinearLayout ll;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle b = getIntent().getExtras();
@@ -127,12 +130,18 @@ public class MainActivity extends AppCompatActivity{
                 Log.d("MAIN","CHANGED");
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
                 xLabelsView.setStart(p1);
+
+                lc.mp.calculateCharts();
+                lc.invalidate();
             }
 
             @Override
             public void onEndProgressChanged(View v, int p1, int p2) {
                 lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
                 xLabelsView.setEnd(p2);
+
+                lc.mp.calculateCharts();
+                lc.invalidate();
             }
 
             @Override
@@ -140,6 +149,14 @@ public class MainActivity extends AppCompatActivity{
                 lc.setStartAndEnd((int)(((double)(p1)/progressbar.progressMax) * (plot_length-1)),
                         (int)(((double)(p2)/progressbar.progressMax) * plot_length));
                 xLabelsView.moveTo(p1,p2);
+
+                lc.mp.calculateCharts();
+                lc.invalidate();
+            }
+
+            @Override
+            public void onStopChanging(View v, int p1, int p2) {
+                lc.animateHeight();
             }
         });
 
@@ -189,11 +206,17 @@ public class MainActivity extends AppCompatActivity{
     public void setChart(int pos) {
         this.chart = Chart.fromСhartData(chartData.get(pos));
 
-
         chbCreator.setData(this.chart);
         chbCreator.generate(chbListener);
         xLabelsView.setDates(this.chart.columns.get("x"));
+        lc.setPlots(this.chart);
+
+        lc.setStartAndEnd(0,plot_length);
+        lc.setVisiblePlots(new HashSet<String>());
         this.progressbar.setPlots(this.chart);
+        progressbar.setVisiblePlots(new HashSet<String>());
+
+        progressbar.setStartAndEnd(0,100);
         plot_length =  this.chart.getAxisLength();
 
     }

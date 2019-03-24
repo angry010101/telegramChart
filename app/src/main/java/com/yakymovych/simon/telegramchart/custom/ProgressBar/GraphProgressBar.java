@@ -60,6 +60,7 @@ public class GraphProgressBar extends View {
 
     public void setPlots(Chart c) {
         this.chart = c;
+
      }
 
     private void initSizes(int colorBorders, int colorShadow){
@@ -70,8 +71,13 @@ public class GraphProgressBar extends View {
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
         //setPlots is called before
         progressBarDrawManager.setChart(this.chart);
-
         mp.calculateCharts();
+        this.invalidate();
+    }
+
+
+    public void setStartAndEnd(int s,int e){
+        this.mp.setStartAndEnd(s,e);
         this.invalidate();
     }
 
@@ -143,6 +149,12 @@ public class GraphProgressBar extends View {
         }
     }
 
+    public void handleStopChanging(){
+        if (progressChangedListener != null){
+            progressChangedListener.onStopChanging(
+                    this, progressStart, progressEnd);
+        }
+    }
     public void handleEndMovement(int moveToProgress){
         if (progressEnd+moveToProgress > progressMax) {
             progressEnd = progressMax;
@@ -184,6 +196,7 @@ public class GraphProgressBar extends View {
         public void onStartProgressChanged(View v,int p1,int p2);
         public void onEndProgressChanged(View v,int p1,int p2);
         public void onOffsetProgressChanged(View v,int p1,int p2);
+        public void onStopChanging(View v,int p1,int p2);
     }
 }
 

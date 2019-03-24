@@ -116,7 +116,7 @@ public class LineChart extends View {
         this.start = start;
         mp.setStart(start);
         viewPort.setStart(start);
-        this.animateHeight();
+        //this.animateHeight();
     }
 
     public void setStartAndEnd(int start,int end) {
@@ -131,17 +131,17 @@ public class LineChart extends View {
 
         mp.setEnd(end);
         viewPort.setEnd(end);
-        this.animateHeight();
+        //this.animateHeight();
     }
 
 
     private void removeStartEnd(){
         mp.setStartAndEnd(start,end);
         viewPort.setStartAndEnd(start,end);
-        this.animateHeight();
+        //this.animateHeight();
     }
 
-    private void animateHeight() {
+    public void animateHeight() {
         if (heightAnimator != null && heightAnimator.isRunning()  ){
             //heightAnimator.pause();
             //return;
@@ -155,7 +155,10 @@ public class LineChart extends View {
         float lcmaxy = (float) mp.getyMaxLimit();
         float lcminy = (float) mp.getyMinLimit();
 
+
+        Log.d("LINECHART","ANIMATION STARTED");
         //mp.calcGlobals();
+
         PropertyValuesHolder pvhX = null;
         PropertyValuesHolder pvhY = null;
         if (Math.abs(mp.getYMax() - lcmaxy)>mp.e){
@@ -208,7 +211,8 @@ public class LineChart extends View {
                 startRescaling();
             }
         });
-        heightAnimator.start();
+        //if (pvhX != null || pvhY != null )
+            heightAnimator.start();
     }
     public void startRescaling(){
 
@@ -315,7 +319,7 @@ public class LineChart extends View {
     public void startAnimHide(String pos) {
         List<Double> p1 = chart.columns.get(pos);
         setVisiblePlot(pos,false);
-        mp.calcGlobals();
+        //mp.calcGlobals();
         PropertyValuesHolder pvhX=null;
         PropertyValuesHolder pvhY=null;
         float lcmaxy = Collections.max(p1.subList(mp.start,mp.end)).floatValue();

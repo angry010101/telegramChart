@@ -67,6 +67,7 @@ public class ProgressBarViewPort {
                 isChangingStart = false;
                 isChangingEnd = false;
                 isChangingOffset = false;
+                this.onStopChanging();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isChangingStart){
@@ -89,6 +90,11 @@ public class ProgressBarViewPort {
         view.invalidate();
         return true;
     }
+
+    private void onStopChanging() {
+        view.handleStopChanging();
+    }
+
     public void handleOffsetMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-(startpos+endpos)/2 > 0;
