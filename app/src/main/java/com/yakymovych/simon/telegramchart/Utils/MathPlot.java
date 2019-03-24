@@ -183,8 +183,6 @@ public class MathPlot {
     }
     private double kx;
     public void calculateCharts(){
-        //List<List<Double>> y_charts = new ArrayList<>();
-        //colors = new ArrayList<>();
         prepare();
 
         int g;
@@ -241,7 +239,7 @@ public class MathPlot {
                 Double val  = chartDates.get((int) Math.round(k/visibleDates));
                 int x = (int)((val-xmin)*kx);
                 alphaPaint.setAlpha((100-(int)(dlta*100*2)));
-                    canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop,alphaPaint);
+                canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop,alphaPaint);
 
         }
     }
@@ -259,17 +257,8 @@ public class MathPlot {
     }
 
 
-    public void setHeight(Float h) {
-        ymax = h;
-    }
-
     public void setyMinLimit(double ymn) {
         this.yMinLimit = ymn;
-    }
-
-    public void setLimits() {
-        yMinLimit = ymin;
-        yMaxLimit = ymax;
     }
 
     public void rescale(double ymina, double ymaxa) {
