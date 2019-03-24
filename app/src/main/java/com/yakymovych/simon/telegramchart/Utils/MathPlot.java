@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.View;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
@@ -60,9 +61,19 @@ public class MathPlot {
         this.yMaxLimit = yMaxLimit;
     }
 
-
+    private int minimumDateWidth= 20;
+    private int minimumDateThreshold = 22;
     public void  setView(View v){
         this.view = v;
+    }
+
+
+    public void setAlphaValue(int alphaValue) {
+        this.alphaValue = alphaValue;
+    }
+
+    public int getAlphaValue() {
+        return alphaValue;
     }
 
     public void setPlots(Chart chart) {
@@ -94,15 +105,15 @@ public class MathPlot {
 
     private boolean isStartDragging;
     public void startAnim(boolean isStartDragging){
-        this.isStartDragging = isStartDragging;
-        alphaAnimatorShow.setDuration(1000);
-        alphaAnimatorShow.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                beginAnimation(animation);
-            }
-        });
-        alphaAnimatorShow.start();
+//        this.isStartDragging = isStartDragging;
+//        alphaAnimatorShow.setDuration(1000);
+//        alphaAnimatorShow.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                beginAnimation(animation);
+//            }
+//        });
+//        alphaAnimatorShow.start();
     }
 
     public void setAlphaPaintColor(int c) {
@@ -247,6 +258,7 @@ public class MathPlot {
     private void drawValues(Canvas canvas) {
 
 
+        int datesToShow = (end-start)/visibleDates;
         double v = ((double)(end-start)/visibleDates);
 
         int st = start;
@@ -266,14 +278,36 @@ public class MathPlot {
             canvas.drawText(GraphGenerator.getStringDate(val.longValue()),(int)((val-xmin)*kx),this.h+offsetBottom+offsetTop,alphaPaint);
 
         }
-        for (double k=st; k<ed;k+=v){
+        boolean b= false,chlx=true;
+        float lx=-999;
+        for (int k=start/visibleDates; k<(end/visibleDates);k++){
 
-                double dlta = Math.abs(Math.round(k/visibleDates)-k/visibleDates);
-                Double val  = chartDates.get((int) Math.round(k/visibleDates));
+                Double val  = chartDates.get(k);
+                String s = GraphGenerator.getStringDate(val.longValue());
+                Rect bounds = new Rect();
+                alphaPaint.getTextBounds(s, 0, s.length(), bounds);
+
                 int x = (int)((val-xmin)*kx);
-                alphaPaint.setAlpha((100-(int)(dlta*100*2)));
-                canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop,alphaPaint);
+                float da =Math.abs(lx -x);
+                if (da < minimumDateWidth){
 
+                    int da1 = (int) Math.abs(100-(double)(lx-x)/minimumDateWidth*100);
+                    if (lx+minimumDateThreshold>x){
+                        lx = x+bounds.width()+minimumDateThreshold;
+                        continue;
+                    }
+                    alphaPaint.setAlpha(da1);
+                    chlx = false;
+                }
+                else {
+                    alphaPaint.setAlpha(100);
+                    chlx = true;
+                }
+
+                canvas.drawText(s,x,this.h+offsetBottom+offsetTop,alphaPaint);
+                b = !b;
+                if (chlx)
+                    lx = x+bounds.width()+minimumDateThreshold;
         }
     }
 

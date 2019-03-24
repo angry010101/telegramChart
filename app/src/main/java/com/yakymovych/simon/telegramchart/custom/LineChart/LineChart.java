@@ -111,6 +111,15 @@ public class LineChart extends View {
 
 
     public void setStart(int start) {
+//        int d = this.start - start;
+//        int dabs = Math.abs(d);
+//        if (dabs > 5)
+//        if (d>0){
+//            mp.setAlphaValue(100);
+//        }
+//        else {
+//            mp.setAlphaValue(0);
+//        }
         this.start = start;
         mp.setStart(start);
         viewPort.setStart(start);
