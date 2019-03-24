@@ -77,7 +77,7 @@ public class LineChart extends View {
                 newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
-                this.mp.calculateCharts();
+                //this.mp.calculateCharts();
                 this.invalidate();
                 return;
             }
@@ -107,10 +107,7 @@ public class LineChart extends View {
 
     public void setPlots(Chart c) {
         this.chart = c;
-        //this.plots = plots;
         mp.setPlots(c);
-        //this.setVisiblePlot(,true);
-        mp.calculateCharts();
         this.invalidate();
     }
 
@@ -345,7 +342,7 @@ public class LineChart extends View {
                 newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
-                mp.calculateCharts();
+                //mp.calculateCharts();
                 this.invalidate();
                 return;
             }

@@ -237,22 +237,26 @@ public class MathPlot {
 
     int y_size;
 
+    List<List<Double>> y_charts = new ArrayList<>();
     List<String> colors = new ArrayList<>();
     float[][] combined;
     List<Double> xs;
 
     private void prepare(){
-
-    }
-    public void calculateCharts(){
-        //List<List<Double>> y_charts = new ArrayList<>();
-        colors = new ArrayList<>();
+        colors.clear();
+        y_charts.clear();
         for (String i : visiblePlots){
             List<Double> p = chart.columns.get(i);
             y_charts.add(p);
             colors.add(chart.colors.get(i));
         }
         y_size = y_charts.size();
+    }
+    public void calculateCharts(){
+        //List<List<Double>> y_charts = new ArrayList<>();
+        //colors = new ArrayList<>();
+        prepare();
+
         int g;
         if (y_size == 0) return;
 
