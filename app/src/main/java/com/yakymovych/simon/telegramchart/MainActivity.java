@@ -137,7 +137,6 @@ public class MainActivity extends AppCompatActivity{
         progressbar.setProgressChangedListener(new GraphProgressBar.ProgressChangedListener() {
             @Override
             public void onStartProgressChanged(View v, int p1, int p2) {
-                Log.d("MAIN","CHANGED");
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
 
                 lc.mp.calculateCharts();

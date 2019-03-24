@@ -88,7 +88,14 @@ public class MathPlot {
         this.h = h-offsetTop-offsetBotton-paddingDates;
         this.drawDates = drawDates;
         this.paddingDates = paddingDates;
+        alphaPaint.setTextSize(20);
+
     }
+
+    public void setAlphaPaintColor(int c) {
+        this.alphaPaint.setColor(c);
+    }
+
     void calcMaxGlobalX(){
         xmax = 0;
             List<Double> ys = chart.columns.get("x");
@@ -169,51 +176,6 @@ public class MathPlot {
 
 
 
-    public void drawChart(List<Double> p, Canvas canvas, Paint paint){
-        double lmin_x = xmin;
-        double lmax_x = xmax;
-
-        double kx = ((double)(w))/(lmax_x-lmin_x);
-        double ky = ((double)(h)/(yMaxLimit -yMinLimit));
-
-        List<Double> xs = chart.columns.get("x");
-        float[] points = new float[(end-start)*4];
-
-
-        long x = (long)((xs.get(0) -lmin_x)*kx);
-        float y = (float)(h-((p.get(0)-yMinLimit))*ky) + offsetTop;
-        double xi;
-        double yi;
-
-        for (int i=start,k=0;i<end;i++,k+=4){
-            points[k] = x;
-            points[k+1] = y;
-
-            xi = xs.get(i);
-            yi = p.get(i);
-
-            x = (long)((xi-lmin_x)*kx);
-            y = (float)(h-((yi-yMinLimit))*ky) + offsetTop;
-
-            points[k+2] = x;
-            points[k+3] = y;
-        }
-        canvas.drawLines(points,paint);
-    }
-//
-//    public void drawCharts(Canvas canvas, Paint paint) {
-//        //calcGlobals();
-//        Log.d("VIEW","DRAWING CHARTS" + visiblePlots );
-//        for (String i : visiblePlots){
-//            List<Double> p = chart.columns.get(i);
-//            Log.d("DRAWING","CHART " + i + " " + p);
-//            String color = chart.colors.get(i);
-//            paint.setColor(Color.parseColor(color));
-//            drawChart(p,canvas,paint);
-//        }
-//    }
-
-
     int y_size;
 
     List<List<Double>> y_charts = new ArrayList<>();
@@ -274,51 +236,25 @@ public class MathPlot {
         for (int g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
-            if (drawDates)
-                this.drawValues(canvas,paint,combined[g-1]);
+
         }
+        if (drawDates)
+            this.drawValues(canvas);
     }
 
-    private int lv = 0,ls=0,le=0,lc,c;
     private int visibleDates = 5;
-    private void drawValues(Canvas canvas, Paint paint, float[] combined) {
-        boolean b =false;
+    private void drawValues(Canvas canvas) {
+
         double v = ((double)(end-start)/visibleDates);
-        paint.setTextSize(20);
         for (double k=start; k<end;k+=v){
-                //if (b)
-                //    canvas.drawText(GraphGenerator.getStringDate(chartDates.get(k/visibleDates).longValue()),combined[4*(k-start)],this.h+offsetBottom,alphaPaint);
-                //else
+
                 double dlta = Math.abs(Math.round(k/visibleDates)-k/visibleDates);
                 Double val  = chartDates.get((int) Math.round(k/visibleDates));
-                Log.d("DELTA","DELTA: " + dlta);
                 int x = (int)((val-xmin)*kx);
-                paint.setAlpha((100-(int)(dlta*100*2)));
-                    canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop/2,paint);
-                b = !b;
-                c++;
+                alphaPaint.setAlpha((100-(int)(dlta*100*2)));
+                    canvas.drawText(GraphGenerator.getStringDate(val.longValue()),x,this.h+offsetBottom+offsetTop,alphaPaint);
+
         }
-        paint.setAlpha(100);
-        //        if (lv != v){
-//            this.alphaValue = 50;
-//        }
-//        alphaPaint.setAlpha(this.alphaValue);
-//        boolean b =false;
-//        if (v == 0) return;
-//        c=0;
-//        for (int k=start; k<end;k+=v){
-//                if (b)
-//                    canvas.drawText(GraphGenerator.getStringDate(xs.get(visibleDates).longValue()),combined[4*(k-start)],this.h,alphaPaint);
-//                else
-//                    canvas.drawText(GraphGenerator.getStringDate(xs.get(visibleDates).longValue()),combined[4*(k-start)],this.h,paint);
-//                b = !b;
-//                c++;
-//        }
-        //alphaValue -= 5;
-       // lv =v ;
-        ls = start;
-        le = end;
-        lc = c;
     }
 
     public Set<String> getVisiblePlots() {

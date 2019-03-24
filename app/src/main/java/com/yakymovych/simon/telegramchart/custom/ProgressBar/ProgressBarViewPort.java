@@ -52,7 +52,6 @@ public class ProgressBarViewPort {
 
 
     public boolean onTouchEvent(final MotionEvent event) {
-        Log.d("PROGRESSBAR","TOUCH EVENT");
         int x = (int) event.getX();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
@@ -149,7 +148,6 @@ public class ProgressBarViewPort {
     public int getProgressEndPx(int progressEnd) {
         //TODO ???
         double k1 = ((double)(w)/progressMax);
-        Log.d("ACTIONDOWN","K1: " + k1 + " " + w + " " + progressMax);
         //double k1 = pxPerUnit;
         //Log.d("TEST ", "MSG: " + pxPerUnit + " " + k1);
         return ((int)((((((double)(progressEnd))))*k1))) - borderWidth;

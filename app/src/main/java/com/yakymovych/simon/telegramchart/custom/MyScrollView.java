@@ -41,7 +41,6 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
     }
 
     public void setLocked(boolean locked) {
-        Log.d("SCROLLVIEW","LOCKED : " + locked);
         this.locked = locked;
     }
 
@@ -86,7 +85,6 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-        try {
 //
 //            if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MIN_DISTANCE_Y
 //                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -97,7 +95,7 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
 //                    && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 //                this.setLocked(true);
 //            }
-
+        if (e1 == null || e2 == null ) return  false;
 
             if (Math.abs(e1.getY() - e2.getY()) > SWIPE_MIN_DISTANCE_Y || Math.abs(e1.getX() - e2.getX())>SWIPE_MIN_DISTANCE)
             if (Math.abs(e1.getY() - e2.getY()) > Math.abs(e1.getX() - e2.getX() )) {
@@ -106,10 +104,6 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
             else {
                 this.setLocked(true);
             }
-        }
-        catch (Exception e){
-
-        }
         return false;
     }
 }

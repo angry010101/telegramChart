@@ -173,15 +173,6 @@ public class LineChartDrawManager {
             }
         }
 
-//        if (true){
-//            canvas.drawLine(statsX+statsXoffsetLeft,h,
-//                    statsX+statsXoffsetLeft, statsY + statsH,paint);
-//        }
-//        else {
-//            canvas.drawLine(statsX+statsXoffsetLeft,(int)(y_threshold+mp.getYMin())+ statsH +y_stats_offset,
-//                    statsX+statsXoffsetLeft,0,paint);
-//        }
-
     }
 
     private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {

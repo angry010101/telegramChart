@@ -96,7 +96,7 @@ public class LineChartViewPort {
                 }
                 break;
             default:
-                Log.d("VIEW: ","HAPPENED");
+                break;
         }
         return true;
     }

@@ -52,7 +52,6 @@ public class CheckBoxCreator {
     }
 
     public void generate(CompoundButton.OnCheckedChangeListener chbListener){
-        Log.d("CHECKBOXCREATOR","GENERATING");
         this.chbListener = chbListener;
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();

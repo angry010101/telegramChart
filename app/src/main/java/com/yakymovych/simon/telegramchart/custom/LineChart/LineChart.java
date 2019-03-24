@@ -157,7 +157,6 @@ public class LineChart extends View {
         float lcminy = (float) mp.getyMinLimit();
 
 
-        Log.d("LINECHART","ANIMATION STARTED");
         //mp.calcGlobals();
 
         PropertyValuesHolder pvhX = null;
@@ -242,6 +241,7 @@ public class LineChart extends View {
         int height = this.getHeight();
         mp = new MathPlot(width,height,topMargin,bottomMargin,true,20);
         mp.setView(this);
+        mp.setAlphaPaintColor(color);
         viewPort = new LineChartViewPort(this,width,height);
         drawManager = new LineChartDrawManager(mp,width,height,color,chartBackground,chartBorder,textColor);
         if (lineChartListener != null){
