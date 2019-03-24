@@ -129,6 +129,14 @@ public class MainActivity extends AppCompatActivity{
             public void onStartProgressChanged(View v, int p1, int p2) {
                 lc.setStart((int)(((double)(p1)/progressbar.progressMax) * plot_length));
 
+
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lc.mp.calcGlobals();
+                    }
+                });
+                t.start();
                 lc.mp.calculateCharts();
                 lc.invalidate();
             }
@@ -136,6 +144,13 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onEndProgressChanged(View v, int p1, int p2) {
                 lc.setEnd((int)(((double)(p2)/progressbar.progressMax) * plot_length));
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lc.mp.calcGlobals();
+                    }
+                });
+                t.start();
                 lc.mp.calculateCharts();
                 lc.invalidate();
             }
@@ -144,7 +159,13 @@ public class MainActivity extends AppCompatActivity{
             public void onOffsetProgressChanged(View v, int p1, int p2) {
                 lc.setStartAndEnd((int)(((double)(p1)/progressbar.progressMax) * (plot_length-1)),
                         (int)(((double)(p2)/progressbar.progressMax) * plot_length));
-
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        lc.mp.calcGlobals();
+                    }
+                });
+                t.start();
                 lc.mp.calculateCharts();
                 lc.invalidate();
             }

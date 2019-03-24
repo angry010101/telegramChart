@@ -46,7 +46,8 @@ class LineChartDrawManager {
     int stats_y_intersection = 20;
     private final int intersection_radius = 6;
     private final Paint intersectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
+    private final Paint intersectionGraphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint chartBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     public void setStatsX(int statsX) {
         this.statsX = statsX;
     }
@@ -61,17 +62,26 @@ class LineChartDrawManager {
     public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor,int chartBackground,int colorChartBorder,int defaultTextColor){
         this.chartBackground = chartBackground;
         intersectionPaint.setColor(Color.WHITE);
-        intersectionPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         intersectionPaint.setAntiAlias(true);
+        intersectionPaint.setStrokeWidth(2);
 
+
+
+
+        intersectionGraphPaint.setStyle(Paint.Style.STROKE);
+
+
+        int stroke_width = 4;
+        intersectionGraphPaint.setStrokeWidth(stroke_width);
+
+
+        chartBackgroundPaint.setColor(chartBackground);
         this.textColor = defaultTextColor;
         paintText.setTextSize(24);
         paintText.setAntiAlias(true);
         this.paintBorder.setStrokeWidth(3);
         this.paintBorder.setStyle(Paint.Style.STROKE);
         this.paintBorder.setColor(colorChartBorder);
-        intersectionPaint.setColor(Color.WHITE);
-        intersectionPaint.setAntiAlias(true);
         rect.left = 0;
         this.w = w;
         this.h = h;
@@ -90,7 +100,7 @@ class LineChartDrawManager {
 
     public void draw(Canvas canvas, boolean drawStats, double[] ys,int[] ys_real_data,  ArrayList<String> ysColors,Long currentX,List<String> ysLabels){
         if (mp.getVisiblePlots() == null || mp.getVisiblePlots().size() == 0)return;
-        mp.calcGlobals();
+        //mp.calcGlobals();
         mp.drawCharts(canvas,graphPaint);
         this.drawXDividers(canvas,paint);
         this.drawXAsis(canvas,paint);
@@ -109,7 +119,7 @@ class LineChartDrawManager {
             }
 
             if (ys.length == 0 || ysColors.size() == 0 || ys.length > ysColors.size())return;
-            this.drawIntersection(canvas,graphPaint, ys,ysColors);
+            this.drawIntersection(canvas, ys,ysColors);
             this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
         }
     }
@@ -154,12 +164,9 @@ class LineChartDrawManager {
 
         statsY=80;
         RectF rect = new RectF(statsXBox, statsY,statsXBox + statsW, statsY + statsH);
-        int lastColor = paint.getColor();
-        paint.setColor(chartBackground);
         //canvas.drawRect(new Rect(statsX, statsY, statsX + statsW, statsY + statsH),paint);
-        canvas.drawRoundRect(rect,stats_radius,stats_radius,paint);
+        canvas.drawRoundRect(rect,stats_radius,stats_radius,chartBackgroundPaint);
         canvas.drawRoundRect(rect,stats_radius,stats_radius,paintBorder);
-        paint.setColor(lastColor);
         paintText.setColor(textColor);
 
 
@@ -176,15 +183,10 @@ class LineChartDrawManager {
 
     }
 
-    private void drawIntersection(Canvas canvas, Paint paint, double[] ys, ArrayList<String> ysColors) {
-        Paint.Style style = paint.getStyle();
-        float stroke = paint.getStrokeWidth();
-        paint.setStyle(Paint.Style.STROKE);
-        float thizpaintstroke = this.paint.getStrokeWidth();
+    private void drawIntersection(Canvas canvas, double[] ys, ArrayList<String> ysColors) {
         int stroke_width = 4;
-        paint.setStrokeWidth(stroke_width);
+
         int lh = statsY+statsH;
-        this.paint.setStrokeWidth(2);
         double[] ys_sorted = new double[ys.length];
         System.arraycopy( ys, 0, ys_sorted, 0, ys.length );
         for (int i=0;i<ys_sorted.length;i++){
@@ -194,26 +196,23 @@ class LineChartDrawManager {
         for (int i =0;i<ys.length;i++){
             double y = ys[i];
 
-            paint.setColor(Color.parseColor(ysColors.get(i)));
+            intersectionGraphPaint.setColor(Color.parseColor(ysColors.get(i)));
             int ytodraw = mp.h-(int)y+mp.offsetTop;
             canvas.drawCircle(statsX,
                     ytodraw,
-                    intersection_radius,paint);
+                    intersection_radius,intersectionGraphPaint);
 
             int ytodrawline =  (int) ys_sorted[i];
             if (lh<ytodrawline-intersection_radius){
-                canvas.drawLine(statsX,lh,statsX,ytodrawline-intersection_radius,this.paint);
+                canvas.drawLine(statsX,lh,statsX,ytodrawline-intersection_radius,intersectionPaint);
             }
 
             lh = (ytodrawline+intersection_radius+stroke_width/2);
         }
         if (lh < this.h)
             canvas.drawLine(statsX,lh,
-                statsX, this.h,this.paint);
+                statsX, this.h,intersectionPaint);
 
-        this.paint.setStrokeWidth(thizpaintstroke);
-        paint.setStrokeWidth(stroke);
-        paint.setStyle(style);
     }
 
 
