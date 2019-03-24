@@ -65,6 +65,8 @@ public class ProgressBarDrawManager {
         mp.calcGlobals();
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
+        //TODO
+        //remove
         mp.drawCharts(canvas,paint);
         this.drawSlider(canvas,p,e);
     }

@@ -69,6 +69,7 @@ public class GraphProgressBar extends View {
         this.mp = new MathPlot(width,height,topMargin,topMargin,false);
         this.progressBarDrawManager = new ProgressBarDrawManager(mp,width,height,colorBorders,colorShadow);
 
+        mp.calculateCharts();
         this.invalidate();
     }
 
@@ -131,11 +132,17 @@ public class GraphProgressBar extends View {
         progressEnd += d;
         viewPort.setStartpos(progressStart);
         viewPort.setEndpos(progressEnd);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //mp.calculateCharts();
+            }
+        });
+        t.start();
         if (progressChangedListener != null){
             progressChangedListener.onOffsetProgressChanged(
                     this, progressStart, progressEnd);
         }
-        this.invalidate();
     }
 
     public void handleEndMovement(int moveToProgress){

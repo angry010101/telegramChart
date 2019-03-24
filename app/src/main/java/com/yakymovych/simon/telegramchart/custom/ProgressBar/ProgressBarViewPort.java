@@ -47,9 +47,8 @@ public class ProgressBarViewPort {
     }
 
 
-    public synchronized boolean onTouchEvent(MotionEvent event) {
+    public synchronized boolean onTouchEvent(final MotionEvent event) {
         int x = (int) event.getX();
-
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 if (Math.abs(x-startpos)<delta){
@@ -71,13 +70,19 @@ public class ProgressBarViewPort {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isChangingStart){
-                    handleStartMovement(event);
+
+                            handleStartMovement(event);
+
                 }
                 else if (isChangingEnd){
-                    handleEndMovement(event);
+
+                        handleEndMovement(event);
+
                 }
                 else if (isChangingOffset){
-                    handleOffsetMovement(event);
+
+                            handleOffsetMovement(event);
+
                 }
                 break;
             default:

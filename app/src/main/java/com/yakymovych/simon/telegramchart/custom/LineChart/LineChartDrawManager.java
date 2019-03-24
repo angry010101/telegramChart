@@ -94,8 +94,21 @@ public class LineChartDrawManager {
         this.drawXDividers(canvas,paint);
         this.drawXAsis(canvas,paint);
         if (drawStats && ys != null){
-            this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
+            int statsX = this.statsX-statsXoffsetLeft;
+            int minStatsW = 200;
+
+            statsXBox= statsX;
+            double ymax = mp.getYMax();
+
+            statsW = minStatsW + (int)(Math.log10(ymax) + 1)*6*ys.length;
+            if (ys.length>2) statsW += (ys.length-2)*40;
+            //20 - threshold right
+            if (statsXBox+statsW > w){
+                statsXBox = w-statsW;
+            }
+
             this.drawIntersection(canvas,graphPaint, ys,ysColors);
+            this.drawStats(canvas,paint,currentX,ys,ys_real_data,ysColors,ysLabels);
         }
     }
 
@@ -125,7 +138,6 @@ public class LineChartDrawManager {
         int  hc =(int)(h-mp.offsetTop-mp.offsetBottom-offsetUnits*ky)/(dividersCount);
         double t = ((mp.getyMaxLimit()-mp.getyMinLimit()-offsetUnits))/(dividersCount);
 
-        Log.d("MATHPLOT","draw: "+mp.getyMaxLimit()+" " + mp.getyMinLimit() + " hc: " + hc);
         double ymin = mp.getyMinLimit();
         for (int i=0,k=dividersCount;k>0;i+= hc,k--){
             canvas.drawLine(0,i+mp.offsetBottom+offsetTopPx,w,i+mp.offsetBottom+offsetTopPx,paint);
@@ -136,19 +148,8 @@ public class LineChartDrawManager {
 
     private void drawStats(Canvas canvas, Paint paint, Long currentX, double[] ys, int[] ys_real_data, ArrayList<String> ysColors, List<String> ysLabels) {
         //COULD BE BETTER
-        int statsX = this.statsX-statsXoffsetLeft;
-        int minStatsW = 200;
 
-        double ymax = mp.getYMax();
 
-        statsXBox= statsX;
-
-        statsW = minStatsW + (int)(Math.log10(ymax) + 1)*6*ys.length;
-        if (ys.length>2) statsW += (ys.length-2)*40;
-        //20 - threshold right
-        if (statsXBox+statsW > w){
-            statsXBox = w-statsW;
-        }
         statsY=80;
         RectF rect = new RectF(statsXBox, statsY,statsXBox + statsW, statsY + statsH);
         int lastColor = paint.getColor();

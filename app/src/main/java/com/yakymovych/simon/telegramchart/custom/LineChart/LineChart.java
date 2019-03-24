@@ -77,6 +77,7 @@ public class LineChart extends View {
                 newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
+                this.mp.calculateCharts();
                 this.invalidate();
                 return;
             }
@@ -109,6 +110,7 @@ public class LineChart extends View {
         //this.plots = plots;
         mp.setPlots(c);
         //this.setVisiblePlot(,true);
+        mp.calculateCharts();
         this.invalidate();
     }
 
@@ -181,6 +183,7 @@ public class LineChart extends View {
                 heightAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
+                //mp.calculateCharts();
                 this.invalidate();
                 return;
             }
@@ -212,6 +215,8 @@ public class LineChart extends View {
             heightAnimator.start();
     }
     public void startRescaling(){
+
+        mp.calculateCharts();
         this.invalidate();
     }
 
@@ -241,6 +246,7 @@ public class LineChart extends View {
         if (lineChartListener != null){
             lineChartListener.onDidInit();
         }
+        mp.calculateCharts();
         this.invalidate();
     }
 
@@ -285,6 +291,7 @@ public class LineChart extends View {
         mp.calcGlobals();
         mp.setyMaxLimit(mp.getYMax());
         mp.setyMinLimit(mp.getYMin());
+        mp.calculateCharts();
         this.invalidate();
     }
     private void beginAnimation(ValueAnimator animation) {
@@ -294,6 +301,7 @@ public class LineChart extends View {
             this.mp.setyMaxLimit(ymx);
         if (ymn!=null)
             this.mp.setyMinLimit(ymn);
+        //mp.calculateCharts();
         this.invalidate();
     }
 
@@ -337,6 +345,7 @@ public class LineChart extends View {
                 newGraphAnimator = ValueAnimator.ofPropertyValuesHolder(pvhY);
             }
             else {
+                mp.calculateCharts();
                 this.invalidate();
                 return;
             }
@@ -370,6 +379,7 @@ public class LineChart extends View {
     ArrayList<String> ysLabels;
     int[] ys_real_data;
     public void handleMove(long pos,long x_px, int w) {
+
         ys = new double[visiblePlots.size()];
         ys_real_data = new int[visiblePlots.size()];
         int xpos = (int) pos;//viewPort.findNearestFor(this.chart.columns.get("x"),pos);
@@ -394,7 +404,8 @@ public class LineChart extends View {
         }
         double pxPerUnit = (double)w/(xsEnd-xsStart);
         drawManager.statsX =(int)((xs-xsStart)*pxPerUnit);
-        this.invalidate();
+        //mp.calculateCharts();
+        this.postInvalidate();
     }
 
     public interface LineChartListener{

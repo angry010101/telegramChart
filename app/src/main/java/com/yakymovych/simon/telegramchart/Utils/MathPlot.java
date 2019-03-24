@@ -152,10 +152,10 @@ public class MathPlot {
         this.start = start;
         calcGlobals();
         if (dstart > 0){
-            startAnimShow();
+       //     startAnimShow();
         }
         else {
-            startAnimHide();
+         //   startAnimHide();
         }
     }
 
@@ -164,10 +164,10 @@ public class MathPlot {
         this.end = end;
         calcGlobals();
         if (dend<0){
-            startAnimShow();
+        //    startAnimShow();
         }
         else {
-            startAnimHide();
+        //    startAnimHide();
         }
     }
 
@@ -235,25 +235,34 @@ public class MathPlot {
 //    }
 
 
-    public void drawCharts(Canvas canvas, Paint paint) {
-        List<List<Double>> y_charts = new ArrayList<>();
-        List<String> colors = new ArrayList<>();
+    int y_size;
 
+    List<String> colors = new ArrayList<>();
+    float[][] combined;
+    List<Double> xs;
+
+    private void prepare(){
+
+    }
+    public void calculateCharts(){
+        //List<List<Double>> y_charts = new ArrayList<>();
+        colors = new ArrayList<>();
         for (String i : visiblePlots){
             List<Double> p = chart.columns.get(i);
             y_charts.add(p);
             colors.add(chart.colors.get(i));
         }
-        int y_size = y_charts.size(),g;
+        y_size = y_charts.size();
+        int g;
         if (y_size == 0) return;
 
         double kx = ((double)(w))/(xmax-xmin);
         double ky = ((double)(h)/(yMaxLimit-yMinLimit));
-        List<Double> xs = chart.columns.get("x");
+        xs = chart.columns.get("x");
         long x = (long)((xs.get(start) -xmin)*kx);
 
         float[] yl = new float[y_size];
-        float[][] combined = new float[y_size][xs.size()*4];
+        combined = new float[y_size][xs.size()*4];
 
         for (int yi = 0;yi<y_size;yi++){
             yl[yi] = (float)(h-((y_charts.get(yi).get(start)-yMinLimit))*ky) + offsetTop;
@@ -274,7 +283,11 @@ public class MathPlot {
             }
         }
 
-        for (g =1;g<y_size+1;g++) {
+    }
+
+    public void drawCharts(Canvas canvas, Paint paint) {
+        //calculateCharts();
+        for (int g =1;g<y_size+1;g++) {
             paint.setColor(Color.parseColor(colors.get(g-1)));
             canvas.drawLines(combined[g-1], paint);
             if (drawDates)

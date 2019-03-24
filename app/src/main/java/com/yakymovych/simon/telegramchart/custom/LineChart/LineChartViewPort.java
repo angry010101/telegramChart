@@ -68,7 +68,7 @@ public class LineChartViewPort {
     }
 
     public synchronized boolean onTouchEvent(MotionEvent event) {
-        long x = (long) event.getX();
+        final long x = (long) event.getX();
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 isFingerDown = true;
@@ -83,7 +83,13 @@ public class LineChartViewPort {
                 stats_draw_right_threshold = w-stats_draw_left_threshold;
                 if (isFingerDown && x < stats_draw_right_threshold && x > stats_draw_left_threshold ){
                     //y_threshold = (int)(((ymax-ymin)/2)*(y_real_threshold));
-                    view.handleMove((long)(x*unitPerPx),x,w);
+                    Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.handleMove((long)(x*unitPerPx),x,w);
+                        }
+                    });
+                    t.start();
 
                 }
                 break;
