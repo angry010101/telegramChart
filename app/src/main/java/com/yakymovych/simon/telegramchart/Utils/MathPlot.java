@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
@@ -61,8 +62,8 @@ public class MathPlot {
         this.yMaxLimit = yMaxLimit;
     }
 
-    private int minimumDateDistance = 100;
-    private int minimumDateThreshold = 40;
+    private int minimumDateDistance = 120;
+    private int minimumDateThreshold = 120;
     public void  setView(View v){
         this.view = v;
     }
@@ -289,13 +290,14 @@ public class MathPlot {
 
                 int x = (int)((val-xmin)*kx);
                 float da =Math.abs(lx -x);
-                if (da < minimumDateDistance){
+                if (x-lx < minimumDateDistance){
 
-                    int da1 = (int) Math.abs(100-(double)(lx-x)/ minimumDateDistance *100);
+                    int da1 = (int) Math.abs(100-(double)Math.abs(lx-x)/minimumDateDistance *100);
                     if (lx>x){
                         //lx = x+bounds.width()+minimumDateThreshold;
                         continue;
                     }
+                    Log.d("ALFA","ALPHA: " + da1);
                     alphaPaint.setAlpha(da1);
                     chlx = true;
                 }
