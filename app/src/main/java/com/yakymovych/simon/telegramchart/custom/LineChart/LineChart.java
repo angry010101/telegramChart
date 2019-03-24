@@ -104,7 +104,8 @@ public class LineChart extends View {
 
     public void setPlots(Chart c) {
         this.chart = c;
-        mp.setPlots(c);
+        if (mp != null)
+            mp.setPlots(c);
         this.invalidate();
     }
 
@@ -113,6 +114,8 @@ public class LineChart extends View {
         this.start = start;
         mp.setStart(start);
         viewPort.setStart(start);
+
+        mp.startAnim(true);
         //this.animateHeight();
     }
 
@@ -121,6 +124,7 @@ public class LineChart extends View {
         this.end = end;
         removeStartEnd();
 
+
     }
 
     public void setEnd(int end) {
@@ -128,6 +132,8 @@ public class LineChart extends View {
 
         mp.setEnd(end);
         viewPort.setEnd(end);
+
+        mp.startAnim(false);
         //this.animateHeight();
     }
 

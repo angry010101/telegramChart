@@ -88,6 +88,21 @@ public class MathPlot {
         this.paddingDates = paddingDates;
         alphaPaint.setTextSize(20);
 
+        alphaAnimatorShow = ValueAnimator.ofInt(0,100);
+    }
+
+
+    private boolean isStartDragging;
+    public void startAnim(boolean isStartDragging){
+        this.isStartDragging = isStartDragging;
+        alphaAnimatorShow.setDuration(1000);
+        alphaAnimatorShow.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                beginAnimation(animation);
+            }
+        });
+        alphaAnimatorShow.start();
     }
 
     public void setAlphaPaintColor(int c) {
@@ -233,7 +248,25 @@ public class MathPlot {
 
 
         double v = ((double)(end-start)/visibleDates);
-        for (double k=start; k<end;k+=v){
+
+        int st = start;
+        int ed = end;
+
+        alphaPaint.setAlpha(100);
+        if (isStartDragging){
+            ed -= v;
+
+            Double val  = chartDates.get((int) Math.round((end-v)/visibleDates));
+            canvas.drawText(GraphGenerator.getStringDate(val.longValue()),(int)((val-xmin)*kx),this.h+offsetBottom+offsetTop,alphaPaint);
+        }
+        else {
+            st += v;
+
+            Double val  = chartDates.get((int) Math.round(start/visibleDates));
+            canvas.drawText(GraphGenerator.getStringDate(val.longValue()),(int)((val-xmin)*kx),this.h+offsetBottom+offsetTop,alphaPaint);
+
+        }
+        for (double k=st; k<ed;k+=v){
 
                 double dlta = Math.abs(Math.round(k/visibleDates)-k/visibleDates);
                 Double val  = chartDates.get((int) Math.round(k/visibleDates));

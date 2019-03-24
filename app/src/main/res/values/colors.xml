@@ -22,6 +22,7 @@
 
     <color name="colorBorderChart">#f0f0f0</color>
     <color name="colorThemeBorderChart">#1a232d</color>
+    <color name="colorThemePrimaryDark">#1a242e</color>
 
     <color name="colorThemeDividers">#101924</color>
 

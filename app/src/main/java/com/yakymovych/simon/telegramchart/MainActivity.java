@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                setChart(position);
+                if (chart != null && lc.mp !=null)
+                    setChart(position);
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {

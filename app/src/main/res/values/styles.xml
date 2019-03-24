@@ -25,14 +25,14 @@
 
         <item name="chartStatsBackground">@color/colorChartStatsWindow</item>
 
-        <item name="colorPrimaryDark">@color/colorThemeDeepDark</item>
+        <item name="colorPrimaryDark">@color/colorThemePrimaryDark</item>
         <item name="colorAccent">@color/colorThemeLightGray</item>
         <item name="android:textColorPrimary">@color/foregroundLight</item>
         <item name="android:textColorSecondary">@color/colorThemeTextGray</item>
 
         <item name="mainBackground">@color/colorThemeBackground</item>
 
-        <item name="android:background">@null</item>
+        <item name="android:background">@color/colorThemeBackground</item>
         <item name="android:colorForeground">@color/colorThemeForegroundGray</item>
         <item name="background">@color/colorThemeDeepDark</item>
         <item name="chartDividersColor">@color/colorThemeDividers</item>
