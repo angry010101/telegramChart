@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,17 +22,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class LineChart extends View {
     private int start,end;
     public MathPlot mp;
-    //private List<Plot> plots;
-    int chartBackground;
+    private int chartBackground;
 
-    LineChartDrawManager drawManager;
-    LineChartViewPort viewPort;
+    private LineChartDrawManager drawManager;
+    private LineChartViewPort viewPort;
     private Set<String> visiblePlots = new HashSet<>();
     private Chart chart;
 
@@ -43,13 +39,13 @@ public class LineChart extends View {
         mp.setVisiblePlots(visiblePlots);
     }
 
-    LineChartListener lineChartListener;
-    private int topMargin = 20;
-    int bottomMargin = 20;
-    ValueAnimator newGraphAnimator;
-    ValueAnimator heightAnimator;
+    private LineChartListener lineChartListener;
+    private final int topMargin = 20;
+    private final int bottomMargin = 20;
+    private ValueAnimator newGraphAnimator;
+    private ValueAnimator heightAnimator;
 
-    int chartBorder;
+    private int chartBorder;
 
     public void startAnimShow(String pos){
         List<Double> p1 = chart.columns.get(pos);
@@ -143,16 +139,7 @@ public class LineChart extends View {
     }
 
     public void animateHeight() {
-        if (heightAnimator != null && heightAnimator.isRunning()  ){
-            //heightAnimator.pause();
-            //return;
-           // Log.d("HEIGHT","PAUSED" );
-        }
-        else {
 
-        }
-  //      float lcmaxy = mp.getYMax();
-   //     float lcminy = mp.getYMin();
         float lcmaxy = (float) mp.getyMaxLimit();
         float lcminy = (float) mp.getyMinLimit();
 
@@ -214,7 +201,7 @@ public class LineChart extends View {
         //if (pvhX != null || pvhY != null )
             heightAnimator.start();
     }
-    public void startRescaling(){
+    private void startRescaling(){
 
         mp.calculateCharts();
         this.invalidate();
@@ -235,7 +222,7 @@ public class LineChart extends View {
         init(context,attrs);
     }
 
-    int textColor;
+    private int textColor;
     private void initSizes(int color){
         int width = this.getWidth();
         int height = this.getHeight();
@@ -273,6 +260,7 @@ public class LineChart extends View {
         final int primaryColor = arr.getColor(1, -1);
         chartBackground = arr.getColor(2, -1);
         chartBorder = arr.getColor(3, -1);
+        arr.recycle();
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -380,11 +368,11 @@ public class LineChart extends View {
     private final int y_stats_offset=100;
     private boolean drawToTop = false;
 
-    double[] ys;
-    Long currentX;
-    ArrayList<String> ysColors;
-    ArrayList<String> ysLabels;
-    int[] ys_real_data;
+    private double[] ys;
+    private Long currentX;
+    private ArrayList<String> ysColors;
+    private ArrayList<String> ysLabels;
+    private int[] ys_real_data;
     public void handleMove(long pos,long x_px, int w) {
 
         ys = new double[visiblePlots.size()];
@@ -393,8 +381,8 @@ public class LineChart extends View {
         //drawManager.statsX = this.chart.columns.get("x").get((int)pos+start).intValue();
         Double xs = this.chart.columns.get("x").get((int) (pos+start));
         currentX = xs.longValue();
-        Double xsStart = this.chart.columns.get("x").get((int) (start));
-        Double xsEnd = this.chart.columns.get("x").get((int) (end-1));
+        Double xsStart = this.chart.columns.get("x").get((start));
+        Double xsEnd = this.chart.columns.get("x").get((end-1));
         int i=0;
         double pxPerUnitY = (double)mp.h/(mp.getyMaxLimit()-mp.getyMinLimit());
 
@@ -403,9 +391,8 @@ public class LineChart extends View {
        // for (Map.Entry<String, List<Double>> entry : this.chart.columns.entrySet()) {
         for (String plot : visiblePlots) {
             List<Double> ys1 = chart.columns.get(plot);
-            String key = plot;
-            ysColors.add(i, this.chart.colors.get(key));
-            ysLabels.add(i,this.chart.names.get(key));
+            ysColors.add(i, this.chart.colors.get(plot));
+            ysLabels.add(i,this.chart.names.get(plot));
             ys[i] = (ys1.get((int) (pos+start))-mp.getyMinLimit())*pxPerUnitY;
             ys_real_data[i++] = ys1.get((int) (pos+start)).intValue();
         }
@@ -415,7 +402,7 @@ public class LineChart extends View {
         this.postInvalidate();
     }
 
-    MyScrollView scrollView;
+    private MyScrollView scrollView;
     public void setScrollView(MyScrollView scrollView) {
     this.scrollView = scrollView;
     }

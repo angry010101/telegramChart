@@ -3,7 +3,6 @@ package com.yakymovych.simon.telegramchart.custom;
 import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
@@ -12,7 +11,7 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
     private static final float SWIPE_MIN_DISTANCE = 40;
     private static final float SWIPE_MIN_DISTANCE_Y = 250;
     private static final float SWIPE_THRESHOLD_VELOCITY = 200;
-    boolean locked=false;
+    private boolean locked=false;
     private GestureDetectorCompat mDetector;
     public MyScrollView(Context context) {
         super(context);
@@ -34,7 +33,7 @@ public class MyScrollView extends ScrollView implements GestureDetector.OnGestur
     }
 
 
-    void init(){
+    private void init(){
 
         mDetector = new GestureDetectorCompat(this.getContext(),
                 this);

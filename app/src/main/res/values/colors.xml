@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#517da2</color>
-    <color name="colorBlue">#3896d4</color>
-    <color name="colorGray">#96a2aa</color>
     <color name="colorLightGray">#AAf5f8f9</color>
     <color name="colorLightBlue">#88dbe7f0</color>
     <color name="colorPrimaryDark">#426382</color>
-    <color name="colorAccent">#D81B60</color>
     <color name="colorBlack">#222222</color>
     <color name="colorBackground">#f0f0f0</color>
     <color name="foregroundLight">#ffffff</color>
@@ -16,7 +13,6 @@
 
     <color name="colorThemeDeepDark">#1d2733</color>
     <color name="colorThemeDark">#212d3b</color>
-    <color name="colorThemePrimaryDark">#1a242e</color>
     <color name="colorThemeBackground">#151e27</color>
 
     <color name="colorThemeTextGray">#546778</color>

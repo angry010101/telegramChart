@@ -1,11 +1,8 @@
 package com.yakymovych.simon.telegramchart;
 
 import android.content.Intent;
-import android.support.v4.view.GestureDetectorCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,37 +12,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Model.ChartData;
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.custom.CheckBoxCreator;
 import com.yakymovych.simon.telegramchart.custom.MyScrollView;
 import com.yakymovych.simon.telegramchart.custom.ProgressBar.GraphProgressBar;
 import com.yakymovych.simon.telegramchart.custom.LineChart.LineChart;
-import com.yakymovych.simon.telegramchart.custom.XLabelsView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity{
-    TextView tv;
-    LineChart lc;
-    int plot_length;
-    boolean theme=false;
+    private LineChart lc;
+    private int plot_length;
+    private boolean theme=false;
 
-
-
-    Chart chart;
-    CheckBoxCreator chbCreator;
-    GraphGenerator graphGenerator = new GraphGenerator();
-    GraphProgressBar progressbar;
+    private Chart chart;
+    private CheckBoxCreator chbCreator;
+    private final GraphGenerator graphGenerator = new GraphGenerator();
+    private GraphProgressBar progressbar;
 
     private final String THEME_TAG = "theme_tag";
     @Override
@@ -71,11 +60,11 @@ public class MainActivity extends AppCompatActivity{
         finish();
     }
     static final int PAGE_COUNT = 10;
-    List<ChartData> chartData;
-    LinearLayout ll;
+    private List<ChartData> chartData;
+    private LinearLayout ll;
 
 
-    MyScrollView scrollView;
+    private MyScrollView scrollView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Bundle b = getIntent().getExtras();
@@ -101,11 +90,11 @@ public class MainActivity extends AppCompatActivity{
             data.add(i);
         }
 
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, data);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, data);
         Chart c = Chart.fromСhartData(chartData.get(0));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Spinner spinner =  findViewById(R.id.spinner);
         spinner.setAdapter(adapter);
 
         this.chart = c;
@@ -165,16 +154,11 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-//        plot_length = graphGenerator.plots.get(0).x.size();
-    //    this.progressbar.setPlots(c);
-        //TODO
-        //plot_length = c.columns.get().size();
-
 
 
     }
 
-    CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
+    private final CompoundButton.OnCheckedChangeListener chbListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String tag = (String) (buttonView).getTag();
@@ -208,7 +192,7 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
-    public void setChart(int pos) {
+    private void setChart(int pos) {
         this.chart = Chart.fromСhartData(chartData.get(pos));
 
         chbCreator.setData(this.chart);
@@ -227,7 +211,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    void didInit() {
+    private void didInit() {
         lc.setPlots(this.chart);
         lc.setStartAndEnd(0,plot_length);
 

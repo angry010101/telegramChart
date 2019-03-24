@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ScrollView;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
@@ -22,14 +19,14 @@ import java.util.Set;
 
 public class GraphProgressBar extends View {
     public MathPlot mp ;
-    //private List<Plot> plots = new ArrayList<>();
-    ProgressBarViewPort viewPort;
-    ProgressBarDrawManager progressBarDrawManager;
-    int progressStart =0,progressEnd=100;
+    private ProgressBarViewPort viewPort;
+    private ProgressBarDrawManager progressBarDrawManager;
+    private int progressStart =0;
+    private int progressEnd=100;
 
-    public int progressMax = 112;
-    private int topMargin = 8;
-    int minOffsetElems = 6;
+    public final int progressMax = 112;
+    private final int topMargin = 8;
+    private final int minOffsetElems = 6;
     private Set<String> visiblePlots =new HashSet<>();
     private ProgressChangedListener progressChangedListener = null;
     private Chart chart;
@@ -96,7 +93,7 @@ public class GraphProgressBar extends View {
         final int colorShadow = arr.getColor(0, -1);
         final int colorBorders = arr.getColor(1, -1);
 
-
+        arr.recycle();
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -210,21 +207,21 @@ public class GraphProgressBar extends View {
         this.progressEnd = progressEnd;
     }
 
-    public void setProgressStartEnd(int s,int e) {
+    private void setProgressStartEnd(int s, int e) {
         this.progressStart = s;
         this.progressEnd = e;
     }
 
-    MyScrollView scrollView;
+    private MyScrollView scrollView;
     public void setScrollView(MyScrollView scrollView) {
         this.scrollView = scrollView;
     }
 
     public interface ProgressChangedListener{
-        public void onStartProgressChanged(View v,int p1,int p2);
-        public void onEndProgressChanged(View v,int p1,int p2);
-        public void onOffsetProgressChanged(View v,int p1,int p2);
-        public void onStopChanging(View v,int p1,int p2);
+        void onStartProgressChanged(View v, int p1, int p2);
+        void onEndProgressChanged(View v, int p1, int p2);
+        void onOffsetProgressChanged(View v, int p1, int p2);
+        void onStopChanging(View v, int p1, int p2);
     }
 }
 

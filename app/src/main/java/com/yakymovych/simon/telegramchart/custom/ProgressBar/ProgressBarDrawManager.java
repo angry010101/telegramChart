@@ -3,27 +3,25 @@ package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Model.Chart;
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
 
-import java.util.List;
 import java.util.Set;
 
-public class ProgressBarDrawManager {
-    MathPlot mp;
-    int width,height;
+class ProgressBarDrawManager {
+    private final MathPlot mp;
+    private final int width;
+    private final int height;
 
 
-    Paint bluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint bluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Paint grayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint grayPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final int borderWidth=16;
-    private int sliderTopBorder=4;
+    private final int sliderTopBorder=4;
 
     public ProgressBarDrawManager(MathPlot mp, int width, int height,int colorBorders,int colorShadow){
         this.mp= mp;
@@ -45,7 +43,7 @@ public class ProgressBarDrawManager {
 
     }
 
-    Chart chart;
+    private Chart chart;
 
     public void setChart(Chart chart) {
         this.chart = chart;

@@ -3,12 +3,10 @@ package com.yakymovych.simon.telegramchart.custom.LineChart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.yakymovych.simon.telegramchart.Utils.GraphGenerator;
 import com.yakymovych.simon.telegramchart.Utils.MathPlot;
@@ -17,34 +15,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class LineChartDrawManager {
+class LineChartDrawManager {
 
 
-    public double pxPerUnit;
-    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Paint graphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Rect rect = new Rect();
-    MathPlot mp;
-    int w,h;
-    int dividersCount=5;
-    int statsX, statsY;
-    int statsXBox;
-    int statsXoffsetLeft=20;
-    int statsW = 160, statsH = 200;
+    private final double pxPerUnit;
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint graphPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Rect rect = new Rect();
+    private final MathPlot mp;
+    private final int w;
+    private final int h;
+    private final int dividersCount=5;
+    int statsX;
+    private int statsY;
+    private int statsXBox;
+    private final int statsXoffsetLeft=20;
+    private int statsW;
+    private final int statsH;
     float statsBorderWidth=3;
 
-    int chartBackground ;
-    float stats_radius = 20;
+    private final int chartBackground ;
+    private final float stats_radius = 20;
     int dateCount = 5;
 
-    int textPaddingLeft = 22;
-    int textPaddingTop = 10;
+    private final int textPaddingLeft = 22;
+    private final int textPaddingTop = 10;
     //remove some
     int y_stats_offset = 20;
     int y_threshold=5;
     int stats_y_intersection = 20;
-    int intersection_radius = 6;
-    Paint intersectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final int intersection_radius = 6;
+    private final Paint intersectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public void setStatsX(int statsX) {
         this.statsX = statsX;
@@ -53,9 +54,9 @@ public class LineChartDrawManager {
     public void setStatsY(int statsY) {
         this.statsY = statsY;
     }
-    Paint paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
-    Paint paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
-    int textColor;
+    private final Paint paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paintText = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final int textColor;
 
     public LineChartDrawManager(MathPlot mp, int w, int h,int paintColor,int chartBackground,int colorChartBorder,int defaultTextColor){
         this.chartBackground = chartBackground;
@@ -125,10 +126,10 @@ public class LineChartDrawManager {
     }
 
 
-    double ky;
-    int offsetUnits;
-    int offsetTopPx;
-    void calcOffset(){
+    private double ky;
+    private int offsetUnits;
+    private int offsetTopPx;
+    private void calcOffset(){
         ky = ((double)(h)/(mp.getyMaxLimit()-mp.getyMinLimit()));
         offsetUnits = (int)((mp.getYMax()-mp.getYMin())/6);  //25
         offsetTopPx = (int) (offsetUnits*ky);
@@ -204,7 +205,7 @@ public class LineChartDrawManager {
                 canvas.drawLine(statsX,lh,statsX,ytodrawline-intersection_radius,this.paint);
             }
 
-            lh = (int)(ytodrawline+intersection_radius+stroke_width/2);
+            lh = (ytodrawline+intersection_radius+stroke_width/2);
         }
         if (lh < this.h)
             canvas.drawLine(statsX,lh,

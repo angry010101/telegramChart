@@ -1,21 +1,21 @@
 package com.yakymovych.simon.telegramchart.custom.ProgressBar;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 
-public class ProgressBarViewPort {
-    int startpos;
-    int endpos;
-    boolean isChangingStart = false;
-    boolean isChangingEnd = false;
-    boolean isChangingOffset = false;
-    int w,h;
-    int minOffsetPx = 80;
+class ProgressBarViewPort {
+    private int startpos;
+    private int endpos;
+    private boolean isChangingStart = false;
+    private boolean isChangingEnd = false;
+    private boolean isChangingOffset = false;
+    private final int w;
+    private final int h;
+    private int minOffsetPx = 80;
     private final double unitPerPx;
     private final double pxPerUnit;
-    GraphProgressBar view;
-    int progressMax;
+    private final GraphProgressBar view;
+    private final int progressMax;
 
     public void setStartpos(int startpos) {
         this.startpos = this.getProgressStartPx(startpos);
@@ -25,13 +25,13 @@ public class ProgressBarViewPort {
         this.endpos = this.getProgressEndPx(endpos);
     }
 
-    public void setMinOffsetPx(int minOffsetElements) {
+    private void setMinOffsetPx(int minOffsetElements) {
         this.minOffsetPx = (int) (minOffsetElements * ((double)endpos-startpos)/w);
     }
 
-    int delta = 30;
-    int delta_o=40;
-    int borderWidth = 16;
+    private final int delta = 30;
+    private final int delta_o=40;
+    private final int borderWidth = 16;
 
     public ProgressBarViewPort(GraphProgressBar view,int width, int height,int progressLeft,int progressRight,int progressMax, int minOffsetElements) {
         super();
@@ -102,7 +102,7 @@ public class ProgressBarViewPort {
         view.handleStopChanging();
     }
 
-    public void handleOffsetMovement(MotionEvent event){
+    private void handleOffsetMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-(startpos+endpos)/2 > 0;
         if ((endpos>=w-borderWidth)
@@ -116,7 +116,7 @@ public class ProgressBarViewPort {
     }
 
 
-    public void handleStartMovement(MotionEvent event){
+    private void handleStartMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-endpos > 0;
 
@@ -130,7 +130,7 @@ public class ProgressBarViewPort {
         view.handleStartMovement(moveToProgress);
     }
 
-    public void handleEndMovement(MotionEvent event){
+    private void handleEndMovement(MotionEvent event){
         float x = event.getX();
         boolean direction = x-endpos > 0;
         if ((endpos>=w-borderWidth && direction) || (endpos<=borderWidth  && !direction) ||

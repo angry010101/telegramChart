@@ -1,18 +1,17 @@
 package com.yakymovych.simon.telegramchart.custom.LineChart;
 
-import android.util.Log;
 import android.view.MotionEvent;
-
-import com.yakymovych.simon.telegramchart.Model.local.Plot;
 
 import java.util.List;
 
-public class LineChartViewPort {
-    int w,h;
-    int start,end;
+class LineChartViewPort {
+    private final int w;
+    private final int h;
+    private int start;
+    private int end;
 
     private int stats_w=180,stats_h=160;
-    LineChart view;
+    private final LineChart view;
     private int stats_x,stats_y=100;
     private int stats_offset=20;
     private int y_threshold = 5;
@@ -61,11 +60,6 @@ public class LineChartViewPort {
     private final int stats_draw_left_threshold = 0;
     private int stats_draw_right_threshold;
 
-
-    public int findNearestFor(List<Double> p, long x) {
-        List<Double> prcx = p.subList(start,end);
-        return prcx.indexOf(x);
-    }
 
     public synchronized boolean onTouchEvent(MotionEvent event) {
         final long x = (long) event.getX();

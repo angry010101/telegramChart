@@ -1,7 +1,5 @@
 package com.yakymovych.simon.telegramchart.Model;
 
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +8,7 @@ public class Chart {
     public Map<String,String> colors;
     public Map<String,List<Double>> columns;
     public Map<String,String> names;
-    public Map<String,String> types;
+    private Map<String,String> types;
 
     public int getAxisLength(){
         return columns.get("x").size();
@@ -27,9 +25,9 @@ public class Chart {
         List<Object> l2 = chartData.columns.get(2);
 
 
-        List<Object> l = null;
-        List<Double> x_d = null;
-        String label = null;
+        List<Object> l ;
+        List<Double> x_d ;
+        String label ;
         for (int i =0;i<chartData.columns.size();i++){
             l = chartData.columns.get(i);
             label = (String)l.get(0);

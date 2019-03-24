@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,30 +22,32 @@ import java.util.List;
 
 public class XLabelsView  extends View {
     private int datesCount = 5;
-    private int visibleDatesCount = 5;
+    private final int visibleDatesCount = 5;
     private double pxPerDate = 5;
     private int datesStep = 5;
-    int width,height;
-    LineChart.LineChartListener lineChartListener;
-    int start,end;
-    List<Long> dates;
-    List<String> datesStr;
+    private int width;
+    private int height;
+    private LineChart.LineChartListener lineChartListener;
+    private int start;
+    private int end;
+    private List<Long> dates;
+    private List<String> datesStr;
     private double pxPerAllDates;
-    private float animOffsetDates =0;
+    private final float animOffsetDates =0;
     private int animAlfa=100;
-    boolean draggingStart  =false;
+    private boolean draggingStart  =false;
 
-    ValueAnimator alphaAnimatorHide;
-    ValueAnimator alphaAnimatorShow;
+    private ValueAnimator alphaAnimatorHide;
+    private ValueAnimator alphaAnimatorShow;
     ValueAnimator heightAnimator;
 
-    ValueAnimator.AnimatorUpdateListener ll = new ValueAnimator.AnimatorUpdateListener() {
+    private final ValueAnimator.AnimatorUpdateListener ll = new ValueAnimator.AnimatorUpdateListener() {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             beginAnimation(animation);
         }
     };
-    public void startAnimShow(){
+    private void startAnimShow(){
         if (alphaAnimatorHide != null && alphaAnimatorHide.isRunning())
             alphaAnimatorHide.pause();
         alphaAnimatorHide = ValueAnimator.ofInt(100,0);
@@ -94,7 +95,7 @@ public class XLabelsView  extends View {
         this.setDatesCount(dates.size());
     }
 
-    public void setDatesCount(int datesCount) {
+    private void setDatesCount(int datesCount) {
         this.datesCount = datesCount;
         pxPerDate = (double)(this.width)/visibleDatesCount;
         this.invalidate();
@@ -138,7 +139,7 @@ public class XLabelsView  extends View {
     private void setDatesStep(){
         this.datesStep = (this.end - this.start)/visibleDatesCount;
     }
-    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
     private void initSizes(){
@@ -168,7 +169,7 @@ public class XLabelsView  extends View {
         int primaryColor = arr.getColor(1, -1);
 
         paint.setColor(primaryColor);
-
+        arr.recycle();
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
