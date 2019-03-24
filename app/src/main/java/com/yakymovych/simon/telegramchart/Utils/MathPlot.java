@@ -245,6 +245,7 @@ public class MathPlot {
     private int visibleDates = 5;
     private void drawValues(Canvas canvas) {
 
+
         double v = ((double)(end-start)/visibleDates);
         for (double k=start; k<end;k+=v){
 
